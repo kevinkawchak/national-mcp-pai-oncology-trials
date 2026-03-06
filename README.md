@@ -3,6 +3,7 @@
 **Version 0.1.0** | **Normative Specification** | **United States Industry Standard**
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
+[![DOI](https://img.shields.io/badge/DOI-10.5281%2Fzenodo.18894758-blue)](https://doi.org/10.5281/zenodo.18894758)
 
 The **National MCP-PAI Oncology Trials Standard** is a normative specification for deploying Model Context Protocol (MCP) servers across federated Physical AI oncology clinical trial systems in the United States. This standard defines protocol contracts, actor models, security baselines, regulatory overlays, and governance processes required for industry-wide interoperability of autonomous robotic systems in regulated clinical environments.
 
