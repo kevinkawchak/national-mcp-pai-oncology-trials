@@ -1,3 +1,46 @@
+## Prompt v0.3.0
+
+Your goal in the comprehensive national-mcp-pai-oncology-trials v0.3.0 release is to continue scaling to a United States national industry-wide MCP standard for the physical ai oncology trials industry based in part from the prior kevinkawchak/mcp-pai-oncology-trials. It is important that only directories/files/modified files be used that are truly useful on the national scale rather than the prior repository being used as a reference implementation / seed specification.
+
+Update national specific documentation throughout the repo (diagrams, mermaid diagrams, text, repository structure, etc.) After completing these tasks, focus on performing the main prompt below exhaustively for the national level (Keep in mind that this prompt, and future prompts are aimed at MCP servers being fully scaled and automated industry wide across the U.S.)
+
+It is imperative that all types of information now utilized from across the prior repository be accurate and appropriate to a national scale. For references: use the three references at the bottom of the main kevinkawchak/mcp-pai-oncology-trials Readme; and exact working internal and external sites URLs where necessary from kevinkawchak/physical-ai-oncology-trials and kevinkawchak/pai-oncology-trial-fl.
+
+Provide a copy of this exact prompt under main prompts.md. Be sure to fix and address errors that would cause failed checks for the single pull request (such as Python environment issues to avoid the following error during final checks): "3 failing checks
+x Cl / lint-and-format (3.10) (pull...
+x Cl / lint-and-format (3.11) (pull...
+x Cl / lint-and-format (3.12) (pull... " Place the new release notes in releases.md under main using the format below (which is the same format of the last published version). Update changelog.md using v0.3.0. When you are finished, auto-push the update to GitHub on your own for my review. The user will then review your updates in GitHub prior to finalization.
+
+"FORMAT"
+Release title
+v0.3.0 -
+
+## Summary
+
+## Features
+
+## Contributors
+@kevinkawchak
+@claude
+
+## Notes
+
+"START MAIN PROMPT"
+(v0.3.0): Profiles and Conformance Level Definitions
+Creates: /profiles/ (8 markdown files)
+* base-profile.md — Core conformance: authz + audit + error taxonomy. Every implementation MUST.
+* clinical-read.md — FHIR read/search + HIPAA de-identification. MUST: fhir_read, fhir_search, fhir_patient_lookup, fhir_study_status.
+* imaging-guided-oncology.md — DICOM query/retrieve + role-based modality restrictions. MUST: CT, MR, PT. SHOULD: RTSTRUCT, RTPLAN.
+* multi-site-federated.md — Cross-site provenance, federated audit chain, data residency policy.
+* robot-assisted-procedure.md — Robot capability profile, task-order contract, safety matrix, USL scoring. References schemas.
+* state-us-ca.md — California CCPA overlay.
+* state-us-ny.md — New York health info overlay.
+* country-us-fda.md — FDA 21 CFR Part 11 overlay.
+Each profile: mandatory tools, optional tools, forbidden ops, required schemas, regulatory overlays, conformance test subset.
+"END PROMPT"
+
+---
+
 ## Prompt v0.2.0
 
 Include more Readme badges such as version, language(s), tests, protocol, date, and contributors. Update national specific documentation throughout the repo (diagrams, mermaid diagrams, text, repository structure, etc.) After completing these tasks, focus on performing the main prompt below exhaustively for the national level (Keep in mind that this prompt, and future prompts are aimed at MCP servers being fully scaled and automated industry wide across the U.S.)
