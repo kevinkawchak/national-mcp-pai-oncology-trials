@@ -1,3 +1,50 @@
+## Prompt v0.2.0
+
+Include more Readme badges such as version, language(s), tests, protocol, date, and contributors. Update national specific documentation throughout the repo (diagrams, mermaid diagrams, text, repository structure, etc.) After completing these tasks, focus on performing the main prompt below exhaustively for the national level (Keep in mind that this prompt, and future prompts are aimed at MCP servers being fully scaled and automated industry wide across the U.S.)
+
+It is imperative that all types of information now utilized from across the prior repository be accurate and appropriate to a national scale. For references: use the three references at the bottom of the main kevinkawchak/mcp-pai-oncology-trials Readme; and exact working internal and external sites URLs where necessary from kevinkawchak/physical-ai-oncology-trials and kevinkawchak/pai-oncology-trial-fl.
+
+Provide a copy of this exact prompt under main prompts.md. Be sure to fix and address errors that would cause failed checks for the single pull request (such as Python environment issues to avoid the following error during final checks): "3 failing checks
+x Cl / lint-and-format (3.10) (pull...
+x Cl / lint-and-format (3.11) (pull...
+x Cl / lint-and-format (3.12) (pull... " Place the new release notes in releases.md under main using the format below (which is the same format of the last published version, don't use the format from releases.md). Update changelog.md using v0.2.0. When you are finished, auto-push the update to GitHub on your own for my review. The user will then review your updates in GitHub prior to finalization.
+
+"FORMAT"
+Release title
+v0.2.0 -
+
+## Summary
+
+## Features
+
+## Contributors
+@kevinkawchak
+@claude
+
+## Notes
+
+"START MAIN PROMPT"
+(v0.2.0): Machine-Readable JSON Schemas
+Creates: /schemas/ (13 JSON Schema files)
+Each schema extracted from existing server code structures:
+* capability-descriptor.schema.json — Server capability ad (name, version, tools, conformance level)
+* robot-capability-profile.schema.json — From trial_robot_agent.py (platform, robot_type) + trial_schedule.json (usl_score, safety prerequisites)
+* site-capability-profile.schema.json — Site descriptor (jurisdiction, servers, data residency)
+* task-order.schema.json — From datasets/scheduling/trial_schedule.json structure
+* audit-record.schema.json — From ledger_server.py AuditRecord dataclass fields
+* provenance-record.schema.json — From provenance_server.py ProvenanceRecord fields
+* consent-status.schema.json — Consent state machine
+* authz-decision.schema.json — From authz_server.py evaluate return shape
+* dicom-query.schema.json — From dicom_server.py dicom_query params/output
+* fhir-read.schema.json — From fhir_server.py fhir_read params/output
+* fhir-search.schema.json — From fhir_server.py fhir_search params/output
+* error-response.schema.json — From servers/common/__init__.py error_response()
+* health-status.schema.json — From servers/common/__init__.py health_status()
+All use JSON Schema draft 2020-12 with $id, title, description, required, examples.
+"END PROMPT"
+
+---
+
 ## Prompt v0.1.0
 
 Your goal in the new comprehensive national-mcp-pai-oncology-trials v0.1.0 release is to scale to a United States national industry-wide MCP standard for the physical ai oncology trials industry based in part from the prior kevinkawchak/mcp-pai-oncology-trials. It is important that only directories/files/modified files be used that are truly useful on the national scale rather than the prior repository being used as a reference implementation / seed specification.
@@ -43,50 +90,3 @@ v0.1.0 -
 @claude
 
 ## Notes
-
----
-
-## Prompt v0.2.0
-
-Include more Readme badges such as version, language(s), tests, protocol, date, and contributors. Update national specific documentation throughout the repo (diagrams, mermaid diagrams, text, repository structure, etc.) After completing these tasks, focus on performing the main prompt below exhaustively for the national level (Keep in mind that this prompt, and future prompts are aimed at MCP servers being fully scaled and automated industry wide across the U.S.)
-
-It is imperative that all types of information now utilized from across the prior repository be accurate and appropriate to a national scale. For references: use the three references at the bottom of the main kevinkawchak/mcp-pai-oncology-trials Readme; and exact working internal and external sites URLs where necessary from kevinkawchak/physical-ai-oncology-trials and kevinkawchak/pai-oncology-trial-fl.
-
-Provide a copy of this exact prompt under main prompts.md. Be sure to fix and address errors that would cause failed checks for the single pull request (such as Python environment issues to avoid the following error during final checks): "3 failing checks
-x Cl / lint-and-format (3.10) (pull...
-x Cl / lint-and-format (3.11) (pull...
-x Cl / lint-and-format (3.12) (pull... " Place the new release notes in releases.md under main using the format below (which is the same format of the last published version, don't use the format from releases.md). Update changelog.md using v0.2.0. When you are finished, auto-push the update to GitHub on your own for my review. The user will then review your updates in GitHub prior to finalization.
-
-"FORMAT"
-Release title
-v0.2.0 -
-
-## Summary
-
-## Features
-
-## Contributors
-@kevinkawchak
-@claude
-
-## Notes
-
-"START MAIN PROMPT"
-(v0.2.0): Machine-Readable JSON Schemas
-Creates: /schemas/ (13 JSON Schema files)
-Each schema extracted from existing server code structures:
-* capability-descriptor.schema.json — Server capability ad (name, version, tools, conformance level)
-* robot-capability-profile.schema.json — From trial_robot_agent.py (platform, robot_type) + trial_schedule.json (usl_score, safety prerequisites)
-* site-capability-profile.schema.json — Site descriptor (jurisdiction, servers, data residency)
-* task-order.schema.json — From datasets/scheduling/trial_schedule.json structure
-* audit-record.schema.json — From ledger_server.py AuditRecord dataclass fields
-* provenance-record.schema.json — From provenance_server.py ProvenanceRecord fields
-* consent-status.schema.json — Consent state machine
-* authz-decision.schema.json — From authz_server.py evaluate return shape
-* dicom-query.schema.json — From dicom_server.py dicom_query params/output
-* fhir-read.schema.json — From fhir_server.py fhir_read params/output
-* fhir-search.schema.json — From fhir_server.py fhir_search params/output
-* error-response.schema.json — From servers/common/__init__.py error_response()
-* health-status.schema.json — From servers/common/__init__.py health_status()
-All use JSON Schema draft 2020-12 with $id, title, description, required, examples.
-"END PROMPT"
