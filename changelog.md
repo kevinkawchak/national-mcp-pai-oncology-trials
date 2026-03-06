@@ -6,6 +6,46 @@ This project follows [Semantic Versioning](https://semver.org/) as described in 
 
 ---
 
+## [0.4.0] — 2026-03-06
+
+### Added
+
+#### Conformance Test Suite
+- `conformance/README.md` — Harness overview, directory structure, how to run tests, how to add tests, conformance level mapping
+- `conformance/conftest.py` — Shared pytest fixtures, JSON Schema draft 2020-12 validation helpers (`validate_against_schema`, `assert_schema_valid`, `schema_has_required_fields`), schema loading, parametrized `each_schema` fixture
+- `conformance/fixtures/audit_records.py` — Sample audit records, hash chain builders (`make_audit_chain`), genesis hash, error responses, health status fixtures, `compute_audit_hash` helper
+- `conformance/fixtures/authz_decisions.py` — ALLOW/DENY decision builders, 6-actor default RBAC permission matrix, unauthorized access attempt fixtures
+- `conformance/fixtures/clinical_resources.py` — De-identified FHIR patient builders, FHIR search/read response builders, DICOM query response builders, SSRF payload fixtures, invalid FHIR/DICOM ID fixtures, HIPAA Safe Harbor 18-identifier list
+- `conformance/fixtures/provenance_records.py` — Provenance record builders, DAG pipeline builders (`make_provenance_dag`), cross-server provenance fixture, multi-server trace sequence fixture
+
+#### Positive Conformance Tests
+- `conformance/positive/test_core_conformance.py` — 27 tests: audit record production (9 fields, UUID format, ISO 8601 UTC, SHA-256 hash, chain links), error envelope (required fields, `error=true`, 9-code taxonomy), health check (required fields, valid status), authorization decisions (ALLOW/DENY structure, 6 roles, schema validation)
+- `conformance/positive/test_clinical_read_conformance.py` — FHIR read/search responses, 18 HIPAA identifiers, name/address redaction, year-only birthDate, HMAC pseudonymization, search result capping, consent schema validation
+- `conformance/positive/test_imaging_conformance.py` — DICOM query responses, MUST modalities (CT, MR, PT), SHOULD modalities (RTSTRUCT, RTPLAN), role-based query level permissions (4 roles), UID validation, patient name hashing (12-char SHA-256), year-only StudyDate
+
+#### Negative Conformance Tests
+- `conformance/negative/test_invalid_inputs.py` — Malformed FHIR IDs (spaces, @, /, XSS, empty, URLs, >1000 chars), invalid DICOM UIDs (letters, spaces, slashes), invalid query levels, invalid roles, input length limits (1000 chars, 50 keys, 100 elements), schema field mismatches (wrong server, wrong error code, wrong hash length, wrong timestamp format, wrong UUID format)
+- `conformance/negative/test_unauthorized_access.py` — Deny-by-default enforcement, 6 known unauthorized access attempts, DENY decision schema validation, role boundary validation (sponsor minimal access, auditor no write, data_monitor read-only), DENY precedence over ALLOW
+
+#### Security Conformance Tests
+- `conformance/security/test_ssrf_prevention.py` — 7 SSRF payloads rejected, case-insensitive protocol detection, internal IP patterns (169.254.x, 127.0.0.1, localhost, ::1, 10.x, 192.168.x, 172.16.x), legitimate IDs accepted, data URI rejection, javascript URI rejection
+- `conformance/security/test_token_lifecycle.py` — Token issuance (UUID v4, SHA-256 hash, hash matches raw, no plaintext), default expiry (3600s), max expiry (86400s), UTC timestamps, expiry enforcement, immediate revocation, revocation permanence, hash unchanged after revocation
+- `conformance/security/test_chain_integrity.py` — Genesis hash (64 zeros), chain verification, tamper detection (modified result_summary, modified caller, modified parameters, modified timestamp, swapped records, deleted record, inserted foreign record), canonical JSON serialization (alphabetical keys, hash field excluded, UTF-8 encoding)
+
+#### Interoperability Conformance Tests
+- `conformance/interoperability/test_cross_server_trace.py` — Multi-server chain spanning 5 servers, chain integrity across server boundaries, operational order (authz → fhir → dicom → ledger → provenance), cross-server provenance DAG, source types, action types, SHA-256 fingerprints, federated audit coordination
+- `conformance/interoperability/test_schema_validation.py` — All 13 schema files: existence, valid JSON, draft 2020-12 reference, $id field, title field, description field, schema example self-validation, audit record/error response/health status/authz decision/provenance record schema validation
+
+#### Configuration
+- `pyproject.toml` — Python project configuration: ruff lint rules (E, F, I, W), line length 100, target Python 3.10, pytest configuration with testpaths and markers
+
+#### Documentation
+- README: v0.4.0 badges (Version, Conformance Tests: 269 Passing), Conformance Test Suite section with Mermaid architecture diagram, conformance test summary table, national conformance validation flow text diagram, updated Table of Contents, updated repository structure, updated Getting Started
+- Updated CODEOWNERS with `/conformance/` directory ownership
+- `prompts.md` — v0.4.0 prompt archived
+
+---
+
 ## [0.3.0] — 2026-03-06
 
 ### Added

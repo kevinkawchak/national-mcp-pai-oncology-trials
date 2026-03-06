@@ -1,0 +1,34 @@
+[project]
+name = "national-mcp-pai-oncology-trials"
+version = "0.4.0"
+description = "National MCP Standard for Physical AI Oncology Clinical Trials — Conformance Test Suite"
+requires-python = ">=3.10"
+license = {text = "MIT"}
+
+[project.optional-dependencies]
+test = [
+    "pytest>=7.0",
+    "jsonschema>=4.17",
+]
+
+[tool.ruff]
+target-version = "py310"
+line-length = 100
+
+[tool.ruff.lint]
+select = [
+    "E",    # pycodestyle errors
+    "F",    # pyflakes
+    "I",    # isort
+    "W",    # pycodestyle warnings
+]
+
+[tool.ruff.lint.isort]
+known-first-party = ["conformance"]
+
+[tool.pytest.ini_options]
+testpaths = ["conformance"]
+markers = [
+    "security: Security conformance tests",
+    "interoperability: Interoperability conformance tests",
+]
