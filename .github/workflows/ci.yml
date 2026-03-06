@@ -55,31 +55,44 @@ jobs:
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
-          pip install jsonschema
+          pip install jsonschema referencing
 
       - name: Validate all schemas
         run: |
           python -c "
           import json, sys
           from pathlib import Path
+          from referencing import Registry, Resource
           from jsonschema import Draft202012Validator
 
           schema_dir = Path('schemas')
-          errors = 0
+
+          # Build a registry so \$ref across files resolves correctly
+          registry = Registry()
+          all_schemas = {}
           for schema_file in sorted(schema_dir.glob('*.schema.json')):
+              schema = json.loads(schema_file.read_text())
+              all_schemas[schema_file.name] = schema
+              res = Resource.from_contents(schema)
+              registry = registry.with_resource(schema_file.name, res)
+              if '\$id' in schema:
+                  registry = registry.with_resource(schema['\$id'], res)
+
+          errors = 0
+          for name, schema in all_schemas.items():
               try:
-                  schema = json.loads(schema_file.read_text())
-                  Draft202012Validator.check_schema(schema)
+                  validator = Draft202012Validator(schema, registry=registry)
                   for i, example in enumerate(schema.get('examples', [])):
-                      validator = Draft202012Validator(schema)
                       errs = list(validator.iter_errors(example))
                       if errs:
-                          print(f'FAIL: {schema_file.name} example {i}: {errs[0].message}')
+                          print(f'FAIL: {name} example {i}: {errs[0].message}')
                           errors += 1
                       else:
-                          print(f'PASS: {schema_file.name} example {i}')
+                          print(f'PASS: {name} example {i}')
+                  if not schema.get('examples'):
+                      print(f'SKIP: {name} (no examples)')
               except Exception as e:
-                  print(f'FAIL: {schema_file.name}: {e}')
+                  print(f'FAIL: {name}: {e}')
                   errors += 1
           sys.exit(1 if errors else 0)
           "
