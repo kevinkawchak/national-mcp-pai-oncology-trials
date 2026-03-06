@@ -47,3 +47,7 @@ This project follows [Semantic Versioning](https://semver.org/) as described in 
 - `changelog.md` — This file
 - `releases.md` — Release notes
 - `prompts.md` — Prompt archive documenting AI-assisted development
+
+---
+
+- @kevinkawchak Exact v0.1.0 prompt replacement for prompts.md 2026-03-06
