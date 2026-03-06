@@ -1,48 +1,45 @@
-# Prompt Archive
+## Prompt v0.1.0
 
-This document archives the AI-assisted development prompts used to create the National MCP-PAI Oncology Trials Standard specification. Transparency in AI-assisted authorship is a core principle of this project.
+Your goal in the new comprehensive national-mcp-pai-oncology-trials v0.1.0 release is to scale to a United States national industry-wide MCP standard for the physical ai oncology trials industry based in part from the prior kevinkawchak/mcp-pai-oncology-trials. It is important that only directories/files/modified files be used that are truly useful on the national scale rather than the prior repository being used as a reference implementation / seed specification. 
 
----
+Create national specific documentation throughout the repo; the main readme needs to be disbursed with the following throughout: 3 relevant text diagrams and 3 relevant colored mermaid diagrams (make sure mermaid diagrams view well on smartphones, and don’t require excessive pan/zoom due to being too long in one dimension). State the features and benefits of this national approach opposed to the prior kevinkawchak/mcp-pai-oncology-trials repository, existing oncology trial approaches, and other known MCP/AI software servers approaches for oncology trials. After completing these tasks, focus on performing the main prompt below exhaustively for the national level (Keep in mind that this prompt, and future prompts are aimed at MCP servers being fully scaled and automated industry wide across the U.S.) 
 
-## Session 1 — Initial Specification Development (2026-03-06)
+“START MAIN PROMPT”
+(v0.1.0): Normative Specification + Governance + Regulatory Overlays + Community Files
+Creates: /spec/ (9 files), /governance/ (5 files), /regulatory/ (4 files), .github/ (templates), CODE_OF_CONDUCT.md
+Key spec files and their source material from existing code:
+* spec/core.md — Protocol scope, design principles, 5 conformance levels (Core, Clinical Read, Imaging, Federated Site, Robot Procedure). Uses RFC 2119 MUST/SHOULD/MAY.
+* spec/actor-model.md — 6 actors extracted from servers/trialmcp_authz/src/authz_server.pyDEFAULT_POLICY roles (robot_agent, trial_coordinator, data_monitor, auditor) plus sponsor and CRO.
+* spec/tool-contracts.md — All 23 tool signatures from the 5 servers' handle_tool_call methods, with input params, output shape, error codes, and audit requirements.
+* spec/security.md — Deny-by-default RBAC from authz_server.py PolicyEngine, token lifecycle, SSRF prevention from servers/common/__init__.py validators.
+* spec/privacy.md — HIPAA Safe Harbor de-identification from fhir_server.py _deidentify_resource(), HMAC-SHA256 pseudonymization, DICOM patient hashing from dicom_server.py.
+* spec/provenance.md — DAG lineage model from provenance_server.py DataSource/ProvenanceRecord, SHA-256 fingerprinting, forward/backward queries.
+* spec/audit.md — Hash-chained ledger from ledger_server.py, genesis hash, chain verification, replay trace, 21 CFR Part 11 mapping.
+* spec/conformance.md — 5 conformance levels with MUST/SHOULD/MAY per level, mandatory tool sets per level.
+* spec/versioning.md — SemVer, compatibility policy, extension namespace x-{vendor}, deprecation rules.
+* governance/CHARTER.md, DECISION_PROCESS.md, EXTENSIONS.md, VERSION_COMPATIBILITY.md, CODEOWNERS
+* regulatory/US_FDA.md, HIPAA.md, CFR_PART_11.md, IRB_SITE_POLICY_TEMPLATE.md
+* .github/ISSUE_TEMPLATE/bug_report.md, feature_request.md, spec_change.md; .github/PULL_REQUEST_TEMPLATE.md
+* CODE_OF_CONDUCT.md (Contributor Covenant)
+“END PROMPT”
 
-### Prompt Summary
+It is imperative that all types of information now utilized from across the prior repository be accurate and appropriate to a national scale. For references: use the three references at the bottom of the main kevinkawchak/mcp-pai-oncology-trials Readme; and exact working internal and external sites URLs where necessary from kevinkawchak/physical-ai-oncology-trials and kevinkawchak/pai-oncology-trial-fl.
 
-**Objective**: Scale the single-site TrialMCP reference implementation (kevinkawchak/mcp-pai-oncology-trials v0.3.0) into a multi-site national standard for Physical AI oncology clinical trials.
+Provide a copy of this prompt under main prompts.md. Be sure to fix and address errors that would cause failed checks for the single pull request (such as Python environment issues to avoid the following error during final checks): “3 failing checks 
+x Cl / lint-and-format (3.10) (pull...
+x Cl / lint-and-format (3.11) (pull...
+x Cl / lint-and-format (3.12) (pull... “ Place the new release notes in releases.md under main using the format below. Update changelog.md using v0.1.0. When you are finished, auto-push the update to GitHub on your own for my review. The user will then review your updates in GitHub prior to finalization.
 
-**Input Context**:
-- Analysis of kevinkawchak/mcp-pai-oncology-trials (5 MCP servers, 23 tools, 39 tests)
-- Analysis of kevinkawchak/physical-ai-oncology-trials (v2.1.0, robotic systems framework)
-- Analysis of kevinkawchak/pai-oncology-trial-fl (v1.1.1, federated learning framework)
+“FORMAT”
+Release title 
+v0.1.0 - 
 
-**AI Tasks Performed**:
-1. Researched all three prior repositories to extract architecture, tool contracts, security model, privacy pipeline, audit mechanism, and regulatory patterns
-2. Designed a normative specification structure with 9 modules using RFC 2119 keywords
-3. Expanded the 4-actor model to 6 actors (adding sponsor and CRO roles)
-4. Created 5-level conformance model (Core, Clinical Read, Imaging, Federated Site, Robot Procedure)
-5. Wrote regulatory overlay documents mapping specification requirements to FDA, HIPAA, 21 CFR Part 11, and IRB frameworks
-6. Established governance framework (charter, decision process, extension namespaces, version compatibility)
-7. Created community templates (issue templates, PR template, Code of Conduct)
-8. Authored comprehensive README with architecture diagrams, comparison tables, and getting started guides
+## Summary
 
-**Model**: Claude (Anthropic)
+## Features
 
-**Human Review**: All generated content is subject to human review, modification, and approval before finalization.
+## Contributors
+@kevinkawchak
+@claude
 
----
-
-## Methodology
-
-### AI-Assisted Standards Development Process
-
-1. **Research Phase**: AI agent analyzes existing implementations, extracting patterns, contracts, and architectural decisions
-2. **Synthesis Phase**: AI drafts normative text using established standards conventions (RFC 2119 keywords, conformance levels, regulatory mappings)
-3. **Review Phase**: Human experts review all generated content for accuracy, completeness, and regulatory alignment
-4. **Iteration Phase**: Feedback is incorporated through the governance decision process
-
-### Transparency Principles
-
-- All AI-generated content is clearly attributed in this archive
-- Human review is required before any content is merged into the normative specification
-- AI tools are used for drafting and analysis, not for making normative decisions
-- The governance process (see [governance/DECISION_PROCESS.md](governance/DECISION_PROCESS.md)) applies equally to AI-generated and human-authored proposals
+## Notes
