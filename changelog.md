@@ -50,4 +50,4 @@ This project follows [Semantic Versioning](https://semver.org/) as described in 
 
 ---
 
-- @kevinkawchak Exact v0.1.0 prompt replacement for prompts.md 2026-03-06
+- @kevinkawchak Exact v0.1.0 prompt replacement for prompts.md. Added DOI badge to main README. 2026-03-06
