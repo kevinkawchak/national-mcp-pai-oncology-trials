@@ -1,3 +1,45 @@
+## Prompt v0.5.0
+
+Your goal in the comprehensive national-mcp-pai-oncology-trials v0.5.0 release is to continue scaling to a United States national industry-wide MCP standard for the physical ai oncology trials industry based in part from the prior kevinkawchak/mcp-pai-oncology-trials. It is important that only directories/files/modified files be used that are truly useful on the national scale rather than the prior repository being used as a reference implementation / seed specification.
+
+Update national specific documentation throughout the repo (diagrams, mermaid diagrams, text, repository structure, etc.) After completing these tasks, focus on performing the main prompt below exhaustively for the national level (Keep in mind that this prompt, and future prompts are aimed at MCP servers being fully scaled and automated industry wide across the U.S.)
+
+
+It is imperative that all types of information now utilized from across the prior repository be accurate and appropriate to a national scale. For references: use the three references at the bottom of the main kevinkawchak/mcp-pai-oncology-trials Readme; and exact working internal and external sites URLs where necessary from kevinkawchak/physical-ai-oncology-trials and kevinkawchak/pai-oncology-trial-fl.
+
+Provide a copy of this exact prompt under main prompts.md. Be sure to fix and address errors that would cause failed checks for the single pull request (such as Python environment issues to avoid the following error during final checks): "3 failing checks
+x Cl / lint-and-format (3.10) (pull...
+x Cl / lint-and-format (3.11) (pull...
+x Cl / lint-and-format (3.12) (pull... " Place the new release notes in releases.md under main using the format below (which is the same format of the last published version). Update changelog.md using v0.5.0. When you are finished, auto-push the update to GitHub on your own for my review. The user will then review your updates in GitHub prior to finalization.
+
+"FORMAT"
+Release title
+v0.5.0 -
+
+## Summary
+
+## Features
+
+## Contributors
+@kevinkawchak
+@claude
+
+## Notes
+
+"START MAIN PROMPT"
+(v0.5.0): Reference Implementations + CI/CD + Documentation
+Creates: /reference/python/, /reference/typescript/, .github/workflows/ci.yml, /docs/ (3 files), updated README.md
+* reference/python/ — NON-NORMATIVE. Minimal Core server, schema validator, conformance runner.
+* reference/typescript/ — NON-NORMATIVE. Minimal Core server stub with ajv validation.
+* .github/workflows/ci.yml — Lint (ruff), test (pytest), schema validation, conformance suite, docs linting.
+* docs/architecture.md — 5-server topology, data flow, audit chain (ASCII diagrams).
+* docs/adoption-roadmap.md — Phase 0 (spec) → Phase 1 (profiles) → Phase 2 (conformance) → Phase 3 (pilots).
+* docs/glossary.md — Standard terminology.
+* Updated README.md — Repository layout section, normative vs informative labels, CI badges.
+"END PROMPT"
+
+---
+
 ## Prompt v0.4.0
 
 Your goal in the comprehensive national-mcp-pai-oncology-trials v0.4.0 release is to continue scaling to a United States national industry-wide MCP standard for the physical ai oncology trials industry based in part from the prior kevinkawchak/mcp-pai-oncology-trials. It is important that only directories/files/modified files be used that are truly useful on the national scale rather than the prior repository being used as a reference implementation / seed specification.

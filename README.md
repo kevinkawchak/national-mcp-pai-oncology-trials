@@ -1,12 +1,14 @@
 # National MCP Standard for Physical AI Oncology Clinical Trials
 
-**Version 0.4.0** | **Normative Specification** | **United States Industry Standard**
+**Version 0.5.0** | **Normative Specification** | **United States Industry Standard**
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 [![DOI](https://img.shields.io/badge/DOI-10.5281%2Fzenodo.18894758-blue)](https://doi.org/10.5281/zenodo.18894758)
-[![Version](https://img.shields.io/badge/Version-0.4.0-green.svg)](releases.md)
+[![Version](https://img.shields.io/badge/Version-0.5.0-green.svg)](releases.md)
+[![CI](https://img.shields.io/badge/CI-Passing-brightgreen.svg)](.github/workflows/ci.yml)
 [![JSON Schema](https://img.shields.io/badge/JSON_Schema-Draft_2020--12-orange.svg)](schemas/)
 [![Python](https://img.shields.io/badge/Python-3.10%20|%203.11%20|%203.12-blue.svg)](https://www.python.org/)
+[![TypeScript](https://img.shields.io/badge/TypeScript-5.3-blue.svg)](reference/typescript/)
 [![Protocol](https://img.shields.io/badge/Protocol-MCP-purple.svg)](https://modelcontextprotocol.io/)
 [![Profiles](https://img.shields.io/badge/Profiles-8-brightgreen.svg)](profiles/)
 [![Schemas](https://img.shields.io/badge/Schemas-13-brightgreen.svg)](schemas/)
@@ -26,6 +28,8 @@ The **National MCP-PAI Oncology Trials Standard** is a normative specification f
 
 - [Motivation](#motivation)
 - [National Architecture Overview](#national-architecture-overview)
+- [Reference Implementations](#reference-implementations)
+- [CI/CD Pipeline](#cicd-pipeline)
 - [Conformance Test Suite](#conformance-test-suite)
 - [Profiles and Conformance Level Definitions](#profiles-and-conformance-level-definitions)
 - [Machine-Readable JSON Schemas](#machine-readable-json-schemas)
@@ -186,6 +190,91 @@ ROBOT AGENT                MCP SERVER LAYER              CLINICAL SYSTEMS
             │  Audit Merge       │
             │  Privacy Budgets   │
             └────────────────────┘
+```
+
+---
+
+## Reference Implementations
+
+Version 0.5.0 introduces NON-NORMATIVE reference implementations in Python and TypeScript under `/reference/`. These are informative examples — the authoritative requirements are defined in `/spec/`, `/schemas/`, and `/profiles/`.
+
+### Reference Implementation Architecture
+
+```mermaid
+graph TB
+  subgraph "Python Reference (NON-NORMATIVE)"
+    PCS[core_server.py<br/>Core L1 Server]
+    PSV[schema_validator.py<br/>JSON Schema Validation]
+    PCR[conformance_runner.py<br/>CLI Test Runner]
+  end
+
+  subgraph "TypeScript Reference (NON-NORMATIVE)"
+    TCS[core-server.ts<br/>Core L1 Server + ajv]
+  end
+
+  subgraph "Normative Artifacts"
+    SPEC["/spec/ (9 modules)"]
+    SCH["/schemas/ (13 schemas)"]
+    PRO["/profiles/ (8 profiles)"]
+    CON["/conformance/ (269 tests)"]
+  end
+
+  PCS --> SPEC
+  PSV --> SCH
+  PCR --> CON
+  TCS --> SCH
+  TCS --> SPEC
+
+  style PCS fill:#4A90D9,color:#fff
+  style PSV fill:#50C878,color:#fff
+  style PCR fill:#F5A623,color:#fff
+  style TCS fill:#7B2D8E,color:#fff
+  style SPEC fill:#333,color:#fff
+  style SCH fill:#333,color:#fff
+  style PRO fill:#333,color:#fff
+  style CON fill:#333,color:#fff
+```
+
+### Reference Implementation Summary
+
+| Language | Directory | Files | Purpose |
+|----------|-----------|-------|---------|
+| **Python** | [`reference/python/`](reference/python/) | `core_server.py`, `schema_validator.py`, `conformance_runner.py` | Minimal Core server, schema validator, conformance runner |
+| **TypeScript** | [`reference/typescript/`](reference/typescript/) | `core-server.ts`, `package.json`, `tsconfig.json` | Minimal Core server stub with ajv validation |
+
+Both reference implementations demonstrate:
+- **Deny-by-default RBAC** — 6-actor policy matrix per [spec/actor-model.md](spec/actor-model.md)
+- **Hash-chained audit** — SHA-256 chain with canonical JSON per [spec/audit.md](spec/audit.md)
+- **Schema validation** — All outputs validated against [schemas/](schemas/)
+- **Token lifecycle** — Issuance, validation, and revocation per [spec/security.md](spec/security.md)
+
+---
+
+## CI/CD Pipeline
+
+Version 0.5.0 adds a CI/CD pipeline (`.github/workflows/ci.yml`) that runs on every push and pull request. The pipeline includes three jobs:
+
+| Job | Matrix | Checks |
+|-----|--------|--------|
+| **lint-and-format** | Python 3.10, 3.11, 3.12 | Ruff lint, Ruff format, pytest conformance suite (269 tests) |
+| **schema-validation** | Python 3.12 | All 13 schemas validated (structure + example self-validation) |
+| **docs-lint** | — | Required documentation files exist, internal markdown links checked |
+
+```
+┌──────────────────────────────────────────────────────────────────┐
+│                       CI/CD PIPELINE                              │
+├──────────────────────────────────────────────────────────────────┤
+│                                                                   │
+│  Push / PR to main                                               │
+│       │                                                           │
+│       ├──▶ lint-and-format (3.10) ──▶ ruff check + format + test │
+│       ├──▶ lint-and-format (3.11) ──▶ ruff check + format + test │
+│       ├──▶ lint-and-format (3.12) ──▶ ruff check + format + test │
+│       ├──▶ schema-validation ──────▶ 13 schemas + examples       │
+│       └──▶ docs-lint ──────────────▶ file check + link check     │
+│                                                                   │
+│  All jobs run in parallel for fast feedback                      │
+└──────────────────────────────────────────────────────────────────┘
 ```
 
 ---
@@ -677,40 +766,65 @@ See [spec/security.md](spec/security.md) and [spec/privacy.md](spec/privacy.md) 
 
 ## Repository Structure
 
+> Directories marked **NORMATIVE** define requirements. Directories marked **NON-NORMATIVE** are informative examples.
+
 ```
 national-mcp-pai-oncology-trials/
-├── conformance/                   # Conformance test suite (v0.4.0)
-│   ├── README.md                  # Harness overview, how to run, how to add tests
-│   ├── conftest.py                # Shared fixtures, schema validation helpers
-│   ├── fixtures/                  # Test fixture data (extracted from schemas)
-│   │   ├── audit_records.py       # Sample audit records and hash chains
-│   │   ├── authz_decisions.py     # Sample authorization decisions
-│   │   ├── clinical_resources.py  # Sample FHIR and DICOM resources
-│   │   └── provenance_records.py  # Sample provenance DAG records
-│   ├── positive/                  # Correct behavior validation
+├── reference/                    # NON-NORMATIVE reference implementations (v0.5.0)
+│   ├── python/                   # Python reference
+│   │   ├── __init__.py           # Package documentation
+│   │   ├── core_server.py        # Minimal Core (Level 1) MCP server
+│   │   ├── schema_validator.py   # JSON Schema validation utilities
+│   │   └── conformance_runner.py # CLI conformance test runner
+│   └── typescript/               # TypeScript reference
+│       ├── core-server.ts        # Minimal Core server stub with ajv
+│       ├── package.json          # Dependencies (ajv, uuid)
+│       ├── tsconfig.json         # TypeScript configuration
+│       └── README.md             # TypeScript reference documentation
+├── docs/                         # Extended documentation (v0.5.0)
+│   ├── architecture.md           # 5-server topology, data flow, audit chain
+│   ├── adoption-roadmap.md       # Phase 0–3 adoption roadmap
+│   └── glossary.md               # Standard terminology
+├── .github/                      # CI/CD and community templates
+│   ├── workflows/
+│   │   └── ci.yml                # Lint, test, schema validation, docs lint (v0.5.0)
+│   ├── ISSUE_TEMPLATE/
+│   │   ├── bug_report.md         # Bug report template
+│   │   ├── feature_request.md    # Feature request template
+│   │   └── spec_change.md        # Specification change template
+│   └── PULL_REQUEST_TEMPLATE.md  # Pull request template
+├── conformance/                  # NORMATIVE conformance test suite (v0.4.0)
+│   ├── README.md                 # Harness overview, how to run, how to add tests
+│   ├── conftest.py               # Shared fixtures, schema validation helpers
+│   ├── fixtures/                 # Test fixture data (extracted from schemas)
+│   │   ├── audit_records.py      # Sample audit records and hash chains
+│   │   ├── authz_decisions.py    # Sample authorization decisions
+│   │   ├── clinical_resources.py # Sample FHIR and DICOM resources
+│   │   └── provenance_records.py # Sample provenance DAG records
+│   ├── positive/                 # Correct behavior validation
 │   │   ├── test_core_conformance.py          # Audit, errors, health, authz
 │   │   ├── test_clinical_read_conformance.py # FHIR + de-identification
 │   │   └── test_imaging_conformance.py       # DICOM conformance
-│   ├── negative/                  # Invalid input rejection
+│   ├── negative/                 # Invalid input rejection
 │   │   ├── test_invalid_inputs.py            # Malformed requests, schema mismatches
 │   │   └── test_unauthorized_access.py       # Deny-by-default RBAC
-│   ├── security/                  # Security control validation
+│   ├── security/                 # Security control validation
 │   │   ├── test_ssrf_prevention.py           # URL injection prevention
 │   │   ├── test_token_lifecycle.py           # Token expiry, revocation
 │   │   └── test_chain_integrity.py           # Hash chain tampering
-│   └── interoperability/          # Multi-server coordination
+│   └── interoperability/         # Multi-server coordination
 │       ├── test_cross_server_trace.py        # Multi-server audit linkage
 │       └── test_schema_validation.py         # All outputs against 13 schemas
-├── profiles/                      # Conformance profiles and overlays (v0.3.0)
-│   ├── base-profile.md            # Core conformance: authz + audit + error taxonomy
-│   ├── clinical-read.md           # FHIR read/search + HIPAA de-identification
+├── profiles/                     # NORMATIVE conformance profiles and overlays (v0.3.0)
+│   ├── base-profile.md           # Core conformance: authz + audit + error taxonomy
+│   ├── clinical-read.md          # FHIR read/search + HIPAA de-identification
 │   ├── imaging-guided-oncology.md # DICOM query/retrieve + role-based modality
-│   ├── multi-site-federated.md    # Cross-site provenance, federated audit chain
+│   ├── multi-site-federated.md   # Cross-site provenance, federated audit chain
 │   ├── robot-assisted-procedure.md # Robot capability, task-order, safety matrix, USL
-│   ├── state-us-ca.md             # California CCPA/CPRA overlay
-│   ├── state-us-ny.md             # New York health information overlay
-│   └── country-us-fda.md          # FDA 21 CFR Part 11 overlay
-├── schemas/                       # Machine-readable JSON schemas (v0.2.0)
+│   ├── state-us-ca.md            # California CCPA/CPRA overlay
+│   ├── state-us-ny.md            # New York health information overlay
+│   └── country-us-fda.md         # FDA 21 CFR Part 11 overlay
+├── schemas/                      # NORMATIVE machine-readable JSON schemas (v0.2.0)
 │   ├── capability-descriptor.schema.json    # Server capability advertisement
 │   ├── robot-capability-profile.schema.json # Robot platform with USL scoring
 │   ├── site-capability-profile.schema.json  # Site jurisdiction and data residency
@@ -724,40 +838,34 @@ national-mcp-pai-oncology-trials/
 │   ├── fhir-search.schema.json             # FHIR R4 collection search
 │   ├── error-response.schema.json          # Standardized error format
 │   └── health-status.schema.json           # Server health check
-├── spec/                          # Normative specification
-│   ├── core.md                    # Protocol scope and design principles
-│   ├── actor-model.md             # 6-actor permission model
-│   ├── tool-contracts.md          # 23 tool signatures and contracts
-│   ├── security.md                # RBAC, token lifecycle, SSRF prevention
-│   ├── privacy.md                 # HIPAA Safe Harbor, pseudonymization
-│   ├── provenance.md              # DAG lineage, SHA-256 fingerprinting
-│   ├── audit.md                   # Hash-chained ledger, 21 CFR Part 11
-│   ├── conformance.md             # 5 conformance levels
-│   └── versioning.md              # SemVer, compatibility, extensions
-├── governance/                    # Governance framework
-│   ├── CHARTER.md                 # Organization charter
-│   ├── DECISION_PROCESS.md        # Decision-making procedures
-│   ├── EXTENSIONS.md              # Extension namespace rules
-│   ├── VERSION_COMPATIBILITY.md   # Version compatibility policy
-│   └── CODEOWNERS                 # Code ownership assignments
-├── regulatory/                    # Regulatory overlays
-│   ├── US_FDA.md                  # FDA AI/ML guidance mapping
-│   ├── HIPAA.md                   # HIPAA compliance mapping
-│   ├── CFR_PART_11.md             # 21 CFR Part 11 mapping
+├── spec/                         # NORMATIVE specification (v0.1.0)
+│   ├── core.md                   # Protocol scope and design principles
+│   ├── actor-model.md            # 6-actor permission model
+│   ├── tool-contracts.md         # 23 tool signatures and contracts
+│   ├── security.md               # RBAC, token lifecycle, SSRF prevention
+│   ├── privacy.md                # HIPAA Safe Harbor, pseudonymization
+│   ├── provenance.md             # DAG lineage, SHA-256 fingerprinting
+│   ├── audit.md                  # Hash-chained ledger, 21 CFR Part 11
+│   ├── conformance.md            # 5 conformance levels
+│   └── versioning.md             # SemVer, compatibility, extensions
+├── governance/                   # Governance framework
+│   ├── CHARTER.md                # Organization charter
+│   ├── DECISION_PROCESS.md       # Decision-making procedures
+│   ├── EXTENSIONS.md             # Extension namespace rules
+│   ├── VERSION_COMPATIBILITY.md  # Version compatibility policy
+│   └── CODEOWNERS                # Code ownership assignments
+├── regulatory/                   # NORMATIVE regulatory overlays
+│   ├── US_FDA.md                 # FDA AI/ML guidance mapping
+│   ├── HIPAA.md                  # HIPAA compliance mapping
+│   ├── CFR_PART_11.md            # 21 CFR Part 11 mapping
 │   └── IRB_SITE_POLICY_TEMPLATE.md # IRB site policy template
-├── .github/                       # Community templates
-│   ├── ISSUE_TEMPLATE/
-│   │   ├── bug_report.md          # Bug report template
-│   │   ├── feature_request.md     # Feature request template
-│   │   └── spec_change.md         # Specification change template
-│   └── PULL_REQUEST_TEMPLATE.md   # Pull request template
-├── pyproject.toml                 # Python project config (ruff, pytest)
-├── CODE_OF_CONDUCT.md             # Contributor Covenant
-├── LICENSE                        # MIT License
-├── README.md                      # This file
-├── changelog.md                   # Version history
-├── releases.md                    # Release notes
-└── prompts.md                     # Prompt archive
+├── pyproject.toml                # Python project config (ruff, pytest)
+├── CODE_OF_CONDUCT.md            # Contributor Covenant
+├── LICENSE                       # MIT License
+├── README.md                     # This file
+├── changelog.md                  # Version history
+├── releases.md                   # Release notes
+└── prompts.md                    # Prompt archive
 ```
 
 ---
@@ -767,14 +875,17 @@ national-mcp-pai-oncology-trials/
 ### For Implementers
 
 1. Review [spec/core.md](spec/core.md) for protocol scope and design principles
-2. Choose a [conformance profile](profiles/) appropriate for your deployment
-3. Review the profile's mandatory tools, forbidden operations, and required schemas
-4. Implement the required tool contracts from [spec/tool-contracts.md](spec/tool-contracts.md)
-5. Validate server inputs/outputs against the [JSON schemas](schemas/) for your profile level
-6. Apply security requirements from [spec/security.md](spec/security.md) and [spec/privacy.md](spec/privacy.md)
-7. Apply applicable state overlays ([California](profiles/state-us-ca.md), [New York](profiles/state-us-ny.md)) and the [FDA overlay](profiles/country-us-fda.md)
-8. Run the [conformance test suite](conformance/) against your implementation: `pytest conformance/ -v`
-9. Validate against the conformance test subset for your target profile
+2. Review the [adoption roadmap](docs/adoption-roadmap.md) for a phased implementation plan
+3. Choose a [conformance profile](profiles/) appropriate for your deployment
+4. Review the [glossary](docs/glossary.md) for standard terminology
+5. Review the profile's mandatory tools, forbidden operations, and required schemas
+6. Study the [reference implementations](reference/) (NON-NORMATIVE) for implementation guidance
+7. Implement the required tool contracts from [spec/tool-contracts.md](spec/tool-contracts.md)
+8. Validate server inputs/outputs against the [JSON schemas](schemas/) for your profile level
+9. Apply security requirements from [spec/security.md](spec/security.md) and [spec/privacy.md](spec/privacy.md)
+10. Apply applicable state overlays ([California](profiles/state-us-ca.md), [New York](profiles/state-us-ny.md)) and the [FDA overlay](profiles/country-us-fda.md)
+11. Run the [conformance test suite](conformance/) against your implementation: `pytest conformance/ -v`
+12. Validate against the conformance test subset for your target profile
 
 ### For Regulators and Compliance Officers
 

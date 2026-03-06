@@ -6,6 +6,41 @@ This project follows [Semantic Versioning](https://semver.org/) as described in 
 
 ---
 
+## [0.5.0] — 2026-03-06
+
+### Added
+
+#### Reference Implementations (NON-NORMATIVE)
+- `reference/python/__init__.py` — Package documentation for Python reference implementation
+- `reference/python/core_server.py` — Minimal Core (Level 1) MCP server: deny-by-default RBAC with 6-actor policy matrix, SHA-256 token lifecycle (issue, validate, revoke), hash-chained audit ledger with canonical JSON serialization, health status and error response helpers
+- `reference/python/schema_validator.py` — JSON Schema draft 2020-12 validation utilities: `load_schema`, `list_schemas`, `validate`, `validate_all_examples` wrapping `jsonschema` Draft202012Validator
+- `reference/python/conformance_runner.py` — CLI conformance test runner: `--level` (1–5) for scoped validation, `--security` for security-only tests, `--no-verbose` flag, pytest integration
+- `reference/typescript/core-server.ts` — Minimal Core server stub with ajv JSON Schema validation: AuthZ evaluation, hash-chained audit ledger, health status, error response, compile-time schema validation
+- `reference/typescript/package.json` — Node.js package with ajv ^8.12.0, uuid ^9.0.0, typescript ^5.3.0
+- `reference/typescript/tsconfig.json` — TypeScript configuration targeting ES2020
+- `reference/typescript/README.md` — TypeScript reference documentation with quick start and schema validation guide
+
+#### CI/CD Pipeline
+- `.github/workflows/ci.yml` — Comprehensive CI/CD pipeline:
+  - `lint-and-format` job: Matrix across Python 3.10, 3.11, 3.12 with ruff lint, ruff format check, pytest conformance suite
+  - `schema-validation` job: All 13 JSON schemas validated for structure and example self-validation
+  - `docs-lint` job: Required documentation file existence check, internal markdown link verification
+
+#### Documentation
+- `docs/architecture.md` — Five-server topology ASCII diagram, server responsibility table (23 tools, 5 servers), six-phase data flow diagram, hash-chained audit ledger architecture, cross-server audit coordination, national deployment topology
+- `docs/adoption-roadmap.md` — Four-phase adoption roadmap: Phase 0 (Specification Review, 2–4 weeks), Phase 1 (Profile Selection, 4–8 weeks), Phase 2 (Conformance Validation, 8–12 weeks), Phase 3 (Pilot Deployment, 3–6 months)
+- `docs/glossary.md` — Standard terminology: Protocol/Architecture, Actors, Clinical Data Standards, Security/Privacy, Audit/Provenance, Physical AI, Regulatory, Specification Language, Versioning/Governance
+
+### Changed
+- README: v0.5.0 version, CI and TypeScript badges, Reference Implementations section with Mermaid diagram, CI/CD Pipeline section with pipeline diagram, normative vs informative labels in repository structure, expanded Getting Started with adoption roadmap and glossary references
+- `pyproject.toml`: Version 0.5.0, updated description, added `reference` to known-first-party imports
+- `governance/CODEOWNERS`: Added `/reference/` and `/docs/` directory ownership
+- `prompts.md`: v0.5.0 prompt archived
+- `releases.md`: v0.5.0 release notes added
+- `changelog.md`: This entry
+
+---
+
 ## [0.4.0] — 2026-03-06
 
 ### Added

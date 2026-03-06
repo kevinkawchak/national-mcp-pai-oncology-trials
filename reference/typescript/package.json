@@ -1,0 +1,20 @@
+{
+  "name": "national-mcp-pai-oncology-trials-reference",
+  "version": "0.5.0",
+  "description": "NON-NORMATIVE TypeScript reference for the National MCP-PAI Oncology Trials Standard",
+  "main": "dist/core-server.js",
+  "scripts": {
+    "build": "tsc",
+    "start": "node dist/core-server.js"
+  },
+  "dependencies": {
+    "ajv": "^8.12.0",
+    "uuid": "^9.0.0"
+  },
+  "devDependencies": {
+    "typescript": "^5.3.0",
+    "@types/node": "^20.10.0",
+    "@types/uuid": "^9.0.7"
+  },
+  "license": "MIT"
+}

@@ -4,6 +4,48 @@ Release notes for the National MCP-PAI Oncology Trials Standard.
 
 ---
 
+v0.5.0 - Reference Implementations + CI/CD + Documentation for National MCP-PAI Oncology Trials Standard
+
+## Summary
+
+Introduces NON-NORMATIVE reference implementations in Python and TypeScript under `/reference/`, a comprehensive CI/CD pipeline (`.github/workflows/ci.yml`) with lint, test, schema validation, and docs linting jobs across Python 3.10–3.12, and extended documentation under `/docs/` covering the five-server architecture, a four-phase adoption roadmap, and a standard glossary. README updated with v0.5.0 badges (CI, TypeScript), new Reference Implementations and CI/CD Pipeline sections with Mermaid diagram, normative vs informative labels throughout the repository structure, and expanded Getting Started guidance.
+
+## Features
+
+- **Python reference implementation** (`/reference/python/`) — NON-NORMATIVE:
+  - `core_server.py` — Minimal Core (Level 1) MCP server implementing deny-by-default RBAC (6-actor policy matrix), SHA-256 token lifecycle, hash-chained audit ledger with canonical JSON serialization, and schema-valid health/error responses
+  - `schema_validator.py` — JSON Schema draft 2020-12 validation utilities wrapping `jsonschema`, with `load_schema`, `list_schemas`, `validate`, and `validate_all_examples` functions for automated validation of all 13 schemas
+  - `conformance_runner.py` — CLI runner for the conformance test suite with `--level` (1–5), `--security`, and `--no-verbose` flags for scoped conformance validation
+- **TypeScript reference implementation** (`/reference/typescript/`) — NON-NORMATIVE:
+  - `core-server.ts` — Minimal Core server stub with [ajv](https://ajv.js.org/) schema validation, implementing AuthZ evaluation, hash-chained audit ledger, health status, and error responses with compile-time schema validation against all 13 schemas
+  - `package.json` — Dependencies (ajv ^8.12.0, uuid ^9.0.0, typescript ^5.3.0)
+  - `tsconfig.json` — TypeScript configuration targeting ES2020
+- **CI/CD pipeline** (`.github/workflows/ci.yml`):
+  - `lint-and-format` job — Matrix across Python 3.10, 3.11, 3.12: ruff lint, ruff format check, pytest conformance suite (269 tests)
+  - `schema-validation` job — Validates all 13 JSON schemas for structure and example self-validation using `jsonschema` Draft202012Validator
+  - `docs-lint` job — Verifies required documentation files exist and checks for broken internal markdown links
+- **Architecture documentation** (`docs/architecture.md`) — Five-server topology ASCII diagram, server responsibility table (23 tools across 5 servers), complete data flow diagram (6-phase robot procedure flow), hash-chained audit ledger architecture, cross-server audit coordination, national deployment topology
+- **Adoption roadmap** (`docs/adoption-roadmap.md`) — Four-phase adoption roadmap: Phase 0 (Specification Review, 2–4 weeks), Phase 1 (Profile Selection, 4–8 weeks), Phase 2 (Conformance Validation, 8–12 weeks), Phase 3 (Pilot Deployment, 3–6 months ongoing). Each phase includes activities, deliverables, and duration estimates.
+- **Glossary** (`docs/glossary.md`) — Standard terminology organized by category: Protocol and Architecture, Actors, Clinical Data Standards, Security and Privacy, Audit and Provenance, Physical AI, Regulatory, Specification Language, Versioning and Governance
+- **Updated README** — v0.5.0 badges (CI Passing, TypeScript 5.3), Reference Implementations section with Mermaid architecture diagram and summary table, CI/CD Pipeline section with pipeline diagram, normative vs informative labels in repository structure, expanded Getting Started with adoption roadmap and glossary references, updated CODEOWNERS with `/reference/` and `/docs/` ownership
+- **Updated prompts.md** — v0.5.0 prompt archived
+- **Updated CODEOWNERS** — Added `/reference/` and `/docs/` directory ownership
+
+## Contributors
+@kevinkawchak
+@claude
+
+## Notes
+- Reference implementations are explicitly marked NON-NORMATIVE — they demonstrate implementation patterns but do not define requirements
+- The Python reference implementation uses only standard library modules plus `jsonschema` (already a test dependency)
+- The TypeScript reference uses `ajv` for JSON Schema draft 2020-12 validation, matching the schema standard used throughout the specification
+- CI/CD pipeline matches the existing `lint-and-format` job naming convention to ensure checks pass on pull requests
+- The adoption roadmap provides concrete timelines for national-scale deployment: from specification review (Phase 0) through pilot site deployment (Phase 3)
+- The glossary defines 50+ terms covering all aspects of the standard, ensuring consistent terminology across all U.S. clinical sites, sponsors, CROs, and technology vendors
+- References: [TrialMCP](https://doi.org/10.5281/zenodo.18869776), [Physical AI Oncology Trials](https://doi.org/10.5281/zenodo.18445179), [PAI Oncology Trial FL](https://doi.org/10.5281/zenodo.18840880)
+
+---
+
 v0.4.0 - Conformance Test Suite for National MCP-PAI Oncology Trials Standard
 
 ## Summary
