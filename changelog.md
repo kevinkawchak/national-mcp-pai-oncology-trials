@@ -6,6 +6,30 @@ This project follows [Semantic Versioning](https://semver.org/) as described in 
 
 ---
 
+## [0.3.0] — 2026-03-06
+
+### Added
+
+#### Conformance Profiles
+- `profiles/base-profile.md` — Core conformance profile: deny-by-default RBAC authorization, hash-chained audit ledger, 9-code error taxonomy, input validation requirements, 19 conformance tests
+- `profiles/clinical-read.md` — Clinical Read profile: FHIR R4 read/search with mandatory HIPAA Safe Harbor de-identification, HMAC-SHA256 pseudonymization, year-only date generalization, 29 conformance tests
+- `profiles/imaging-guided-oncology.md` — Imaging-Guided Oncology profile: DICOM query/retrieve with role-based modality restrictions (MUST: CT, MR, PT; SHOULD: RTSTRUCT, RTPLAN), RECIST 1.1 requirements, 39 conformance tests
+- `profiles/multi-site-federated.md` — Multi-Site Federated profile: cross-site DAG-based data provenance, federated audit chain coordination, data residency policy enforcement, federated learning provenance tracking, 48 conformance tests
+- `profiles/robot-assisted-procedure.md` — Robot-Assisted Procedure profile: robot capability registration with USL scoring, task-order contract lifecycle, pre-procedure safety matrix, six-step robot agent workflow, 58 conformance tests
+
+#### Regulatory Overlay Profiles
+- `profiles/state-us-ca.md` — California CCPA/CPRA overlay: Right to Know, Right to Delete, Right to Opt-Out, sensitive PI protections, data minimization requirements
+- `profiles/state-us-ny.md` — New York health information overlay: PHL Article 27-F (HIV confidentiality), SHIELD Act security safeguards, MHL Article 33 (mental health records), DOH 10 NYCRR Parts 405/86
+- `profiles/country-us-fda.md` — FDA 21 CFR Part 11 overlay: electronic records (Subpart B §11.10), electronic signatures (§11.50/§11.70/§11.100), SaMD classification guidance, Good Machine Learning Practice alignment
+
+#### Documentation
+- README: Profile architecture Mermaid diagram, profile summary tables, national profile deployment map, updated repository structure, Profiles badge
+- Updated Getting Started section with profile-based implementation guidance and state overlay references
+- Updated CODEOWNERS with `/profiles/` directory ownership
+- `prompts.md` — v0.3.0 prompt archived
+
+---
+
 ## [0.2.0] — 2026-03-06
 
 ### Added

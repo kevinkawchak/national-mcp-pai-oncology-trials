@@ -1,13 +1,14 @@
 # National MCP Standard for Physical AI Oncology Clinical Trials
 
-**Version 0.2.0** | **Normative Specification** | **United States Industry Standard**
+**Version 0.3.0** | **Normative Specification** | **United States Industry Standard**
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 [![DOI](https://img.shields.io/badge/DOI-10.5281%2Fzenodo.18894758-blue)](https://doi.org/10.5281/zenodo.18894758)
-[![Version](https://img.shields.io/badge/Version-0.2.0-green.svg)](releases.md)
+[![Version](https://img.shields.io/badge/Version-0.3.0-green.svg)](releases.md)
 [![JSON Schema](https://img.shields.io/badge/JSON_Schema-Draft_2020--12-orange.svg)](schemas/)
 [![Python](https://img.shields.io/badge/Python-3.10%20|%203.11%20|%203.12-blue.svg)](https://www.python.org/)
 [![Protocol](https://img.shields.io/badge/Protocol-MCP-purple.svg)](https://modelcontextprotocol.io/)
+[![Profiles](https://img.shields.io/badge/Profiles-8-brightgreen.svg)](profiles/)
 [![Schemas](https://img.shields.io/badge/Schemas-13-brightgreen.svg)](schemas/)
 [![Tools](https://img.shields.io/badge/Tools-23-brightgreen.svg)](spec/tool-contracts.md)
 [![Tests](https://img.shields.io/badge/Ref_Tests-39_Passing-brightgreen.svg)](https://github.com/kevinkawchak/mcp-pai-oncology-trials)
@@ -24,6 +25,7 @@ The **National MCP-PAI Oncology Trials Standard** is a normative specification f
 
 - [Motivation](#motivation)
 - [National Architecture Overview](#national-architecture-overview)
+- [Profiles and Conformance Level Definitions](#profiles-and-conformance-level-definitions)
 - [Machine-Readable JSON Schemas](#machine-readable-json-schemas)
 - [Conformance Levels](#conformance-levels)
 - [Actor Model](#actor-model)
@@ -182,6 +184,101 @@ ROBOT AGENT                MCP SERVER LAYER              CLINICAL SYSTEMS
             │  Audit Merge       │
             │  Privacy Budgets   │
             └────────────────────┘
+```
+
+---
+
+## Profiles and Conformance Level Definitions
+
+Version 0.3.0 introduces 8 conformance profiles under `/profiles/` that formalize the requirements for each deployment tier and regulatory jurisdiction. Each profile defines mandatory tools, optional tools, forbidden operations, required schemas, regulatory overlays, and a conformance test subset.
+
+### Profile Architecture
+
+```mermaid
+graph TB
+  subgraph Core Profiles
+    BP[Base Profile<br/>AuthZ + Audit + Errors]
+    CR[Clinical Read<br/>+ FHIR + HIPAA De-ID]
+    IG[Imaging-Guided<br/>+ DICOM + Modalities]
+    MF[Multi-Site Federated<br/>+ Provenance + DAG]
+    RP[Robot-Assisted<br/>Procedure + USL]
+  end
+
+  subgraph Regulatory Overlays
+    CA[California<br/>CCPA/CPRA]
+    NY[New York<br/>PHL/SHIELD]
+    FDA[FDA<br/>21 CFR Part 11]
+  end
+
+  BP --> CR
+  CR --> IG
+  IG --> MF
+  MF --> RP
+
+  CA -.-> MF
+  CA -.-> RP
+  NY -.-> MF
+  NY -.-> RP
+  FDA -.-> BP
+  FDA -.-> CR
+  FDA -.-> IG
+  FDA -.-> MF
+  FDA -.-> RP
+
+  style BP fill:#4A90D9,color:#fff
+  style CR fill:#50C878,color:#fff
+  style IG fill:#F5A623,color:#fff
+  style MF fill:#D0021B,color:#fff
+  style RP fill:#7B2D8E,color:#fff
+  style CA fill:#333,color:#fff
+  style NY fill:#333,color:#fff
+  style FDA fill:#333,color:#fff
+```
+
+### Profile Summary
+
+| Profile | File | Mandatory Tools | Required Schemas | Test Count |
+|---------|------|----------------|-----------------|------------|
+| **Base Profile** | [`profiles/base-profile.md`](profiles/base-profile.md) | `authz_*` (5), `ledger_*` (5) | authz-decision, audit-record, error-response, health-status, capability-descriptor | 19 |
+| **Clinical Read** | [`profiles/clinical-read.md`](profiles/clinical-read.md) | + `fhir_*` (4) | + fhir-read, fhir-search, consent-status | 29 |
+| **Imaging-Guided Oncology** | [`profiles/imaging-guided-oncology.md`](profiles/imaging-guided-oncology.md) | + `dicom_*` (4) | + dicom-query, robot-capability-profile | 39 |
+| **Multi-Site Federated** | [`profiles/multi-site-federated.md`](profiles/multi-site-federated.md) | + `provenance_*` (5) | + provenance-record, site-capability-profile | 48 |
+| **Robot-Assisted Procedure** | [`profiles/robot-assisted-procedure.md`](profiles/robot-assisted-procedure.md) | All 23 tools | + robot-capability-profile, task-order | 58 |
+
+### Regulatory Overlay Profiles
+
+| Overlay | File | Jurisdiction | Key Requirements |
+|---------|------|-------------|-----------------|
+| **California CCPA** | [`profiles/state-us-ca.md`](profiles/state-us-ca.md) | US-CA | CCPA/CPRA consumer rights, sensitive PI protections, data minimization |
+| **New York Health Info** | [`profiles/state-us-ny.md`](profiles/state-us-ny.md) | US-NY | PHL Article 27-F (HIV), SHIELD Act, MHL Article 33, DOH 10 NYCRR |
+| **FDA 21 CFR Part 11** | [`profiles/country-us-fda.md`](profiles/country-us-fda.md) | US (Federal) | Electronic records, electronic signatures, audit trails, system validation |
+
+### National Profile Deployment Map
+
+```
+┌─────────────────────────────────────────────────────────────────────┐
+│                  NATIONAL PROFILE DEPLOYMENT                         │
+├─────────────────────────────────────────────────────────────────────┤
+│                                                                      │
+│  ┌──────────────────┐  ┌──────────────────┐  ┌──────────────────┐   │
+│  │  CALIFORNIA SITE  │  │  NEW YORK SITE   │  │  OTHER US SITES  │   │
+│  │                   │  │                   │  │                   │  │
+│  │  Profile: L5      │  │  Profile: L4      │  │  Profile: L1–L5  │  │
+│  │  + CCPA Overlay   │  │  + NY Overlay     │  │  + FDA Overlay   │  │
+│  │  + FDA Overlay    │  │  + FDA Overlay    │  │                   │  │
+│  │                   │  │                   │  │                   │  │
+│  │  Extra: CPRA      │  │  Extra: PHL 27-F  │  │  State overlays  │  │
+│  │  sensitive PI,    │  │  HIV protections, │  │  applied per     │  │
+│  │  data minimization│  │  SHIELD Act,      │  │  jurisdiction    │  │
+│  │                   │  │  MHL Article 33   │  │                   │  │
+│  └──────────────────┘  └──────────────────┘  └──────────────────┘   │
+│                                                                      │
+│  ┌───────────────────────────────────────────────────────────────┐   │
+│  │              FDA 21 CFR PART 11 — ALL SITES                   │   │
+│  │  Audit trails · Electronic signatures · System validation     │   │
+│  │  Record integrity · Authority checks · Change control         │   │
+│  └───────────────────────────────────────────────────────────────┘   │
+└─────────────────────────────────────────────────────────────────────┘
 ```
 
 ---
@@ -478,6 +575,15 @@ See [spec/security.md](spec/security.md) and [spec/privacy.md](spec/privacy.md) 
 
 ```
 national-mcp-pai-oncology-trials/
+├── profiles/                      # Conformance profiles and overlays (v0.3.0)
+│   ├── base-profile.md            # Core conformance: authz + audit + error taxonomy
+│   ├── clinical-read.md           # FHIR read/search + HIPAA de-identification
+│   ├── imaging-guided-oncology.md # DICOM query/retrieve + role-based modality
+│   ├── multi-site-federated.md    # Cross-site provenance, federated audit chain
+│   ├── robot-assisted-procedure.md # Robot capability, task-order, safety matrix, USL
+│   ├── state-us-ca.md             # California CCPA/CPRA overlay
+│   ├── state-us-ny.md             # New York health information overlay
+│   └── country-us-fda.md          # FDA 21 CFR Part 11 overlay
 ├── schemas/                       # Machine-readable JSON schemas (v0.2.0)
 │   ├── capability-descriptor.schema.json    # Server capability advertisement
 │   ├── robot-capability-profile.schema.json # Robot platform with USL scoring
@@ -534,11 +640,13 @@ national-mcp-pai-oncology-trials/
 ### For Implementers
 
 1. Review [spec/core.md](spec/core.md) for protocol scope and design principles
-2. Choose a [conformance level](spec/conformance.md) appropriate for your deployment
-3. Implement the required tool contracts from [spec/tool-contracts.md](spec/tool-contracts.md)
-4. Validate server inputs/outputs against the [JSON schemas](schemas/) for your conformance level
-5. Apply security requirements from [spec/security.md](spec/security.md) and [spec/privacy.md](spec/privacy.md)
-6. Validate against the conformance checklist for your target level
+2. Choose a [conformance profile](profiles/) appropriate for your deployment
+3. Review the profile's mandatory tools, forbidden operations, and required schemas
+4. Implement the required tool contracts from [spec/tool-contracts.md](spec/tool-contracts.md)
+5. Validate server inputs/outputs against the [JSON schemas](schemas/) for your profile level
+6. Apply security requirements from [spec/security.md](spec/security.md) and [spec/privacy.md](spec/privacy.md)
+7. Apply applicable state overlays ([California](profiles/state-us-ca.md), [New York](profiles/state-us-ny.md)) and the [FDA overlay](profiles/country-us-fda.md)
+8. Validate against the conformance test subset for your target profile
 
 ### For Regulators and Compliance Officers
 
