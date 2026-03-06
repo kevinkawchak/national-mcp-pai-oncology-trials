@@ -1,0 +1,144 @@
+name: CI
+
+on:
+  push:
+    branches: [main, master]
+  pull_request:
+    branches: [main, master]
+
+permissions:
+  contents: read
+
+jobs:
+  lint-and-format:
+    name: lint-and-format (${{ matrix.python-version }})
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: ["3.10", "3.11", "3.12"]
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install ruff pytest jsonschema
+
+      - name: Ruff lint
+        run: ruff check .
+
+      - name: Ruff format check
+        run: ruff format --check .
+
+      - name: Run conformance tests
+        run: pytest conformance/ -v
+
+  schema-validation:
+    name: schema-validation
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python 3.12
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install jsonschema
+
+      - name: Validate all schemas
+        run: |
+          python -c "
+          import json, sys
+          from pathlib import Path
+          from jsonschema import Draft202012Validator
+
+          schema_dir = Path('schemas')
+          errors = 0
+          for schema_file in sorted(schema_dir.glob('*.schema.json')):
+              try:
+                  schema = json.loads(schema_file.read_text())
+                  Draft202012Validator.check_schema(schema)
+                  for i, example in enumerate(schema.get('examples', [])):
+                      validator = Draft202012Validator(schema)
+                      errs = list(validator.iter_errors(example))
+                      if errs:
+                          print(f'FAIL: {schema_file.name} example {i}: {errs[0].message}')
+                          errors += 1
+                      else:
+                          print(f'PASS: {schema_file.name} example {i}')
+              except Exception as e:
+                  print(f'FAIL: {schema_file.name}: {e}')
+                  errors += 1
+          sys.exit(1 if errors else 0)
+          "
+
+  docs-lint:
+    name: docs-lint
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Check markdown files exist
+        run: |
+          echo "Checking required documentation files..."
+          files=(
+            "README.md"
+            "docs/architecture.md"
+            "docs/adoption-roadmap.md"
+            "docs/glossary.md"
+            "changelog.md"
+            "releases.md"
+          )
+          missing=0
+          for f in "${files[@]}"; do
+            if [ -f "$f" ]; then
+              echo "  FOUND: $f"
+            else
+              echo "  MISSING: $f"
+              missing=$((missing + 1))
+            fi
+          done
+          if [ $missing -gt 0 ]; then
+            echo "ERROR: $missing required documentation file(s) missing"
+            exit 1
+          fi
+          echo "All required documentation files present."
+
+      - name: Check for broken internal links
+        run: |
+          echo "Checking internal markdown links..."
+          python3 -c "
+          import re, sys
+          from pathlib import Path
+
+          errors = 0
+          md_files = list(Path('.').rglob('*.md'))
+          for md in md_files:
+              text = md.read_text(encoding='utf-8', errors='replace')
+              links = re.findall(r'\[.*?\]\((?!http|#|mailto)(.*?)\)', text)
+              for link in links:
+                  clean = link.split('#')[0].split('?')[0]
+                  if clean:
+                      target = md.parent / clean
+                      if not target.exists():
+                          print(f'  BROKEN: {md} -> {clean}')
+                          errors += 1
+          if errors:
+              print(f'{errors} broken link(s) found')
+          else:
+              print('No broken internal links found.')
+          sys.exit(0)
+          "

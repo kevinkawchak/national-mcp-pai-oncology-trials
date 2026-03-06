@@ -22,6 +22,12 @@
 # Community templates
 /.github/ @kevinkawchak
 
+# Reference implementations (NON-NORMATIVE)
+/reference/ @kevinkawchak
+
+# Documentation
+/docs/ @kevinkawchak
+
 # Root documentation
 /README.md @kevinkawchak
 /CODE_OF_CONDUCT.md @kevinkawchak
