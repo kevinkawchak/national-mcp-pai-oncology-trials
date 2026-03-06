@@ -1,0 +1,23 @@
+# Code Owners for National MCP-PAI Oncology Trials Standard
+# See https://docs.github.com/en/repositories/managing-your-repositorys-settings-and-features/customizing-your-repository/about-code-owners
+
+# Default owners for everything in the repository
+* @kevinkawchak
+
+# Normative specification files
+/spec/ @kevinkawchak
+
+# Governance files
+/governance/ @kevinkawchak
+
+# Regulatory overlays
+/regulatory/ @kevinkawchak
+
+# Community templates
+/.github/ @kevinkawchak
+
+# Root documentation
+/README.md @kevinkawchak
+/CODE_OF_CONDUCT.md @kevinkawchak
+/changelog.md @kevinkawchak
+/releases.md @kevinkawchak
