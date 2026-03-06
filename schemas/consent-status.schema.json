@@ -1,0 +1,132 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://national-mcp-pai-oncology-trials.org/schemas/consent-status.schema.json",
+  "title": "Consent Status",
+  "description": "Represents the consent state machine for a patient participating in a Physical AI oncology clinical trial. Tracks informed consent for robotic procedure involvement, data sharing, and federated learning participation.",
+  "type": "object",
+  "required": ["consent_id", "patient_pseudonym", "trial_id", "consent_state", "consent_categories", "recorded_at"],
+  "properties": {
+    "consent_id": {
+      "type": "string",
+      "description": "Unique identifier for this consent record (UUID v4).",
+      "format": "uuid"
+    },
+    "patient_pseudonym": {
+      "type": "string",
+      "description": "HMAC-SHA256 pseudonymized patient identifier. MUST NOT contain the real patient ID."
+    },
+    "trial_id": {
+      "type": "string",
+      "description": "Clinical trial identifier (e.g., NCT number)."
+    },
+    "consent_state": {
+      "type": "string",
+      "description": "Current state in the consent state machine.",
+      "enum": ["pending_review", "informed", "consented", "partially_withdrawn", "fully_withdrawn", "expired"]
+    },
+    "consent_categories": {
+      "type": "array",
+      "description": "Granular consent categories with individual status.",
+      "items": {
+        "type": "object",
+        "required": ["category", "granted"],
+        "properties": {
+          "category": {
+            "type": "string",
+            "description": "Consent category.",
+            "enum": [
+              "robotic_procedure",
+              "data_collection",
+              "federated_learning",
+              "imaging_analysis",
+              "cross_site_sharing",
+              "long_term_followup"
+            ]
+          },
+          "granted": {
+            "type": "boolean",
+            "description": "Whether consent is granted for this category."
+          },
+          "granted_at": {
+            "type": "string",
+            "format": "date-time",
+            "description": "When consent was granted for this category."
+          },
+          "withdrawn_at": {
+            "type": "string",
+            "format": "date-time",
+            "description": "When consent was withdrawn for this category (if applicable)."
+          }
+        }
+      },
+      "minItems": 1
+    },
+    "recorded_at": {
+      "type": "string",
+      "format": "date-time",
+      "description": "ISO 8601 UTC timestamp of when this consent status was recorded."
+    },
+    "recorded_by": {
+      "type": "string",
+      "description": "Identifier of the actor who recorded the consent (typically trial_coordinator)."
+    },
+    "site_id": {
+      "type": "string",
+      "description": "Clinical site where consent was obtained."
+    },
+    "irb_protocol_version": {
+      "type": "string",
+      "description": "Version of the IRB-approved consent protocol used."
+    },
+    "electronic_signature": {
+      "type": "object",
+      "description": "21 CFR Part 11 compliant electronic signature.",
+      "properties": {
+        "signer_id": { "type": "string" },
+        "signature_hash": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}$"
+        },
+        "signed_at": {
+          "type": "string",
+          "format": "date-time"
+        }
+      }
+    },
+    "state_history": {
+      "type": "array",
+      "description": "Chronological history of consent state transitions.",
+      "items": {
+        "type": "object",
+        "required": ["from_state", "to_state", "transitioned_at"],
+        "properties": {
+          "from_state": { "type": "string" },
+          "to_state": { "type": "string" },
+          "transitioned_at": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "reason": { "type": "string" }
+        }
+      }
+    }
+  },
+  "examples": [
+    {
+      "consent_id": "f6a1b2c3-d4e5-7890-cdef-567890abcdef",
+      "patient_pseudonym": "hmac_a3f8e2d1b4c5",
+      "trial_id": "NCT00000001",
+      "consent_state": "consented",
+      "consent_categories": [
+        { "category": "robotic_procedure", "granted": true, "granted_at": "2026-03-01T10:00:00Z" },
+        { "category": "data_collection", "granted": true, "granted_at": "2026-03-01T10:00:00Z" },
+        { "category": "federated_learning", "granted": true, "granted_at": "2026-03-01T10:00:00Z" },
+        { "category": "cross_site_sharing", "granted": false }
+      ],
+      "recorded_at": "2026-03-01T10:00:00Z",
+      "recorded_by": "trial_coordinator_001",
+      "site_id": "site-east-001",
+      "irb_protocol_version": "2.1"
+    }
+  ]
+}

@@ -1,0 +1,102 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://national-mcp-pai-oncology-trials.org/schemas/authz-decision.schema.json",
+  "title": "Authorization Decision",
+  "description": "Represents the result of an authorization evaluation from the AuthZ server's policy engine. Derived from authz_server.py evaluate return shape. Implements deny-by-default RBAC with explicit DENY precedence over ALLOW.",
+  "type": "object",
+  "required": ["allowed", "effect", "role", "server", "tool", "evaluated_at"],
+  "properties": {
+    "allowed": {
+      "type": "boolean",
+      "description": "Whether the access request is authorized."
+    },
+    "effect": {
+      "type": "string",
+      "description": "The policy evaluation outcome.",
+      "enum": ["ALLOW", "DENY"]
+    },
+    "role": {
+      "type": "string",
+      "description": "Actor role that was evaluated.",
+      "enum": ["robot_agent", "trial_coordinator", "data_monitor", "auditor", "sponsor", "cro"]
+    },
+    "server": {
+      "type": "string",
+      "description": "Target MCP server for the request."
+    },
+    "tool": {
+      "type": "string",
+      "description": "Target MCP tool for the request."
+    },
+    "matching_rules": {
+      "type": "array",
+      "description": "Policy rules that matched this access request.",
+      "items": {
+        "type": "object",
+        "required": ["role", "server", "tool", "effect"],
+        "properties": {
+          "role": { "type": "string" },
+          "server": { "type": "string" },
+          "tool": { "type": "string" },
+          "effect": {
+            "type": "string",
+            "enum": ["ALLOW", "DENY"]
+          }
+        }
+      }
+    },
+    "evaluated_at": {
+      "type": "string",
+      "format": "date-time",
+      "description": "ISO 8601 UTC timestamp of the evaluation."
+    },
+    "deny_reason": {
+      "type": "string",
+      "description": "Human-readable explanation when access is denied."
+    },
+    "token_info": {
+      "type": "object",
+      "description": "Session token details if token-based authentication was used.",
+      "properties": {
+        "token_hash": {
+          "type": "string",
+          "description": "SHA-256 hash of the session token (NEVER the token itself).",
+          "pattern": "^[0-9a-f]{64}$"
+        },
+        "subject": { "type": "string" },
+        "expires_at": {
+          "type": "string",
+          "format": "date-time"
+        }
+      }
+    }
+  },
+  "examples": [
+    {
+      "allowed": true,
+      "effect": "ALLOW",
+      "role": "robot_agent",
+      "server": "trialmcp-fhir",
+      "tool": "fhir_read",
+      "matching_rules": [
+        {
+          "role": "robot_agent",
+          "server": "trialmcp-fhir",
+          "tool": "fhir_read",
+          "effect": "ALLOW"
+        }
+      ],
+      "evaluated_at": "2026-03-06T14:29:55Z"
+    },
+    {
+      "allowed": false,
+      "effect": "DENY",
+      "role": "data_monitor",
+      "server": "trialmcp-provenance",
+      "tool": "provenance_record_access",
+      "matching_rules": [],
+      "evaluated_at": "2026-03-06T14:30:10Z",
+      "deny_reason": "No matching ALLOW rule found; deny-by-default policy applied"
+    }
+  ]
+}

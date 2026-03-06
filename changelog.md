@@ -6,6 +6,36 @@ This project follows [Semantic Versioning](https://semver.org/) as described in 
 
 ---
 
+## [0.2.0] — 2026-03-06
+
+### Added
+
+#### Machine-Readable JSON Schemas
+- `schemas/capability-descriptor.schema.json` — Server capability advertisement (name, version, tools, conformance level, regulatory certifications)
+- `schemas/robot-capability-profile.schema.json` — Physical AI robot platform profile with USL scoring, safety prerequisites, simulation frameworks
+- `schemas/site-capability-profile.schema.json` — Clinical site descriptor (jurisdiction, deployed servers, data residency, IRB approval)
+- `schemas/task-order.schema.json` — Scheduled clinical trial task for Physical AI systems (procedure type, robot assignment, safety checks)
+- `schemas/audit-record.schema.json` — Hash-chained 21 CFR Part 11 audit ledger record with SHA-256 chain linking
+- `schemas/provenance-record.schema.json` — DAG-based data lineage record with SHA-256 fingerprinting
+- `schemas/consent-status.schema.json` — Patient consent state machine with 6 granular consent categories
+- `schemas/authz-decision.schema.json` — Deny-by-default RBAC authorization decision with matching rules
+- `schemas/dicom-query.schema.json` — DICOM query input/output with role-based query level permissions
+- `schemas/fhir-read.schema.json` — FHIR R4 single resource read with HIPAA Safe Harbor de-identification
+- `schemas/fhir-search.schema.json` — FHIR R4 collection search with 100-result cap
+- `schemas/error-response.schema.json` — Standardized error response format with 9-code taxonomy
+- `schemas/health-status.schema.json` — Server health check with dependency status and operational metrics
+
+All schemas use JSON Schema draft 2020-12 with `$id`, `title`, `description`, `required`, and `examples`.
+
+#### Documentation
+- README badges: Version, JSON Schema, Python, Protocol (MCP), Date, License, DOI, Contributors
+- Updated architecture diagrams: Schema validation flow integrated into national deployment topology
+- Updated Mermaid diagrams: Schema catalog visualization, updated conformance levels, actor model, security model
+- Updated repository structure reflecting `/schemas/` directory
+- `prompts.md` — v0.2.0 prompt archived
+
+---
+
 ## [0.1.0] — 2026-03-06
 
 ### Added

@@ -1,11 +1,20 @@
 # National MCP Standard for Physical AI Oncology Clinical Trials
 
-**Version 0.1.0** | **Normative Specification** | **United States Industry Standard**
+**Version 0.2.0** | **Normative Specification** | **United States Industry Standard**
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 [![DOI](https://img.shields.io/badge/DOI-10.5281%2Fzenodo.18894758-blue)](https://doi.org/10.5281/zenodo.18894758)
+[![Version](https://img.shields.io/badge/Version-0.2.0-green.svg)](releases.md)
+[![JSON Schema](https://img.shields.io/badge/JSON_Schema-Draft_2020--12-orange.svg)](schemas/)
+[![Python](https://img.shields.io/badge/Python-3.10%20|%203.11%20|%203.12-blue.svg)](https://www.python.org/)
+[![Protocol](https://img.shields.io/badge/Protocol-MCP-purple.svg)](https://modelcontextprotocol.io/)
+[![Schemas](https://img.shields.io/badge/Schemas-13-brightgreen.svg)](schemas/)
+[![Tools](https://img.shields.io/badge/Tools-23-brightgreen.svg)](spec/tool-contracts.md)
+[![Tests](https://img.shields.io/badge/Ref_Tests-39_Passing-brightgreen.svg)](https://github.com/kevinkawchak/mcp-pai-oncology-trials)
+[![Updated](https://img.shields.io/badge/Updated-2026--03--06-lightgrey.svg)](changelog.md)
+[![Contributors](https://img.shields.io/badge/Contributors-2-blue.svg)](releases.md)
 
-The **National MCP-PAI Oncology Trials Standard** is a normative specification for deploying Model Context Protocol (MCP) servers across federated Physical AI oncology clinical trial systems in the United States. This standard defines protocol contracts, actor models, security baselines, regulatory overlays, and governance processes required for industry-wide interoperability of autonomous robotic systems in regulated clinical environments.
+The **National MCP-PAI Oncology Trials Standard** is a normative specification for deploying Model Context Protocol (MCP) servers across federated Physical AI oncology clinical trial systems in the United States. This standard defines protocol contracts, actor models, security baselines, regulatory overlays, machine-readable JSON schemas, and governance processes required for industry-wide interoperability of autonomous robotic systems in regulated clinical environments.
 
 > **Scope**: This specification targets all U.S. clinical sites, sponsors, CROs, and technology vendors operating Physical AI systems — surgical robots, therapeutic positioning systems, diagnostic needle-placement platforms, and rehabilitative exoskeletons — within FDA-regulated oncology trials.
 
@@ -15,6 +24,7 @@ The **National MCP-PAI Oncology Trials Standard** is a normative specification f
 
 - [Motivation](#motivation)
 - [National Architecture Overview](#national-architecture-overview)
+- [Machine-Readable JSON Schemas](#machine-readable-json-schemas)
 - [Conformance Levels](#conformance-levels)
 - [Actor Model](#actor-model)
 - [Tool Contract Registry](#tool-contract-registry)
@@ -38,6 +48,7 @@ This national standard eliminates that fragmentation by defining a single MCP-ba
 - **Unified regulatory posture** (FDA, HIPAA, 21 CFR Part 11) built into the protocol
 - **Federated data governance** that keeps patient data on-site while enabling multi-site collaboration
 - **Vendor-neutral tool contracts** that decouple robot platforms from clinical infrastructure
+- **Machine-readable schemas** for automated validation of all MCP server inputs and outputs
 
 ---
 
@@ -113,6 +124,35 @@ ROBOT AGENT                MCP SERVER LAYER              CLINICAL SYSTEMS
   └─────────┘              └──────────┘
 ```
 
+### Schema Validation Flow
+
+```
+┌─────────────────────────────────────────────────────────────┐
+│                  SCHEMA VALIDATION LAYER                     │
+│                                                              │
+│  Incoming Request         JSON Schema              Output    │
+│  ┌────────────┐    ┌──────────────────┐    ┌──────────────┐ │
+│  │ MCP Tool   │───▶│  Validate Input  │───▶│  Execute     │ │
+│  │ Invocation │    │  Against Schema  │    │  Tool Logic  │ │
+│  └────────────┘    └──────────────────┘    └──────┬───────┘ │
+│                                                    │         │
+│                    ┌──────────────────┐    ┌───────▼───────┐ │
+│                    │ Validate Output  │◀───│  Raw Result   │ │
+│                    │  Against Schema  │    └───────────────┘ │
+│                    └────────┬─────────┘                      │
+│                             │                                │
+│                    ┌────────▼─────────┐                      │
+│                    │  Schema-Valid    │                      │
+│                    │  MCP Response   │                      │
+│                    └──────────────────┘                      │
+│                                                              │
+│  13 Schemas: capability-descriptor, robot-capability,        │
+│  site-capability, task-order, audit-record, provenance,      │
+│  consent-status, authz-decision, dicom-query, fhir-read,    │
+│  fhir-search, error-response, health-status                 │
+└─────────────────────────────────────────────────────────────┘
+```
+
 ### National Deployment Topology
 
 ```
@@ -120,6 +160,7 @@ ROBOT AGENT                MCP SERVER LAYER              CLINICAL SYSTEMS
 │           NATIONAL GOVERNANCE LAYER                 │
 │  Standards Body · Conformance Registry              │
 │  Extension Namespace · Version Compatibility        │
+│  Schema Registry · Validation Services              │
 └────────────────────┬───────────────────────────────┘
                      │
         ┌────────────┼────────────┐
@@ -142,6 +183,79 @@ ROBOT AGENT                MCP SERVER LAYER              CLINICAL SYSTEMS
             │  Privacy Budgets   │
             └────────────────────┘
 ```
+
+---
+
+## Machine-Readable JSON Schemas
+
+Version 0.2.0 introduces 13 machine-readable JSON Schema files (JSON Schema draft 2020-12) that formalize the data contracts for all MCP server interactions across the national network. These schemas enable automated input/output validation, conformance testing, and code generation for every conforming implementation.
+
+```mermaid
+graph TB
+  subgraph Server Schemas
+    ARS["audit-record"]
+    PRS["provenance-record"]
+    ADS["authz-decision"]
+    DQS["dicom-query"]
+    FRS["fhir-read"]
+    FSS["fhir-search"]
+  end
+
+  subgraph Operational Schemas
+    ERS["error-response"]
+    HSS["health-status"]
+    CDS["capability-descriptor"]
+  end
+
+  subgraph Trial Schemas
+    RCS["robot-capability"]
+    SCS["site-capability"]
+    TOS["task-order"]
+    CSS["consent-status"]
+  end
+
+  CDS --> SCS
+  RCS --> SCS
+  RCS --> TOS
+  CSS --> TOS
+  ADS --> ARS
+  DQS --> ARS
+  FRS --> ARS
+  FSS --> ARS
+  PRS --> ARS
+
+  style ARS fill:#333,color:#fff
+  style PRS fill:#333,color:#fff
+  style ADS fill:#4A90D9,color:#fff
+  style DQS fill:#50C878,color:#fff
+  style FRS fill:#50C878,color:#fff
+  style FSS fill:#50C878,color:#fff
+  style ERS fill:#D0021B,color:#fff
+  style HSS fill:#F5A623,color:#fff
+  style CDS fill:#7B2D8E,color:#fff
+  style RCS fill:#F5A623,color:#fff
+  style SCS fill:#4A90D9,color:#fff
+  style TOS fill:#D0021B,color:#fff
+  style CSS fill:#7B2D8E,color:#fff
+```
+
+### Schema Summary
+
+| Schema | Source | Purpose |
+|--------|--------|---------|
+| [`capability-descriptor`](schemas/capability-descriptor.schema.json) | Server capability advertisement | Server name, version, tools, conformance level |
+| [`robot-capability-profile`](schemas/robot-capability-profile.schema.json) | `trial_robot_agent.py` + `trial_schedule.json` | Platform, robot type, USL score, safety prerequisites |
+| [`site-capability-profile`](schemas/site-capability-profile.schema.json) | Site descriptor | Jurisdiction, servers, data residency, IRB approval |
+| [`task-order`](schemas/task-order.schema.json) | `trial_schedule.json` structure | Procedure type, robot assignment, scheduling, safety checks |
+| [`audit-record`](schemas/audit-record.schema.json) | `ledger_server.py` AuditRecord | Hash-chained audit record for 21 CFR Part 11 |
+| [`provenance-record`](schemas/provenance-record.schema.json) | `provenance_server.py` ProvenanceRecord | DAG lineage with SHA-256 fingerprinting |
+| [`consent-status`](schemas/consent-status.schema.json) | Consent state machine | Patient consent with 6 granular categories |
+| [`authz-decision`](schemas/authz-decision.schema.json) | `authz_server.py` evaluate | RBAC decision with matching rules |
+| [`dicom-query`](schemas/dicom-query.schema.json) | `dicom_server.py` dicom_query | DICOM query with role-based permissions |
+| [`fhir-read`](schemas/fhir-read.schema.json) | `fhir_server.py` fhir_read | FHIR R4 read with HIPAA de-identification |
+| [`fhir-search`](schemas/fhir-search.schema.json) | `fhir_server.py` fhir_search | FHIR R4 search with result capping |
+| [`error-response`](schemas/error-response.schema.json) | `servers/common/__init__.py` | Standardized error with 9-code taxonomy |
+| [`health-status`](schemas/health-status.schema.json) | `servers/common/__init__.py` | Server health with dependency and metrics |
 
 ---
 
@@ -327,6 +441,7 @@ See [spec/security.md](spec/security.md) and [spec/privacy.md](spec/privacy.md) 
 |-----------|------------------------|-------------------|
 | **Scope** | Single-site proof of concept | Industry-wide U.S. standard for all sites |
 | **Conformance** | Informal; implementers decide what to build | 5 formal conformance levels with MUST/SHOULD/MAY |
+| **Schemas** | Implicit in Python code | 13 explicit JSON Schema files (draft 2020-12) |
 | **Governance** | Repository-level decisions | Charter, decision process, extension namespaces |
 | **Actors** | 4 roles in code (`robot_agent`, `trial_coordinator`, `data_monitor`, `auditor`) | 6 actors including `sponsor` and `CRO` for full trial ecosystem |
 | **Regulatory** | Compliance noted in README | Dedicated regulatory overlays (FDA, HIPAA, 21 CFR Part 11, IRB) |
@@ -343,6 +458,7 @@ See [spec/security.md](spec/security.md) and [spec/privacy.md](spec/privacy.md) 
 | **Privacy** | Site-specific de-identification | Mandated HIPAA Safe Harbor with HMAC pseudonymization |
 | **Robotics** | No standard robot-to-clinical protocol | First national standard for Physical AI clinical integration |
 | **Multi-site** | Manual data sharing agreements | Federated architecture with differential privacy built in |
+| **Validation** | Manual testing | Machine-readable JSON schemas for automated validation |
 
 ### vs. Other MCP/AI Server Approaches for Oncology
 
@@ -354,6 +470,7 @@ See [spec/security.md](spec/security.md) and [spec/privacy.md](spec/privacy.md) 
 | **Provenance** | No data lineage | DAG-based lineage with SHA-256 fingerprinting |
 | **Federated** | Single-instance | Multi-site federated with privacy-preserving aggregation |
 | **Audit** | Application logs | 21 CFR Part 11 compliant hash-chained ledger |
+| **Schemas** | Ad-hoc or none | 13 formal JSON Schema draft 2020-12 contracts |
 
 ---
 
@@ -361,6 +478,20 @@ See [spec/security.md](spec/security.md) and [spec/privacy.md](spec/privacy.md) 
 
 ```
 national-mcp-pai-oncology-trials/
+├── schemas/                       # Machine-readable JSON schemas (v0.2.0)
+│   ├── capability-descriptor.schema.json    # Server capability advertisement
+│   ├── robot-capability-profile.schema.json # Robot platform with USL scoring
+│   ├── site-capability-profile.schema.json  # Site jurisdiction and data residency
+│   ├── task-order.schema.json               # Clinical trial task scheduling
+│   ├── audit-record.schema.json             # Hash-chained audit ledger record
+│   ├── provenance-record.schema.json        # DAG lineage with SHA-256 fingerprinting
+│   ├── consent-status.schema.json           # Patient consent state machine
+│   ├── authz-decision.schema.json           # RBAC authorization decision
+│   ├── dicom-query.schema.json              # DICOM query params and output
+│   ├── fhir-read.schema.json               # FHIR R4 single resource read
+│   ├── fhir-search.schema.json             # FHIR R4 collection search
+│   ├── error-response.schema.json          # Standardized error format
+│   └── health-status.schema.json           # Server health check
 ├── spec/                          # Normative specification
 │   ├── core.md                    # Protocol scope and design principles
 │   ├── actor-model.md             # 6-actor permission model
@@ -405,8 +536,9 @@ national-mcp-pai-oncology-trials/
 1. Review [spec/core.md](spec/core.md) for protocol scope and design principles
 2. Choose a [conformance level](spec/conformance.md) appropriate for your deployment
 3. Implement the required tool contracts from [spec/tool-contracts.md](spec/tool-contracts.md)
-4. Apply security requirements from [spec/security.md](spec/security.md) and [spec/privacy.md](spec/privacy.md)
-5. Validate against the conformance checklist for your target level
+4. Validate server inputs/outputs against the [JSON schemas](schemas/) for your conformance level
+5. Apply security requirements from [spec/security.md](spec/security.md) and [spec/privacy.md](spec/privacy.md)
+6. Validate against the conformance checklist for your target level
 
 ### For Regulators and Compliance Officers
 

@@ -1,0 +1,113 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://national-mcp-pai-oncology-trials.org/schemas/robot-capability-profile.schema.json",
+  "title": "Robot Capability Profile",
+  "description": "Describes the capabilities, safety prerequisites, and readiness scoring of a Physical AI robotic platform participating in oncology clinical trials. Derived from trial_robot_agent.py platform fields and trial_schedule.json USL scoring.",
+  "type": "object",
+  "required": ["robot_id", "platform", "robot_type", "usl_score", "safety_prerequisites", "mcp_tools_required"],
+  "properties": {
+    "robot_id": {
+      "type": "string",
+      "description": "Unique identifier for this robot instance (UUID v4).",
+      "format": "uuid"
+    },
+    "platform": {
+      "type": "string",
+      "description": "Robot hardware platform name.",
+      "examples": ["Franka Emika Panda", "da Vinci dVRK", "Kinova Gen3", "Boston Dynamics Atlas"]
+    },
+    "robot_type": {
+      "type": "string",
+      "description": "Category of robotic system.",
+      "enum": ["surgical", "therapeutic_positioning", "diagnostic_needle_placement", "rehabilitative_exoskeleton", "companion_monitoring"]
+    },
+    "usl_score": {
+      "type": "number",
+      "description": "Unification Standard Level (USL) readiness score on a 1.0–10.0 scale, evaluating simulation, AI integration, cross-robot sharing, and multi-site collaboration.",
+      "minimum": 1.0,
+      "maximum": 10.0
+    },
+    "safety_prerequisites": {
+      "type": "array",
+      "description": "Safety checks that must pass before the robot is authorized for clinical procedures.",
+      "items": {
+        "type": "object",
+        "required": ["check_name", "status"],
+        "properties": {
+          "check_name": {
+            "type": "string",
+            "description": "Name of the safety check.",
+            "examples": ["emergency_stop_verified", "force_limits_calibrated", "sterile_field_confirmed", "collision_avoidance_active"]
+          },
+          "status": {
+            "type": "string",
+            "enum": ["passed", "failed", "pending", "not_applicable"]
+          },
+          "verified_at": {
+            "type": "string",
+            "format": "date-time",
+            "description": "ISO 8601 UTC timestamp of last verification."
+          },
+          "verified_by": {
+            "type": "string",
+            "description": "Identifier of the actor who verified this check."
+          }
+        }
+      },
+      "minItems": 1
+    },
+    "mcp_tools_required": {
+      "type": "array",
+      "description": "MCP tools this robot needs access to for its clinical workflow.",
+      "items": { "type": "string" }
+    },
+    "simulation_frameworks": {
+      "type": "array",
+      "description": "Simulation environments validated for this robot platform.",
+      "items": {
+        "type": "string",
+        "examples": ["NVIDIA Isaac Sim", "MuJoCo", "Gazebo", "Bullet Physics"]
+      }
+    },
+    "site_id": {
+      "type": "string",
+      "description": "Clinical site where this robot is deployed."
+    },
+    "firmware_version": {
+      "type": "string",
+      "description": "Current firmware or software version of the robot."
+    },
+    "last_calibration": {
+      "type": "string",
+      "format": "date-time",
+      "description": "ISO 8601 UTC timestamp of last calibration."
+    }
+  },
+  "examples": [
+    {
+      "robot_id": "b7e4f3a2-1c9d-4e8f-a5b6-7d2e3f4a5b6c",
+      "platform": "Franka Emika Panda",
+      "robot_type": "surgical",
+      "usl_score": 7.4,
+      "safety_prerequisites": [
+        {
+          "check_name": "emergency_stop_verified",
+          "status": "passed",
+          "verified_at": "2026-03-01T08:00:00Z",
+          "verified_by": "trial_coordinator_001"
+        },
+        {
+          "check_name": "force_limits_calibrated",
+          "status": "passed",
+          "verified_at": "2026-03-01T08:15:00Z",
+          "verified_by": "trial_coordinator_001"
+        }
+      ],
+      "mcp_tools_required": ["authz_evaluate", "fhir_read", "fhir_search", "dicom_query", "ledger_append", "provenance_record_access"],
+      "simulation_frameworks": ["NVIDIA Isaac Sim", "MuJoCo"],
+      "site_id": "site-east-001",
+      "firmware_version": "3.2.1",
+      "last_calibration": "2026-03-01T07:30:00Z"
+    }
+  ]
+}

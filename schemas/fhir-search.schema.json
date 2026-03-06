@@ -1,0 +1,88 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://national-mcp-pai-oncology-trials.org/schemas/fhir-search.schema.json",
+  "title": "FHIR Search",
+  "description": "Defines the input parameters and output shape for the fhir_search MCP tool. Derived from fhir_server.py fhir_search handler. Returns a collection of de-identified FHIR R4 resources matching the search criteria, capped at 100 results.",
+  "type": "object",
+  "properties": {
+    "request": {
+      "type": "object",
+      "description": "FHIR search input parameters.",
+      "required": ["resource_type"],
+      "properties": {
+        "resource_type": {
+          "type": "string",
+          "description": "FHIR R4 resource type to search.",
+          "examples": ["Patient", "Observation", "Condition", "MedicationRequest", "ResearchStudy", "ResearchSubject"]
+        },
+        "filters": {
+          "type": "object",
+          "description": "Key-value search parameters aligned with FHIR search parameter definitions.",
+          "additionalProperties": {
+            "type": "string"
+          },
+          "examples": [
+            { "status": "active", "category": "vital-signs" }
+          ]
+        },
+        "max_results": {
+          "type": "integer",
+          "description": "Maximum number of results to return.",
+          "default": 100,
+          "minimum": 1,
+          "maximum": 100
+        }
+      }
+    },
+    "response": {
+      "type": "object",
+      "description": "FHIR search output.",
+      "required": ["results", "total"],
+      "properties": {
+        "results": {
+          "type": "array",
+          "description": "De-identified FHIR R4 resources matching the search criteria.",
+          "items": { "type": "object" },
+          "maxItems": 100
+        },
+        "total": {
+          "type": "integer",
+          "description": "Total number of matching resources (may exceed results array length).",
+          "minimum": 0
+        }
+      }
+    },
+    "errors": {
+      "type": "array",
+      "description": "Possible error codes.",
+      "items": {
+        "type": "string",
+        "enum": ["VALIDATION_FAILED", "AUTHZ_DENIED", "INTERNAL_ERROR"]
+      }
+    }
+  },
+  "examples": [
+    {
+      "request": {
+        "resource_type": "Observation",
+        "filters": {
+          "category": "vital-signs",
+          "status": "final"
+        },
+        "max_results": 50
+      },
+      "response": {
+        "results": [
+          {
+            "resourceType": "Observation",
+            "id": "obs-001",
+            "status": "final",
+            "category": [{ "coding": [{ "code": "vital-signs" }] }],
+            "subject": { "reference": "Patient/hmac_a3f8e2d1" }
+          }
+        ],
+        "total": 1
+      }
+    }
+  ]
+}

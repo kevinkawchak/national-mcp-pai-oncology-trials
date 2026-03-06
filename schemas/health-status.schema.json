@@ -1,0 +1,138 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://national-mcp-pai-oncology-trials.org/schemas/health-status.schema.json",
+  "title": "Health Status",
+  "description": "Standardized health check response for MCP servers in the National MCP-PAI Oncology Trials network. Derived from servers/common/__init__.py health_status() helper. Used by monitoring systems and the federated coordination layer to track server availability across all national sites.",
+  "type": "object",
+  "required": ["server_name", "status", "version", "uptime_seconds", "checked_at"],
+  "properties": {
+    "server_name": {
+      "type": "string",
+      "description": "MCP server identifier.",
+      "enum": ["trialmcp-authz", "trialmcp-fhir", "trialmcp-dicom", "trialmcp-ledger", "trialmcp-provenance"]
+    },
+    "status": {
+      "type": "string",
+      "description": "Current health status of the server.",
+      "enum": ["healthy", "degraded", "unhealthy"]
+    },
+    "version": {
+      "type": "string",
+      "description": "Server implementation version (SemVer).",
+      "pattern": "^\\d+\\.\\d+\\.\\d+$"
+    },
+    "uptime_seconds": {
+      "type": "number",
+      "description": "Server uptime in seconds since last restart.",
+      "minimum": 0
+    },
+    "checked_at": {
+      "type": "string",
+      "format": "date-time",
+      "description": "ISO 8601 UTC timestamp of this health check."
+    },
+    "conformance_level": {
+      "type": "integer",
+      "description": "Conformance level this server satisfies.",
+      "minimum": 1,
+      "maximum": 5
+    },
+    "dependencies": {
+      "type": "array",
+      "description": "Status of downstream dependencies.",
+      "items": {
+        "type": "object",
+        "required": ["name", "status"],
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "Dependency name (e.g., database, EHR, PACS)."
+          },
+          "status": {
+            "type": "string",
+            "enum": ["healthy", "degraded", "unhealthy", "unknown"]
+          },
+          "latency_ms": {
+            "type": "number",
+            "description": "Last measured latency to the dependency in milliseconds.",
+            "minimum": 0
+          }
+        }
+      }
+    },
+    "metrics": {
+      "type": "object",
+      "description": "Operational metrics for monitoring.",
+      "properties": {
+        "total_requests": {
+          "type": "integer",
+          "description": "Total tool invocations since last restart.",
+          "minimum": 0
+        },
+        "error_rate": {
+          "type": "number",
+          "description": "Percentage of requests resulting in errors (0.0–100.0).",
+          "minimum": 0.0,
+          "maximum": 100.0
+        },
+        "avg_latency_ms": {
+          "type": "number",
+          "description": "Average response latency in milliseconds.",
+          "minimum": 0
+        },
+        "audit_chain_length": {
+          "type": "integer",
+          "description": "Number of records in the audit chain (ledger server only).",
+          "minimum": 0
+        },
+        "audit_chain_valid": {
+          "type": "boolean",
+          "description": "Whether the audit chain integrity check passed (ledger server only)."
+        }
+      }
+    },
+    "site_id": {
+      "type": "string",
+      "description": "Clinical site where this server is deployed."
+    }
+  },
+  "examples": [
+    {
+      "server_name": "trialmcp-ledger",
+      "status": "healthy",
+      "version": "1.0.0",
+      "uptime_seconds": 86400,
+      "checked_at": "2026-03-06T14:30:00Z",
+      "conformance_level": 1,
+      "dependencies": [
+        { "name": "audit_database", "status": "healthy", "latency_ms": 2.5 }
+      ],
+      "metrics": {
+        "total_requests": 15420,
+        "error_rate": 0.1,
+        "avg_latency_ms": 12.3,
+        "audit_chain_length": 15420,
+        "audit_chain_valid": true
+      },
+      "site_id": "site-east-001"
+    },
+    {
+      "server_name": "trialmcp-fhir",
+      "status": "degraded",
+      "version": "1.0.0",
+      "uptime_seconds": 43200,
+      "checked_at": "2026-03-06T14:30:00Z",
+      "conformance_level": 2,
+      "dependencies": [
+        { "name": "ehr_system", "status": "degraded", "latency_ms": 850.0 },
+        { "name": "de_id_service", "status": "healthy", "latency_ms": 5.2 }
+      ],
+      "metrics": {
+        "total_requests": 8200,
+        "error_rate": 2.3,
+        "avg_latency_ms": 145.6
+      },
+      "site_id": "site-east-001"
+    }
+  ]
+}

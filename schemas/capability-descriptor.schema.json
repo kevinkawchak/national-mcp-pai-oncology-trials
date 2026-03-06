@@ -1,0 +1,72 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://national-mcp-pai-oncology-trials.org/schemas/capability-descriptor.schema.json",
+  "title": "MCP Server Capability Descriptor",
+  "description": "Describes the capabilities advertised by a conforming MCP server in the National MCP-PAI Oncology Trials network, including the server name, version, supported tools, and conformance level.",
+  "type": "object",
+  "required": ["server_name", "version", "conformance_level", "tools"],
+  "properties": {
+    "server_name": {
+      "type": "string",
+      "description": "Unique identifier for the MCP server (e.g., trialmcp-authz, trialmcp-fhir).",
+      "enum": ["trialmcp-authz", "trialmcp-fhir", "trialmcp-dicom", "trialmcp-ledger", "trialmcp-provenance"]
+    },
+    "version": {
+      "type": "string",
+      "description": "SemVer version of the server implementation.",
+      "pattern": "^\\d+\\.\\d+\\.\\d+$"
+    },
+    "conformance_level": {
+      "type": "integer",
+      "description": "The conformance level this server satisfies (1–5).",
+      "minimum": 1,
+      "maximum": 5
+    },
+    "tools": {
+      "type": "array",
+      "description": "List of MCP tool names exposed by this server.",
+      "items": {
+        "type": "string"
+      },
+      "minItems": 1
+    },
+    "vendor_extensions": {
+      "type": "array",
+      "description": "Optional vendor extension tool names (must use x-{vendor} prefix).",
+      "items": {
+        "type": "string",
+        "pattern": "^x-[a-z][a-z0-9]*-"
+      }
+    },
+    "regulatory_certifications": {
+      "type": "array",
+      "description": "Regulatory standards the server claims compliance with.",
+      "items": {
+        "type": "string",
+        "enum": ["21_CFR_Part_11", "HIPAA", "ICH_GCP_E6R2", "IEC_80601", "ISO_14971", "ISO_13482"]
+      }
+    },
+    "contact": {
+      "type": "object",
+      "description": "Contact information for the server operator.",
+      "properties": {
+        "organization": { "type": "string" },
+        "email": { "type": "string", "format": "email" },
+        "url": { "type": "string", "format": "uri" }
+      }
+    }
+  },
+  "examples": [
+    {
+      "server_name": "trialmcp-authz",
+      "version": "1.0.0",
+      "conformance_level": 1,
+      "tools": ["authz_evaluate", "authz_issue_token", "authz_validate_token", "authz_list_policies", "authz_revoke_token"],
+      "regulatory_certifications": ["21_CFR_Part_11", "HIPAA"],
+      "contact": {
+        "organization": "National Cancer Institute Trial Site A",
+        "email": "mcp-ops@example-site.org"
+      }
+    }
+  ]
+}
