@@ -36,6 +36,10 @@ All schemas use JSON Schema draft 2020-12 with `$id`, `title`, `description`, `r
 
 ---
 
+@kevinkawchak prompts.md prompt order modified 2026-03-06
+
+---
+
 ## [0.1.0] — 2026-03-06
 
 ### Added
