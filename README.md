@@ -1,17 +1,18 @@
 # National MCP Standard for Physical AI Oncology Clinical Trials
 
-**Version 0.3.0** | **Normative Specification** | **United States Industry Standard**
+**Version 0.4.0** | **Normative Specification** | **United States Industry Standard**
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 [![DOI](https://img.shields.io/badge/DOI-10.5281%2Fzenodo.18894758-blue)](https://doi.org/10.5281/zenodo.18894758)
-[![Version](https://img.shields.io/badge/Version-0.3.0-green.svg)](releases.md)
+[![Version](https://img.shields.io/badge/Version-0.4.0-green.svg)](releases.md)
 [![JSON Schema](https://img.shields.io/badge/JSON_Schema-Draft_2020--12-orange.svg)](schemas/)
 [![Python](https://img.shields.io/badge/Python-3.10%20|%203.11%20|%203.12-blue.svg)](https://www.python.org/)
 [![Protocol](https://img.shields.io/badge/Protocol-MCP-purple.svg)](https://modelcontextprotocol.io/)
 [![Profiles](https://img.shields.io/badge/Profiles-8-brightgreen.svg)](profiles/)
 [![Schemas](https://img.shields.io/badge/Schemas-13-brightgreen.svg)](schemas/)
 [![Tools](https://img.shields.io/badge/Tools-23-brightgreen.svg)](spec/tool-contracts.md)
-[![Tests](https://img.shields.io/badge/Ref_Tests-39_Passing-brightgreen.svg)](https://github.com/kevinkawchak/mcp-pai-oncology-trials)
+[![Conformance Tests](https://img.shields.io/badge/Conformance_Tests-269_Passing-brightgreen.svg)](conformance/)
+[![Ref Tests](https://img.shields.io/badge/Ref_Tests-39_Passing-brightgreen.svg)](https://github.com/kevinkawchak/mcp-pai-oncology-trials)
 [![Updated](https://img.shields.io/badge/Updated-2026--03--06-lightgrey.svg)](changelog.md)
 [![Contributors](https://img.shields.io/badge/Contributors-2-blue.svg)](releases.md)
 
@@ -25,6 +26,7 @@ The **National MCP-PAI Oncology Trials Standard** is a normative specification f
 
 - [Motivation](#motivation)
 - [National Architecture Overview](#national-architecture-overview)
+- [Conformance Test Suite](#conformance-test-suite)
 - [Profiles and Conformance Level Definitions](#profiles-and-conformance-level-definitions)
 - [Machine-Readable JSON Schemas](#machine-readable-json-schemas)
 - [Conformance Levels](#conformance-levels)
@@ -185,6 +187,108 @@ ROBOT AGENT                MCP SERVER LAYER              CLINICAL SYSTEMS
             │  Privacy Budgets   │
             └────────────────────┘
 ```
+
+---
+
+## Conformance Test Suite
+
+Version 0.4.0 introduces a comprehensive conformance test suite under `/conformance/` that enables any U.S. clinical site, vendor, or CRO to validate their MCP server implementation against the national standard. The suite contains 269 automated tests across four categories — positive, negative, security, and interoperability — covering all five conformance levels and thirteen schemas.
+
+### Conformance Test Architecture
+
+```mermaid
+graph TB
+  subgraph Positive Tests
+    CT[Core<br/>Audit + AuthZ + Health]
+    CR[Clinical Read<br/>FHIR + De-ID]
+    IM[Imaging<br/>DICOM + Modalities]
+  end
+
+  subgraph Negative Tests
+    II[Invalid Inputs<br/>Schema Mismatches]
+    UA[Unauthorized<br/>Deny-by-Default]
+  end
+
+  subgraph Security Tests
+    SS[SSRF Prevention<br/>URL Injection]
+    TL[Token Lifecycle<br/>Expiry + Revocation]
+    CI[Chain Integrity<br/>Tampering Detection]
+  end
+
+  subgraph Interop Tests
+    XS[Cross-Server Trace<br/>Multi-Server Audit]
+    SV[Schema Validation<br/>All 13 Schemas]
+  end
+
+  CT --> SV
+  CR --> SV
+  IM --> SV
+  II --> UA
+  SS --> CI
+  TL --> CI
+  XS --> SV
+
+  style CT fill:#4A90D9,color:#fff
+  style CR fill:#50C878,color:#fff
+  style IM fill:#F5A623,color:#fff
+  style II fill:#D0021B,color:#fff
+  style UA fill:#D0021B,color:#fff
+  style SS fill:#7B2D8E,color:#fff
+  style TL fill:#7B2D8E,color:#fff
+  style CI fill:#7B2D8E,color:#fff
+  style XS fill:#333,color:#fff
+  style SV fill:#333,color:#fff
+```
+
+### Conformance Test Summary
+
+| Category | Test File | Tests | Coverage |
+|----------|-----------|-------|----------|
+| **Positive** | `test_core_conformance.py` | Audit, error envelope, health, authz | Level 1 Core |
+| **Positive** | `test_clinical_read_conformance.py` | FHIR + HIPAA de-identification | Level 2 Clinical Read |
+| **Positive** | `test_imaging_conformance.py` | DICOM + role-based modalities | Level 3 Imaging |
+| **Negative** | `test_invalid_inputs.py` | Malformed requests, schema mismatches | All Levels |
+| **Negative** | `test_unauthorized_access.py` | Deny-by-default, permission escalation | All Levels |
+| **Security** | `test_ssrf_prevention.py` | URL injection, internal IP detection | All Levels |
+| **Security** | `test_token_lifecycle.py` | Issuance, expiry, revocation | All Levels |
+| **Security** | `test_chain_integrity.py` | Hash chain tampering, genesis verify | All Levels |
+| **Interop** | `test_cross_server_trace.py` | Multi-server audit linkage | Level 4 Federated |
+| **Interop** | `test_schema_validation.py` | All outputs against 13 schemas | All Levels |
+
+### National Conformance Validation Flow
+
+```
+┌──────────────────────────────────────────────────────────────────┐
+│              NATIONAL CONFORMANCE VALIDATION                      │
+├──────────────────────────────────────────────────────────────────┤
+│                                                                   │
+│  IMPLEMENTER                  CONFORMANCE SUITE                   │
+│  ┌──────────────┐             ┌──────────────────────┐           │
+│  │ MCP Server   │────────────▶│ 1. Positive Tests    │           │
+│  │ Deployment   │             │    Core + Clinical    │           │
+│  │ (5 Servers)  │             │    + Imaging          │           │
+│  └──────────────┘             ├──────────────────────┤           │
+│                               │ 2. Negative Tests    │           │
+│                               │    Invalid + Unauth  │           │
+│                               ├──────────────────────┤           │
+│                               │ 3. Security Tests    │           │
+│                               │    SSRF + Token +    │           │
+│                               │    Chain Integrity   │           │
+│                               ├──────────────────────┤           │
+│                               │ 4. Interop Tests     │           │
+│                               │    Cross-Server +    │           │
+│                               │    Schema Validation │           │
+│                               └──────────┬───────────┘           │
+│                                          │                        │
+│                               ┌──────────▼───────────┐           │
+│                               │  Conformance Report  │           │
+│                               │  Level 1–5 Certified │           │
+│                               │  269 Tests Validated │           │
+│                               └──────────────────────┘           │
+└──────────────────────────────────────────────────────────────────┘
+```
+
+See [conformance/README.md](conformance/README.md) for the full test harness documentation.
 
 ---
 
@@ -575,6 +679,28 @@ See [spec/security.md](spec/security.md) and [spec/privacy.md](spec/privacy.md) 
 
 ```
 national-mcp-pai-oncology-trials/
+├── conformance/                   # Conformance test suite (v0.4.0)
+│   ├── README.md                  # Harness overview, how to run, how to add tests
+│   ├── conftest.py                # Shared fixtures, schema validation helpers
+│   ├── fixtures/                  # Test fixture data (extracted from schemas)
+│   │   ├── audit_records.py       # Sample audit records and hash chains
+│   │   ├── authz_decisions.py     # Sample authorization decisions
+│   │   ├── clinical_resources.py  # Sample FHIR and DICOM resources
+│   │   └── provenance_records.py  # Sample provenance DAG records
+│   ├── positive/                  # Correct behavior validation
+│   │   ├── test_core_conformance.py          # Audit, errors, health, authz
+│   │   ├── test_clinical_read_conformance.py # FHIR + de-identification
+│   │   └── test_imaging_conformance.py       # DICOM conformance
+│   ├── negative/                  # Invalid input rejection
+│   │   ├── test_invalid_inputs.py            # Malformed requests, schema mismatches
+│   │   └── test_unauthorized_access.py       # Deny-by-default RBAC
+│   ├── security/                  # Security control validation
+│   │   ├── test_ssrf_prevention.py           # URL injection prevention
+│   │   ├── test_token_lifecycle.py           # Token expiry, revocation
+│   │   └── test_chain_integrity.py           # Hash chain tampering
+│   └── interoperability/          # Multi-server coordination
+│       ├── test_cross_server_trace.py        # Multi-server audit linkage
+│       └── test_schema_validation.py         # All outputs against 13 schemas
 ├── profiles/                      # Conformance profiles and overlays (v0.3.0)
 │   ├── base-profile.md            # Core conformance: authz + audit + error taxonomy
 │   ├── clinical-read.md           # FHIR read/search + HIPAA de-identification
@@ -625,6 +751,7 @@ national-mcp-pai-oncology-trials/
 │   │   ├── feature_request.md     # Feature request template
 │   │   └── spec_change.md         # Specification change template
 │   └── PULL_REQUEST_TEMPLATE.md   # Pull request template
+├── pyproject.toml                 # Python project config (ruff, pytest)
 ├── CODE_OF_CONDUCT.md             # Contributor Covenant
 ├── LICENSE                        # MIT License
 ├── README.md                      # This file
@@ -646,7 +773,8 @@ national-mcp-pai-oncology-trials/
 5. Validate server inputs/outputs against the [JSON schemas](schemas/) for your profile level
 6. Apply security requirements from [spec/security.md](spec/security.md) and [spec/privacy.md](spec/privacy.md)
 7. Apply applicable state overlays ([California](profiles/state-us-ca.md), [New York](profiles/state-us-ny.md)) and the [FDA overlay](profiles/country-us-fda.md)
-8. Validate against the conformance test subset for your target profile
+8. Run the [conformance test suite](conformance/) against your implementation: `pytest conformance/ -v`
+9. Validate against the conformance test subset for your target profile
 
 ### For Regulators and Compliance Officers
 

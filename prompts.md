@@ -1,3 +1,50 @@
+## Prompt v0.4.0
+
+Your goal in the comprehensive national-mcp-pai-oncology-trials v0.4.0 release is to continue scaling to a United States national industry-wide MCP standard for the physical ai oncology trials industry based in part from the prior kevinkawchak/mcp-pai-oncology-trials. It is important that only directories/files/modified files be used that are truly useful on the national scale rather than the prior repository being used as a reference implementation / seed specification.
+
+Update national specific documentation throughout the repo (diagrams, mermaid diagrams, text, repository structure, etc.) After completing these tasks, focus on performing the main prompt below exhaustively for the national level (Keep in mind that this prompt, and future prompts are aimed at MCP servers being fully scaled and automated industry wide across the U.S.)
+
+It is imperative that all types of information now utilized from across the prior repository be accurate and appropriate to a national scale. For references: use the three references at the bottom of the main kevinkawchak/mcp-pai-oncology-trials Readme; and exact working internal and external sites URLs where necessary from kevinkawchak/physical-ai-oncology-trials and kevinkawchak/pai-oncology-trial-fl.
+
+Provide a copy of this exact prompt under main prompts.md. Be sure to fix and address errors that would cause failed checks for the single pull request (such as Python environment issues to avoid the following error during final checks): "3 failing checks
+x Cl / lint-and-format (3.10) (pull...
+x Cl / lint-and-format (3.11) (pull...
+x Cl / lint-and-format (3.12) (pull... " Place the new release notes in releases.md under main using the format below (which is the same format of the last published version). Update changelog.md using v0.4.0. When you are finished, auto-push the update to GitHub on your own for my review. The user will then review your updates in GitHub prior to finalization.
+
+"FORMAT"
+Release title
+v0.4.0 -
+
+## Summary
+
+## Features
+
+## Contributors
+@kevinkawchak
+@claude
+
+## Notes
+
+"START MAIN PROMPT"
+(v0.4.0): Conformance Test Suite
+Creates: /conformance/ (README + conftest + fixtures + 4 test directories with actual test files)
+* conformance/README.md — Harness overview, how to run, how to add tests
+* conformance/conftest.py — Shared fixtures, schema validation helpers
+* conformance/fixtures/ — Extracted from datasets/
+* conformance/positive/test_core_conformance.py — Audit production, error envelope, health, authz (from tests/audit/)
+* conformance/positive/test_clinical_read_conformance.py — FHIR + de-identification (from tests/integration/)
+* conformance/positive/test_imaging_conformance.py — DICOM conformance
+* conformance/negative/test_invalid_inputs.py — Malformed requests, schema mismatches
+* conformance/negative/test_unauthorized_access.py — Deny-by-default (from tests/security/TestPermissionEscalation)
+* conformance/security/test_ssrf_prevention.py — URL injection (from tests/security/TestSSRFPrevention)
+* conformance/security/test_token_lifecycle.py — Expiry, revocation
+* conformance/security/test_chain_integrity.py — Hash chain tampering
+* conformance/interoperability/test_cross_server_trace.py — Multi-server audit linkage (from tests/integration/)
+* conformance/interoperability/test_schema_validation.py — All outputs validated against /schemas/
+"END PROMPT"
+
+---
+
 ## Prompt v0.3.0
 
 Your goal in the comprehensive national-mcp-pai-oncology-trials v0.3.0 release is to continue scaling to a United States national industry-wide MCP standard for the physical ai oncology trials industry based in part from the prior kevinkawchak/mcp-pai-oncology-trials. It is important that only directories/files/modified files be used that are truly useful on the national scale rather than the prior repository being used as a reference implementation / seed specification.

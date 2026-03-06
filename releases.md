@@ -4,6 +4,55 @@ Release notes for the National MCP-PAI Oncology Trials Standard.
 
 ---
 
+v0.4.0 - Conformance Test Suite for National MCP-PAI Oncology Trials Standard
+
+## Summary
+
+Introduces a comprehensive conformance test suite under `/conformance/` containing 269 automated tests across four categories — positive, negative, security, and interoperability — that enable any U.S. clinical site, vendor, sponsor, CRO, or technology provider to validate their MCP server implementation against the national standard. The suite includes shared pytest fixtures, schema validation helpers, and test fixture data extracted from the 13 JSON schemas. A `pyproject.toml` is added to configure ruff linting, formatting, and pytest for Python 3.10–3.12. README updated with v0.4.0 badges, conformance test architecture Mermaid diagram, national conformance validation flow diagram, and updated repository structure.
+
+## Features
+
+- **Conformance Test Harness** (`/conformance/`) with 269 automated tests across 4 categories:
+  - `conftest.py` — Shared pytest fixtures, JSON Schema draft 2020-12 validation helpers, schema loading utilities
+  - `fixtures/` — Test fixture data extracted from `/schemas/` and `/spec/`:
+    - `audit_records.py` — Sample audit records, hash chains, genesis hash, error responses, health status
+    - `authz_decisions.py` — ALLOW/DENY decisions, 6-actor permission matrix, unauthorized access attempts
+    - `clinical_resources.py` — De-identified FHIR patients, DICOM queries, SSRF payloads, invalid IDs
+    - `provenance_records.py` — Provenance DAG records, cross-server traces, multi-server sequences
+- **Positive conformance tests** (`positive/`):
+  - `test_core_conformance.py` — Audit record production, error envelope format, health check structure, authorization decisions (Level 1 Core)
+  - `test_clinical_read_conformance.py` — FHIR read/search responses, HIPAA Safe Harbor de-identification, HMAC pseudonymization, year-only dates (Level 2 Clinical Read)
+  - `test_imaging_conformance.py` — DICOM query responses, MUST/SHOULD modality requirements, role-based query level permissions, UID validation, patient name hashing (Level 3 Imaging)
+- **Negative conformance tests** (`negative/`):
+  - `test_invalid_inputs.py` — Malformed FHIR IDs, invalid DICOM UIDs, input length limits (1000 chars, 50 keys, 100 elements), schema field mismatches, wrong formats
+  - `test_unauthorized_access.py` — Deny-by-default enforcement, permission escalation prevention, role boundary validation, DENY precedence over ALLOW
+- **Security conformance tests** (`security/`):
+  - `test_ssrf_prevention.py` — URL injection in resource IDs, case-insensitive protocol detection, internal IP address patterns, data/javascript URI rejection
+  - `test_token_lifecycle.py` — Token issuance (UUID v4, SHA-256 hash), default/max expiry enforcement, UTC timestamps, immediate revocation, revocation permanence
+  - `test_chain_integrity.py` — Genesis hash verification, chain continuity, hash tampering detection (modified fields, swapped records, deleted records, inserted foreign records), canonical JSON serialization
+- **Interoperability conformance tests** (`interoperability/`):
+  - `test_cross_server_trace.py` — Multi-server audit chain spanning all 5 MCP servers, operational order verification, cross-server provenance DAG, federated audit coordination
+  - `test_schema_validation.py` — All 13 schema files validated for existence, JSON validity, draft 2020-12 compliance, required fields ($id, title, description), and schema example self-validation
+- **`pyproject.toml`** — Python project configuration with ruff lint/format rules (E, F, I, W) and pytest configuration
+- **Updated README** — v0.4.0 badges (Conformance Tests: 269 Passing), conformance test architecture Mermaid diagram, conformance test summary table, national conformance validation flow text diagram, updated repository structure with `/conformance/` directory, updated Getting Started with test suite step
+- **Updated CODEOWNERS** — Added `/conformance/` directory ownership
+- **Updated prompts.md** — v0.4.0 prompt archived
+
+## Contributors
+@kevinkawchak
+@claude
+
+## Notes
+- The conformance test suite runs on Python 3.10, 3.11, and 3.12 with `pytest` and `jsonschema` as test dependencies
+- All 269 tests pass with ruff lint and format checks clean across all Python files
+- Test fixtures are extracted from the 13 JSON schemas (v0.2.0) and normative specification modules (v0.1.0)
+- The suite validates conformance levels 1–5: Core (authz + audit), Clinical Read (FHIR + de-ID), Imaging (DICOM + modalities), Federated (cross-server provenance), and Robot Procedure (all servers)
+- Security tests cover the three critical areas from the reference implementation: SSRF prevention, token lifecycle, and hash chain integrity
+- Interoperability tests validate multi-server audit linkage and that all outputs conform to the 13 machine-readable schemas
+- References: [TrialMCP](https://doi.org/10.5281/zenodo.18869776), [Physical AI Oncology Trials](https://doi.org/10.5281/zenodo.18445179), [PAI Oncology Trial FL](https://doi.org/10.5281/zenodo.18840880)
+
+---
+
 v0.3.0 - Profiles and Conformance Level Definitions for National MCP-PAI Oncology Trials Standard
 
 ## Summary
