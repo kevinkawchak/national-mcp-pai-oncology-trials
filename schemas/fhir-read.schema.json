@@ -1,0 +1,79 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://national-mcp-pai-oncology-trials.org/schemas/fhir-read.schema.json",
+  "title": "FHIR Read",
+  "description": "Defines the input parameters and output shape for the fhir_read MCP tool. Derived from fhir_server.py fhir_read handler. Returns a single de-identified FHIR R4 resource with HIPAA Safe Harbor applied.",
+  "type": "object",
+  "properties": {
+    "request": {
+      "type": "object",
+      "description": "FHIR read input parameters.",
+      "required": ["resource_type", "resource_id"],
+      "properties": {
+        "resource_type": {
+          "type": "string",
+          "description": "FHIR R4 resource type.",
+          "examples": ["Patient", "Observation", "Condition", "MedicationRequest", "ResearchStudy", "ResearchSubject"]
+        },
+        "resource_id": {
+          "type": "string",
+          "description": "Logical ID of the FHIR resource. MUST match the FHIR ID pattern. MUST NOT contain URLs (SSRF prevention).",
+          "pattern": "^[A-Za-z0-9\\-._]+$"
+        }
+      }
+    },
+    "response": {
+      "type": "object",
+      "description": "FHIR read output.",
+      "required": ["resource"],
+      "properties": {
+        "resource": {
+          "type": "object",
+          "description": "De-identified FHIR R4 resource. All 18 HIPAA Safe Harbor identifiers are removed. Patient IDs are HMAC-SHA256 pseudonymized. Dates are generalized to year-only."
+        }
+      }
+    },
+    "validation": {
+      "type": "object",
+      "description": "Input validation rules.",
+      "properties": {
+        "id_pattern": {
+          "type": "string",
+          "const": "^[A-Za-z0-9\\-._]+$",
+          "description": "Regex pattern for valid FHIR resource IDs."
+        },
+        "ssrf_rejection": {
+          "type": "string",
+          "const": "Reject IDs containing http:// or https:// (case-insensitive)",
+          "description": "SSRF prevention rule."
+        }
+      }
+    },
+    "errors": {
+      "type": "array",
+      "description": "Possible error codes.",
+      "items": {
+        "type": "string",
+        "enum": ["NOT_FOUND", "VALIDATION_FAILED", "AUTHZ_DENIED"]
+      }
+    }
+  },
+  "examples": [
+    {
+      "request": {
+        "resource_type": "Patient",
+        "resource_id": "patient-001"
+      },
+      "response": {
+        "resource": {
+          "resourceType": "Patient",
+          "id": "hmac_a3f8e2d1",
+          "gender": "female",
+          "birthDate": "1975",
+          "name": "[REDACTED]",
+          "address": "[REDACTED]"
+        }
+      }
+    }
+  ]
+}

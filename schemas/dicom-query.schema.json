@@ -1,0 +1,116 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://national-mcp-pai-oncology-trials.org/schemas/dicom-query.schema.json",
+  "title": "DICOM Query",
+  "description": "Defines the input parameters and output shape for the dicom_query MCP tool. Derived from dicom_server.py dicom_query handler. Supports hierarchical DICOM query levels with role-based access control and patient-name hashing.",
+  "type": "object",
+  "properties": {
+    "request": {
+      "type": "object",
+      "description": "DICOM query input parameters.",
+      "required": ["query_level", "caller_role"],
+      "properties": {
+        "query_level": {
+          "type": "string",
+          "description": "DICOM query hierarchy level.",
+          "enum": ["PATIENT", "STUDY", "SERIES", "IMAGE"]
+        },
+        "filters": {
+          "type": "object",
+          "description": "DICOM attribute filters (key-value pairs).",
+          "properties": {
+            "PatientID": { "type": "string" },
+            "StudyInstanceUID": {
+              "type": "string",
+              "pattern": "^[\\d.]+$"
+            },
+            "Modality": { "type": "string" },
+            "StudyDate": { "type": "string" },
+            "AccessionNumber": { "type": "string" }
+          },
+          "additionalProperties": { "type": "string" }
+        },
+        "caller_role": {
+          "type": "string",
+          "description": "Actor role for permission evaluation.",
+          "enum": ["robot_agent", "trial_coordinator", "data_monitor", "auditor"]
+        }
+      }
+    },
+    "response": {
+      "type": "object",
+      "description": "DICOM query output.",
+      "required": ["results", "total", "query_level"],
+      "properties": {
+        "results": {
+          "type": "array",
+          "description": "Matching DICOM records. Patient names at PATIENT level are SHA-256 hashed (truncated to 12 chars).",
+          "items": { "type": "object" }
+        },
+        "total": {
+          "type": "integer",
+          "description": "Total number of matching records.",
+          "minimum": 0
+        },
+        "query_level": {
+          "type": "string",
+          "description": "The query level that was executed.",
+          "enum": ["PATIENT", "STUDY", "SERIES", "IMAGE"]
+        }
+      }
+    },
+    "permissions": {
+      "type": "object",
+      "description": "Role-based query level permissions.",
+      "properties": {
+        "trial_coordinator": {
+          "type": "array",
+          "const": ["PATIENT", "STUDY", "SERIES"]
+        },
+        "robot_agent": {
+          "type": "array",
+          "const": ["STUDY", "SERIES"]
+        },
+        "data_monitor": {
+          "type": "array",
+          "const": ["PATIENT", "STUDY"]
+        },
+        "auditor": {
+          "type": "array",
+          "const": ["STUDY"]
+        }
+      }
+    },
+    "errors": {
+      "type": "array",
+      "description": "Possible error codes.",
+      "items": {
+        "type": "string",
+        "enum": ["AUTHZ_DENIED", "VALIDATION_FAILED", "INTERNAL_ERROR"]
+      }
+    }
+  },
+  "examples": [
+    {
+      "request": {
+        "query_level": "STUDY",
+        "filters": {
+          "Modality": "CT"
+        },
+        "caller_role": "robot_agent"
+      },
+      "response": {
+        "results": [
+          {
+            "StudyInstanceUID": "1.2.840.113619.2.5.1762583153",
+            "Modality": "CT",
+            "StudyDate": "2026",
+            "NumberOfSeries": 3
+          }
+        ],
+        "total": 1,
+        "query_level": "STUDY"
+      }
+    }
+  ]
+}

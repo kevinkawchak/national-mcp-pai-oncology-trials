@@ -1,0 +1,86 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://national-mcp-pai-oncology-trials.org/schemas/provenance-record.schema.json",
+  "title": "Provenance Record",
+  "description": "Tracks a single data access or transformation event in the provenance DAG. Derived from provenance_server.py ProvenanceRecord and DataSource fields. Supports SHA-256 fingerprinting for data integrity verification.",
+  "type": "object",
+  "required": ["record_id", "source_id", "action", "actor_id", "actor_role", "tool_call", "timestamp"],
+  "properties": {
+    "record_id": {
+      "type": "string",
+      "description": "Unique identifier for this provenance record (UUID v4).",
+      "format": "uuid"
+    },
+    "source_id": {
+      "type": "string",
+      "description": "Reference to the DataSource being accessed.",
+      "format": "uuid"
+    },
+    "source_type": {
+      "type": "string",
+      "description": "Category of the data source.",
+      "enum": ["fhir_resource", "dicom_study", "model_parameters", "robot_telemetry", "clinical_observation"]
+    },
+    "action": {
+      "type": "string",
+      "description": "Operation performed on the data source.",
+      "enum": ["read", "transform", "aggregate", "derive", "export"]
+    },
+    "actor_id": {
+      "type": "string",
+      "description": "Identifier of the actor performing the action."
+    },
+    "actor_role": {
+      "type": "string",
+      "description": "Role of the actor from the 6-actor model.",
+      "enum": ["robot_agent", "trial_coordinator", "data_monitor", "auditor", "sponsor", "cro"]
+    },
+    "tool_call": {
+      "type": "string",
+      "description": "MCP tool invocation that triggered this access event."
+    },
+    "input_hash": {
+      "type": "string",
+      "description": "SHA-256 hex digest fingerprint of the input data.",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "output_hash": {
+      "type": "string",
+      "description": "SHA-256 hex digest fingerprint of the output data.",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "timestamp": {
+      "type": "string",
+      "format": "date-time",
+      "description": "ISO 8601 UTC timestamp of the access event."
+    },
+    "origin_server": {
+      "type": "string",
+      "description": "MCP server that owns the data source."
+    },
+    "description": {
+      "type": "string",
+      "description": "Human-readable description of the data access event."
+    },
+    "metadata": {
+      "type": "object",
+      "description": "Additional properties specific to the source type."
+    }
+  },
+  "examples": [
+    {
+      "record_id": "d4e5f6a1-b2c3-7890-abcd-234567890abc",
+      "source_id": "e5f6a1b2-c3d4-7890-bcde-34567890abcd",
+      "source_type": "fhir_resource",
+      "action": "read",
+      "actor_id": "robot_agent_001",
+      "actor_role": "robot_agent",
+      "tool_call": "fhir_read",
+      "input_hash": "b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3",
+      "output_hash": "c3d4e5f6a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4",
+      "timestamp": "2026-03-06T14:30:00Z",
+      "origin_server": "trialmcp-fhir",
+      "description": "Robot agent read de-identified patient resource for procedure planning"
+    }
+  ]
+}

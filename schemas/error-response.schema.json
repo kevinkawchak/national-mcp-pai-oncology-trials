@@ -1,0 +1,104 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://national-mcp-pai-oncology-trials.org/schemas/error-response.schema.json",
+  "title": "Error Response",
+  "description": "Standardized error response format for all MCP servers in the National MCP-PAI Oncology Trials network. Derived from servers/common/__init__.py error_response() helper. All conforming servers MUST use this format for error responses.",
+  "type": "object",
+  "required": ["error", "code", "message"],
+  "properties": {
+    "error": {
+      "type": "boolean",
+      "description": "Always true for error responses.",
+      "const": true
+    },
+    "code": {
+      "type": "string",
+      "description": "Machine-readable error code from the standard taxonomy.",
+      "enum": [
+        "AUTHZ_DENIED",
+        "VALIDATION_FAILED",
+        "NOT_FOUND",
+        "INTERNAL_ERROR",
+        "TOKEN_EXPIRED",
+        "TOKEN_REVOKED",
+        "PERMISSION_DENIED",
+        "INVALID_INPUT",
+        "RATE_LIMITED"
+      ]
+    },
+    "message": {
+      "type": "string",
+      "description": "Human-readable error description. MUST NOT contain PHI, patient identifiers, or internal system details."
+    },
+    "server": {
+      "type": "string",
+      "description": "MCP server that generated the error.",
+      "enum": ["trialmcp-authz", "trialmcp-fhir", "trialmcp-dicom", "trialmcp-ledger", "trialmcp-provenance"]
+    },
+    "tool": {
+      "type": "string",
+      "description": "MCP tool that was invoked when the error occurred."
+    },
+    "timestamp": {
+      "type": "string",
+      "format": "date-time",
+      "description": "ISO 8601 UTC timestamp of the error."
+    },
+    "request_id": {
+      "type": "string",
+      "description": "Correlation ID for tracing this request across the system."
+    },
+    "details": {
+      "type": "object",
+      "description": "Additional error context. MUST NOT contain PHI.",
+      "properties": {
+        "field": {
+          "type": "string",
+          "description": "The input field that caused the error (for VALIDATION_FAILED / INVALID_INPUT)."
+        },
+        "expected_pattern": {
+          "type": "string",
+          "description": "Expected input format (for validation errors)."
+        },
+        "retry_after_seconds": {
+          "type": "integer",
+          "description": "Seconds to wait before retrying (for RATE_LIMITED).",
+          "minimum": 1
+        }
+      }
+    }
+  },
+  "examples": [
+    {
+      "error": true,
+      "code": "VALIDATION_FAILED",
+      "message": "Resource ID contains prohibited URL pattern",
+      "server": "trialmcp-fhir",
+      "tool": "fhir_read",
+      "timestamp": "2026-03-06T14:30:00Z",
+      "details": {
+        "field": "resource_id",
+        "expected_pattern": "^[A-Za-z0-9\\-._]+$"
+      }
+    },
+    {
+      "error": true,
+      "code": "AUTHZ_DENIED",
+      "message": "Access denied: no matching ALLOW rule for the requested operation",
+      "server": "trialmcp-dicom",
+      "tool": "dicom_query",
+      "timestamp": "2026-03-06T14:31:00Z"
+    },
+    {
+      "error": true,
+      "code": "RATE_LIMITED",
+      "message": "Request rate exceeded; retry after the specified interval",
+      "server": "trialmcp-fhir",
+      "tool": "fhir_search",
+      "timestamp": "2026-03-06T14:32:00Z",
+      "details": {
+        "retry_after_seconds": 30
+      }
+    }
+  ]
+}

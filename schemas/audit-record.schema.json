@@ -1,0 +1,67 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://national-mcp-pai-oncology-trials.org/schemas/audit-record.schema.json",
+  "title": "Audit Record",
+  "description": "Defines a single hash-chained audit ledger record as specified by the National MCP-PAI Oncology Trials Standard. Derived from the ledger_server.py AuditRecord dataclass. Each record is linked to its predecessor via SHA-256 hashing for 21 CFR Part 11 compliance.",
+  "type": "object",
+  "required": ["audit_id", "timestamp", "server", "tool", "caller", "parameters", "result_summary", "hash", "previous_hash"],
+  "properties": {
+    "audit_id": {
+      "type": "string",
+      "description": "Unique identifier for this audit record (UUID v4).",
+      "format": "uuid"
+    },
+    "timestamp": {
+      "type": "string",
+      "format": "date-time",
+      "description": "ISO 8601 UTC timestamp of the audited event."
+    },
+    "server": {
+      "type": "string",
+      "description": "MCP server that generated the event.",
+      "enum": ["trialmcp-authz", "trialmcp-fhir", "trialmcp-dicom", "trialmcp-ledger", "trialmcp-provenance"]
+    },
+    "tool": {
+      "type": "string",
+      "description": "MCP tool that was invoked."
+    },
+    "caller": {
+      "type": "string",
+      "description": "Actor identifier. MUST be pseudonymized for patient-related calls."
+    },
+    "parameters": {
+      "type": "object",
+      "description": "Tool call parameters. MUST be de-identified where applicable (no raw patient IDs, no PHI)."
+    },
+    "result_summary": {
+      "type": "string",
+      "description": "Brief outcome description of the tool invocation."
+    },
+    "hash": {
+      "type": "string",
+      "description": "SHA-256 hex digest (64 characters) of this record's canonical JSON serialization (alphabetical key order, excluding the hash field itself).",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "previous_hash": {
+      "type": "string",
+      "description": "SHA-256 hex digest of the preceding audit record. Genesis record uses '0' repeated 64 times.",
+      "pattern": "^[0-9a-f]{64}$"
+    }
+  },
+  "examples": [
+    {
+      "audit_id": "c3d4e5f6-a1b2-7890-cdef-1234567890ab",
+      "timestamp": "2026-03-06T14:30:00Z",
+      "server": "trialmcp-fhir",
+      "tool": "fhir_read",
+      "caller": "robot_agent_001",
+      "parameters": {
+        "resource_type": "Patient",
+        "resource_id": "patient-pseudo-a3f8"
+      },
+      "result_summary": "Patient resource retrieved and de-identified successfully",
+      "hash": "a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4e5f6a1b2",
+      "previous_hash": "0000000000000000000000000000000000000000000000000000000000000000"
+    }
+  ]
+}

@@ -1,0 +1,140 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://national-mcp-pai-oncology-trials.org/schemas/site-capability-profile.schema.json",
+  "title": "Site Capability Profile",
+  "description": "Describes a clinical trial site's MCP infrastructure, jurisdiction, deployed servers, data residency, and conformance posture within the National MCP-PAI Oncology Trials network.",
+  "type": "object",
+  "required": ["site_id", "site_name", "jurisdiction", "servers", "conformance_level", "data_residency"],
+  "properties": {
+    "site_id": {
+      "type": "string",
+      "description": "Unique identifier for this clinical site."
+    },
+    "site_name": {
+      "type": "string",
+      "description": "Human-readable name of the clinical site."
+    },
+    "site_type": {
+      "type": "string",
+      "description": "Category of clinical site.",
+      "enum": ["hospital", "cancer_center", "research_institute", "ambulatory_clinic", "academic_medical_center"]
+    },
+    "jurisdiction": {
+      "type": "object",
+      "description": "Regulatory jurisdiction of the site.",
+      "required": ["country", "state"],
+      "properties": {
+        "country": {
+          "type": "string",
+          "const": "US",
+          "description": "Country code (ISO 3166-1 alpha-2). This standard applies to U.S. sites only."
+        },
+        "state": {
+          "type": "string",
+          "description": "U.S. state or territory code (e.g., CA, NY, TX).",
+          "pattern": "^[A-Z]{2}$"
+        },
+        "region": {
+          "type": "string",
+          "description": "National network region assignment.",
+          "enum": ["east", "central", "west", "southeast", "northeast", "southwest", "northwest"]
+        }
+      }
+    },
+    "servers": {
+      "type": "array",
+      "description": "MCP servers deployed at this site.",
+      "items": {
+        "$ref": "capability-descriptor.schema.json"
+      },
+      "minItems": 2
+    },
+    "conformance_level": {
+      "type": "integer",
+      "description": "Highest conformance level achieved by this site (1–5).",
+      "minimum": 1,
+      "maximum": 5
+    },
+    "data_residency": {
+      "type": "object",
+      "description": "Data residency and sovereignty constraints.",
+      "required": ["patient_data_on_site", "federated_only"],
+      "properties": {
+        "patient_data_on_site": {
+          "type": "boolean",
+          "description": "Whether patient-identifiable data remains exclusively on-site."
+        },
+        "federated_only": {
+          "type": "boolean",
+          "description": "Whether only federated aggregates (model parameters, not raw data) leave the site."
+        },
+        "encryption_at_rest": {
+          "type": "boolean",
+          "description": "Whether data at rest is encrypted."
+        },
+        "encryption_in_transit": {
+          "type": "boolean",
+          "description": "Whether data in transit uses TLS 1.2+."
+        }
+      }
+    },
+    "robots": {
+      "type": "array",
+      "description": "Physical AI systems deployed at this site.",
+      "items": {
+        "$ref": "robot-capability-profile.schema.json"
+      }
+    },
+    "irb_approval": {
+      "type": "object",
+      "description": "IRB approval status for Physical AI trial operations.",
+      "properties": {
+        "approved": { "type": "boolean" },
+        "irb_number": { "type": "string" },
+        "approval_date": { "type": "string", "format": "date" },
+        "expiry_date": { "type": "string", "format": "date" }
+      }
+    },
+    "contact": {
+      "type": "object",
+      "properties": {
+        "principal_investigator": { "type": "string" },
+        "mcp_administrator": { "type": "string" },
+        "email": { "type": "string", "format": "email" }
+      }
+    }
+  },
+  "examples": [
+    {
+      "site_id": "site-east-001",
+      "site_name": "Memorial Regional Cancer Center",
+      "site_type": "cancer_center",
+      "jurisdiction": {
+        "country": "US",
+        "state": "NY",
+        "region": "east"
+      },
+      "servers": [
+        {
+          "server_name": "trialmcp-authz",
+          "version": "1.0.0",
+          "conformance_level": 1,
+          "tools": ["authz_evaluate", "authz_issue_token", "authz_validate_token", "authz_list_policies", "authz_revoke_token"]
+        },
+        {
+          "server_name": "trialmcp-fhir",
+          "version": "1.0.0",
+          "conformance_level": 2,
+          "tools": ["fhir_read", "fhir_search", "fhir_patient_lookup", "fhir_study_status"]
+        }
+      ],
+      "conformance_level": 2,
+      "data_residency": {
+        "patient_data_on_site": true,
+        "federated_only": true,
+        "encryption_at_rest": true,
+        "encryption_in_transit": true
+      }
+    }
+  ]
+}
