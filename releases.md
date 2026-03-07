@@ -4,6 +4,49 @@ Release notes for the National MCP-PAI Oncology Trials Standard.
 
 ---
 
+v0.5.1 - Unit Tests + Verification + CI/CD Hardening for National MCP-PAI Oncology Trials Standard
+
+## Summary
+
+Introduces a dedicated `/tests/` directory containing 39 unit tests for the reference Python implementation (`core_server.py`, `schema_validator.py`, `conformance_runner.py`), verifies all 8 repository-wide quality checks (unit tests, conformance suite, schema validation, RFC 2119 compliance, NON-NORMATIVE labeling, CI pipeline, prompts archive, and release documentation), and hardens the CI/CD pipeline to run both unit tests and conformance tests across Python 3.10–3.12. All 269 conformance tests and 39 unit tests pass with clean ruff lint and format checks.
+
+## Features
+
+- **Unit test suite** (`/tests/`) — 39 tests across 3 test modules:
+  - `test_core_server.py` — 28 tests: AuthZ evaluate (allow/deny/unknown role/timestamp/matching rules/resource ID), token lifecycle (issue/validate/revoke/not found/cap max expiry), ledger operations (hash determinism/SHA-256/required fields/genesis default/chain linking/verify valid/verify empty/verify tampered), health status (required fields/status value), error response (required fields/error flag/code), policy matrix (six roles)
+  - `test_schema_validator.py` — 6 tests: schema loading (existing/not found), schema listing (count 13/sorted), validation (valid instance/invalid instance)
+  - `test_conformance_runner.py` — 5 tests: pytest argument building (all levels/level 1/security only/no verbose/verbose default), level directory mapping
+- **CI/CD pipeline hardening** (`.github/workflows/ci.yml`):
+  - Added `pytest tests/ -v` step before conformance tests in `lint-and-format` job
+  - Ensured `jsonschema` dependency installed for unit test schema validation
+- **Repository-wide verification** — All 8 quality checks validated:
+  1. `pytest tests/` — 39 unit tests pass
+  2. `pytest conformance/` — 269 conformance tests pass (+ 1 skipped)
+  3. `python reference/python/schema_validator.py` — All 13 schemas validate
+  4. Every `/spec/` file uses RFC 2119 MUST/SHOULD/MAY keywords
+  5. Every `/reference/` implementation file labeled NON-NORMATIVE
+  6. `.github/workflows/ci.yml` pipeline executes lint, format, unit tests, conformance tests, schema validation, and docs linting
+  7. `prompts.md` contains all 6 prompts (v0.1.0–v0.5.1) with comprehensive instructions
+  8. Every version has `releases.md` and `changelog.md` entries
+- **Updated `pyproject.toml`** — Version 0.5.1, added `tests` to testpaths and known-first-party imports
+- **Updated `prompts.md`** — v0.5.1 prompt archived
+- **Updated `releases.md`** — v0.5.1 release notes added
+- **Updated `changelog.md`** — v0.5.1 changelog entry added
+
+## Contributors
+@kevinkawchak
+@claude
+
+## Notes
+- No existing code was modified — all 269 conformance tests and reference implementation files remain unchanged
+- Unit tests import directly from `reference.python.*` modules, validating the reference implementation's public API
+- The `test_core_server.py` module covers all 9 public functions: `authz_evaluate`, `authz_issue_token`, `authz_validate_token`, `authz_revoke_token`, `compute_audit_hash`, `ledger_append`, `ledger_verify`, `health_status`, `error_response`
+- Schema validator tests use the `error-response` schema for validation testing as it has no cross-file `$ref` dependencies
+- CI pipeline now runs 308 total tests (39 unit + 269 conformance) across Python 3.10, 3.11, and 3.12
+- References: [TrialMCP](https://doi.org/10.5281/zenodo.18869776), [Physical AI Oncology Trials](https://doi.org/10.5281/zenodo.18445179), [PAI Oncology Trial FL](https://doi.org/10.5281/zenodo.18840880)
+
+---
+
 v0.5.0 - Reference Implementations + CI/CD + Documentation for National MCP-PAI Oncology Trials Standard
 
 ## Summary
