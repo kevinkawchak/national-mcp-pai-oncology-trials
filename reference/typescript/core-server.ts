@@ -1,12 +1,14 @@
 /**
- * NON-NORMATIVE Reference Implementation — Core (Level 1) MCP Server (TypeScript).
+ * NON-NORMATIVE Level 1 Illustrative Implementation -- Core MCP Server (TypeScript).
  *
  * Demonstrates the minimum viable MCP server satisfying Level 1 (Core)
  * conformance per spec/conformance.md.  Uses ajv for JSON Schema
  * validation against the schemas in /schemas/.
  *
- * This stub is INFORMATIVE — the normative requirements are in /spec/,
- * /schemas/, and /profiles/.
+ * IMPORTANT: This is an illustrative implementation only.  It is
+ * provided to demonstrate schema-compliant payload shapes and is not
+ * suitable for production deployment.  The normative requirements are
+ * defined in /spec/, /schemas/, and /profiles/.
  *
  * References:
  * 1. Kawchak, K. (2026). TrialMCP. DOI: 10.5281/zenodo.18869776
@@ -75,31 +77,50 @@ const DEFAULT_POLICY: Record<string, string[]> = {
 };
 
 // ---------------------------------------------------------------------------
-// AuthZ
+// AuthZ — aligned to schemas/authz-decision.schema.json
 // ---------------------------------------------------------------------------
 
-interface AuthzDecision {
-  decision: "ALLOW" | "DENY";
+interface MatchingRule {
   role: string;
+  server: string;
   tool: string;
-  resource_id: string;
-  reason: string;
-  matching_rules: string[];
-  timestamp: string;
+  effect: "ALLOW" | "DENY";
 }
 
-function authzEvaluate(role: string, tool: string, resourceId = ""): AuthzDecision {
+interface AuthzDecision {
+  allowed: boolean;
+  effect: "ALLOW" | "DENY";
+  role: string;
+  server: string;
+  tool: string;
+  matching_rules: MatchingRule[];
+  evaluated_at: string;
+  deny_reason?: string;
+}
+
+function authzEvaluate(
+  role: string,
+  tool: string,
+  server: string = "trialmcp-authz"
+): AuthzDecision {
   const allowedTools = DEFAULT_POLICY[role] || [];
-  const decision = allowedTools.includes(tool) ? "ALLOW" : "DENY";
+  const effect = allowedTools.includes(tool) ? "ALLOW" : "DENY";
+  const allowed = effect === "ALLOW";
   const result: AuthzDecision = {
-    decision,
+    allowed,
+    effect,
     role,
+    server,
     tool,
-    resource_id: resourceId,
-    reason: `Role '${role}' is ${decision === "ALLOW" ? "permitted" : "denied"} access to tool '${tool}'.`,
-    matching_rules: [`default_policy_${role}`],
-    timestamp: new Date().toISOString(),
+    matching_rules: allowed
+      ? [{ role, server, tool, effect: "ALLOW" }]
+      : [],
+    evaluated_at: new Date().toISOString(),
   };
+
+  if (!allowed) {
+    result.deny_reason = `Role '${role}' is denied access to tool '${tool}' by default policy.`;
+  }
 
   if (!validateAuthzDecision(result)) {
     console.error("AuthZ decision failed schema validation:", validateAuthzDecision.errors);
@@ -108,18 +129,18 @@ function authzEvaluate(role: string, tool: string, resourceId = ""): AuthzDecisi
 }
 
 // ---------------------------------------------------------------------------
-// Ledger
+// Ledger — aligned to schemas/audit-record.schema.json
 // ---------------------------------------------------------------------------
 
 interface AuditRecord {
-  record_id: string;
+  audit_id: string;
   timestamp: string;
   server: string;
   tool: string;
   caller: string;
   parameters: Record<string, unknown>;
   result_summary: string;
-  prev_hash: string;
+  previous_hash: string;
   hash: string;
 }
 
@@ -143,20 +164,20 @@ function ledgerAppend(
   tool: string,
   caller: string,
   resultSummary: string,
-  prevHash: string = GENESIS_HASH,
+  previousHash: string = GENESIS_HASH,
   parameters: Record<string, unknown> = {}
 ): AuditRecord {
   const record: Record<string, unknown> = {
-    record_id: uuidv4(),
+    audit_id: uuidv4(),
     timestamp: new Date().toISOString(),
     server,
     tool,
     caller,
     parameters,
     result_summary: resultSummary,
-    prev_hash: prevHash,
+    previous_hash: previousHash,
   };
-  const hash = computeAuditHash(record, prevHash);
+  const hash = computeAuditHash(record, previousHash);
   const auditRecord = { ...record, hash } as AuditRecord;
 
   if (!validateAuditRecord(auditRecord)) {
@@ -166,17 +187,26 @@ function ledgerAppend(
 }
 
 // ---------------------------------------------------------------------------
-// Health
+// Health — aligned to schemas/health-status.schema.json
 // ---------------------------------------------------------------------------
 
-function healthStatus(): Record<string, unknown> {
-  const status = {
-    server: "trialmcp-core-reference-ts",
+interface HealthStatus {
+  server_name: string;
+  status: string;
+  version: string;
+  uptime_seconds: number;
+  checked_at: string;
+  dependencies: Array<{ name: string; status: string; latency_ms?: number }>;
+}
+
+function healthStatus(serverName: string = "trialmcp-ledger"): HealthStatus {
+  const status: HealthStatus = {
+    server_name: serverName,
     status: "healthy",
-    version: "0.5.0",
-    timestamp: new Date().toISOString(),
+    version: "0.6.0",
     uptime_seconds: 0,
-    dependencies: {},
+    checked_at: new Date().toISOString(),
+    dependencies: [],
   };
   if (!validateHealthStatus(status)) {
     console.error("Health status failed schema validation:", validateHealthStatus.errors);
@@ -185,17 +215,28 @@ function healthStatus(): Record<string, unknown> {
 }
 
 // ---------------------------------------------------------------------------
-// Error
+// Error — aligned to schemas/error-response.schema.json
 // ---------------------------------------------------------------------------
 
-function errorResponse(code: string, message: string, tool = ""): Record<string, unknown> {
-  const resp = {
+function errorResponse(
+  code: string,
+  message: string,
+  tool: string = "",
+  server: string = ""
+): Record<string, unknown> {
+  const resp: Record<string, unknown> = {
     error: true,
     code,
     message,
-    tool,
-    timestamp: new Date().toISOString(),
   };
+  if (server) {
+    resp.server = server;
+  }
+  if (tool) {
+    resp.tool = tool;
+  }
+  resp.timestamp = new Date().toISOString();
+
   if (!validateErrorResponse(resp)) {
     console.error("Error response failed schema validation:", validateErrorResponse.errors);
   }

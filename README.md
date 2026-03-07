@@ -1,28 +1,29 @@
 # National MCP Standard for Physical AI Oncology Clinical Trials
 
-**Version 0.5.1** | **Normative Specification** | **United States Industry Standard**
+**Version 0.6.0** | **Proposed Reference Standard** | **United States**
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 [![DOI](https://img.shields.io/badge/DOI-10.5281%2Fzenodo.18894758-blue)](https://doi.org/10.5281/zenodo.18894758)
-[![Version](https://img.shields.io/badge/Version-0.5.1-green.svg)](releases.md)
-[![CI](https://img.shields.io/badge/CI-Passing-brightgreen.svg)](.github/workflows/ci.yml)
+[![Version](https://img.shields.io/badge/Version-0.6.0-green.svg)](releases.md)
+[![CI](https://github.com/kevinkawchak/national-mcp-pai-oncology-trials/actions/workflows/ci.yml/badge.svg)](.github/workflows/ci.yml)
 [![JSON Schema](https://img.shields.io/badge/JSON_Schema-Draft_2020--12-orange.svg)](schemas/)
 [![Python](https://img.shields.io/badge/Python-3.10%20|%203.11%20|%203.12-blue.svg)](https://www.python.org/)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.3-blue.svg)](reference/typescript/)
 [![Protocol](https://img.shields.io/badge/Protocol-MCP-purple.svg)](https://modelcontextprotocol.io/)
-[![Profiles](https://img.shields.io/badge/Profiles-8-brightgreen.svg)](profiles/)
-[![Schemas](https://img.shields.io/badge/Schemas-13-brightgreen.svg)](schemas/)
-[![Tools](https://img.shields.io/badge/Tools-23-brightgreen.svg)](spec/tool-contracts.md)
-[![Conformance Tests](https://img.shields.io/badge/Conformance_Tests-269_Passing-brightgreen.svg)](conformance/)
-[![Ref Tests](https://img.shields.io/badge/Ref_Tests-39_Passing-brightgreen.svg)](https://github.com/kevinkawchak/mcp-pai-oncology-trials)
-[![Unit Tests](https://img.shields.io/badge/Unit_Tests-39_Passing-brightgreen.svg)](tests/)
-[![Total Tests](https://img.shields.io/badge/Total_Tests-308_Passing-brightgreen.svg)](pyproject.toml)
+[![Profiles](https://img.shields.io/badge/Profiles-8-blue.svg)](profiles/)
+[![Schemas](https://img.shields.io/badge/Schemas-13-blue.svg)](schemas/)
+[![Tools](https://img.shields.io/badge/Tools-23-blue.svg)](spec/tool-contracts.md)
+[![Conformance Tests](https://img.shields.io/badge/Conformance_Tests-269-blue.svg)](conformance/)
+[![Unit Tests](https://img.shields.io/badge/Unit_Tests-44-blue.svg)](tests/)
+[![Total Tests](https://img.shields.io/badge/Total_Tests-313-blue.svg)](pyproject.toml)
 [![Updated](https://img.shields.io/badge/Updated-2026--03--07-lightgrey.svg)](changelog.md)
-[![Contributors](https://img.shields.io/badge/Contributors-2-blue.svg)](releases.md)
+[![Contributors](https://img.shields.io/badge/Contributors-3-blue.svg)](releases.md)
 
-The **National MCP-PAI Oncology Trials Standard** is a normative specification for deploying Model Context Protocol (MCP) servers across federated Physical AI oncology clinical trial systems in the United States. This standard defines protocol contracts, actor models, security baselines, regulatory overlays, machine-readable JSON schemas, and governance processes required for industry-wide interoperability of autonomous robotic systems in regulated clinical environments.
+The **National MCP-PAI Oncology Trials Standard** is a proposed reference standard for deploying Model Context Protocol (MCP) servers across federated Physical AI oncology clinical trial systems in the United States. This standard defines protocol contracts, actor models, security baselines, regulatory overlays, machine-readable JSON schemas, and governance processes intended to enable industry-wide interoperability of autonomous robotic systems in regulated clinical environments.
 
-> **Scope**: This specification targets all U.S. clinical sites, sponsors, CROs, and technology vendors operating Physical AI systems — surgical robots, therapeutic positioning systems, diagnostic needle-placement platforms, and rehabilitative exoskeletons — within FDA-regulated oncology trials.
+> **Scope**: This specification targets U.S. clinical sites, sponsors, CROs, and technology vendors operating Physical AI systems — surgical robots, therapeutic positioning systems, diagnostic needle-placement platforms, and rehabilitative exoskeletons — within FDA-regulated oncology trials.
+>
+> **Maturity**: This repository provides normative specifications (`/spec/`), machine-readable schemas (`/schemas/`), conformance profiles (`/profiles/`), and Level 1 illustrative implementations (`/reference/`). It does not yet include production server implementations, federated coordination infrastructure, or multi-stakeholder governance evidence. See the [adoption roadmap](docs/adoption-roadmap.md) for the path from specification to validated deployment.
 
 ---
 
@@ -199,7 +200,7 @@ ROBOT AGENT                MCP SERVER LAYER              CLINICAL SYSTEMS
 
 ## Reference Implementations
 
-Version 0.5.0 introduced NON-NORMATIVE reference implementations in Python and TypeScript under `/reference/`. These are informative examples — the authoritative requirements are defined in `/spec/`, `/schemas/`, and `/profiles/`. Version 0.5.1 added a dedicated unit test suite under `/tests/` with 39 tests covering all reference implementation modules.
+> **INFORMATIVE** — The reference implementations below are NON-NORMATIVE Level 1 illustrative implementations. They demonstrate schema-compliant payload shapes and are not suitable for production deployment. The normative requirements are defined in `/spec/`, `/schemas/`, and `/profiles/`.
 
 ### Reference Implementation Architecture
 
@@ -215,8 +216,8 @@ graph TB
     TCS[core-server.ts<br/>Core L1 Server + ajv]
   end
 
-  subgraph "Unit Tests (39 tests)"
-    TCS_T[test_core_server.py<br/>28 tests]
+  subgraph "Unit Tests (44 tests)"
+    TCS_T[test_core_server.py<br/>33 tests]
     TSV_T[test_schema_validator.py<br/>6 tests]
     TCR_T[test_conformance_runner.py<br/>5 tests]
   end
@@ -267,14 +268,14 @@ Both reference implementations demonstrate:
 
 ## Unit Test Suite
 
-Version 0.5.1 introduces a dedicated unit test suite under `/tests/` with 39 tests that validate the reference Python implementation's public API. These tests complement the 269 conformance tests by verifying the correctness of the NON-NORMATIVE reference code itself.
+The `/tests/` directory contains 44 unit tests that validate the reference Python implementation's public API. These tests complement the 269 conformance tests by verifying the correctness of the NON-NORMATIVE Level 1 illustrative implementation code itself.
 
 ### Unit Test Architecture
 
 ```mermaid
 graph TB
   subgraph "tests/"
-    TCS[test_core_server.py<br/>28 tests]
+    TCS[test_core_server.py<br/>33 tests]
     TSV[test_schema_validator.py<br/>6 tests]
     TCR[test_conformance_runner.py<br/>5 tests]
   end
@@ -301,7 +302,7 @@ graph TB
 
 | Test File | Tests | Coverage |
 |-----------|-------|----------|
-| `test_core_server.py` | 28 | AuthZ evaluate (6), token lifecycle (7), ledger operations (8), health/error helpers (5), policy matrix (1), genesis hash (1) |
+| `test_core_server.py` | 33 | AuthZ evaluate (9), token lifecycle (7), ledger operations (8), health/error helpers (7), policy matrix (1), genesis hash (1) |
 | `test_schema_validator.py` | 6 | Schema loading (2), schema listing (2), validation (2) |
 | `test_conformance_runner.py` | 5 | Pytest argument building (5), level directory mapping (1) |
 
@@ -319,29 +320,33 @@ pytest -v
 
 ## CI/CD Pipeline
 
-Version 0.5.0 added a CI/CD pipeline (`.github/workflows/ci.yml`) that runs on every push and pull request. The pipeline includes three jobs:
+The CI/CD pipeline (`.github/workflows/ci.yml`) runs on every push and pull request. The pipeline includes five jobs:
 
 | Job | Matrix | Checks |
 |-----|--------|--------|
-| **lint-and-format** | Python 3.10, 3.11, 3.12 | Ruff lint, Ruff format, pytest unit tests (39), pytest conformance suite (269) |
+| **lint-and-format** | Python 3.10, 3.11, 3.12 | Ruff lint, Ruff format, pytest unit tests (44), pytest conformance suite (269) |
 | **schema-validation** | Python 3.12 | All 13 schemas validated (structure + example self-validation) |
-| **docs-lint** | — | Required documentation files exist, internal markdown links checked |
+| **contract-consistency** | Python 3.12 | Generated models match committed models, core_server outputs validate against schemas |
+| **typescript-build** | Node.js 20 | TypeScript compile check |
+| **docs-lint** | — | Required documentation files exist, internal markdown links checked (fails on errors) |
 
 ```
-┌──────────────────────────────────────────────────────────────────────────┐
-│                           CI/CD PIPELINE                                  │
-├──────────────────────────────────────────────────────────────────────────┤
-│                                                                           │
-│  Push / PR to main                                                       │
-│       │                                                                   │
-│       ├──▶ lint-and-format (3.10) ──▶ ruff + 39 unit + 269 conformance   │
-│       ├──▶ lint-and-format (3.11) ──▶ ruff + 39 unit + 269 conformance   │
-│       ├──▶ lint-and-format (3.12) ──▶ ruff + 39 unit + 269 conformance   │
-│       ├──▶ schema-validation ──────▶ 13 schemas + examples               │
-│       └──▶ docs-lint ──────────────▶ file check + link check             │
-│                                                                           │
-│  All jobs run in parallel · 308 total tests per Python version           │
-└──────────────────────────────────────────────────────────────────────────┘
+┌──────────────────────────────────────────────────────────────────────────────┐
+│                             CI/CD PIPELINE                                   │
+├──────────────────────────────────────────────────────────────────────────────┤
+│                                                                              │
+│  Push / PR to main                                                          │
+│       │                                                                      │
+│       ├──▶ lint-and-format (3.10) ──▶ ruff + 44 unit + 269 conformance      │
+│       ├──▶ lint-and-format (3.11) ──▶ ruff + 44 unit + 269 conformance      │
+│       ├──▶ lint-and-format (3.12) ──▶ ruff + 44 unit + 269 conformance      │
+│       ├──▶ schema-validation ──────▶ 13 schemas + examples                  │
+│       ├──▶ contract-consistency ───▶ model gen + runtime schema validation   │
+│       ├──▶ typescript-build ───────▶ tsc --noEmit                           │
+│       └──▶ docs-lint ──────────────▶ file check + link check (fail errors)  │
+│                                                                              │
+│  All jobs run in parallel · 313 total tests per Python version              │
+└──────────────────────────────────────────────────────────────────────────────┘
 ```
 
 ---
@@ -838,14 +843,14 @@ See [spec/security.md](spec/security.md) and [spec/privacy.md](spec/privacy.md) 
 
 ```
 national-mcp-pai-oncology-trials/
-├── reference/                    # NON-NORMATIVE reference implementations (v0.5.0)
-│   ├── python/                   # Python reference
+├── reference/                    # NON-NORMATIVE Level 1 illustrative implementations
+│   ├── python/                   # Python illustrative implementation
 │   │   ├── __init__.py           # Package documentation
-│   │   ├── core_server.py        # Minimal Core (Level 1) MCP server
+│   │   ├── core_server.py        # Level 1 illustrative Core MCP server
 │   │   ├── schema_validator.py   # JSON Schema validation utilities
 │   │   └── conformance_runner.py # CLI conformance test runner
-│   └── typescript/               # TypeScript reference
-│       ├── core-server.ts        # Minimal Core server stub with ajv
+│   └── typescript/               # TypeScript illustrative implementation
+│       ├── core-server.ts        # Level 1 illustrative Core server with ajv
 │       ├── package.json          # Dependencies (ajv, uuid)
 │       ├── tsconfig.json         # TypeScript configuration
 │       └── README.md             # TypeScript reference documentation
@@ -927,11 +932,19 @@ national-mcp-pai-oncology-trials/
 │   ├── HIPAA.md                  # HIPAA compliance mapping
 │   ├── CFR_PART_11.md            # 21 CFR Part 11 mapping
 │   └── IRB_SITE_POLICY_TEMPLATE.md # IRB site policy template
-├── tests/                       # Unit tests for reference implementations (v0.5.1)
+├── models/                      # Auto-generated typed models from schemas (v0.6.0)
+│   ├── python/
+│   │   └── generated_models.py  # Python dataclasses for all 13 schemas
+│   └── typescript/
+│       └── generated_models.ts  # TypeScript interfaces for all 13 schemas
+├── scripts/                     # Build and generation scripts (v0.6.0)
+│   └── generate_models.py       # Schema-to-code model generator
+├── tests/                       # Unit tests for reference implementations
 │   ├── __init__.py              # Package marker
-│   ├── test_core_server.py      # 28 unit tests for core_server.py
+│   ├── test_core_server.py      # 33 unit tests for core_server.py
 │   ├── test_schema_validator.py # 6 unit tests for schema_validator.py
 │   └── test_conformance_runner.py # 5 unit tests for conformance_runner.py
+├── peer-review/                 # External peer review responses and prompts
 ├── pyproject.toml                # Python project config (ruff, pytest)
 ├── CODE_OF_CONDUCT.md            # Contributor Covenant
 ├── LICENSE                       # MIT License

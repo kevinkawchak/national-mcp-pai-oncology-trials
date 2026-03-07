@@ -1,7 +1,7 @@
 [project]
 name = "national-mcp-pai-oncology-trials"
-version = "0.5.2"
-description = "National MCP Standard for Physical AI Oncology Clinical Trials — Peer Review Response + Implementation Roadmap"
+version = "0.6.0"
+description = "National MCP Standard for Physical AI Oncology Clinical Trials — Phase 1: Correctness, Contract Alignment, and Schema-Code Drift Resolution"
 requires-python = ">=3.10"
 license = {text = "MIT"}
 
@@ -24,7 +24,7 @@ select = [
 ]
 
 [tool.ruff.lint.isort]
-known-first-party = ["conformance", "reference", "tests"]
+known-first-party = ["conformance", "models", "reference", "scripts", "tests"]
 
 [tool.pytest.ini_options]
 testpaths = ["conformance", "tests"]

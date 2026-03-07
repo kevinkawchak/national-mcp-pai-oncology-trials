@@ -100,6 +100,102 @@ jobs:
           sys.exit(1 if errors else 0)
           "
 
+  contract-consistency:
+    name: contract-consistency
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python 3.12
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install jsonschema
+
+      - name: Verify generated models match committed models
+        run: |
+          python scripts/generate_models.py
+          if git diff --exit-code models/; then
+            echo "Generated models are up to date."
+          else
+            echo "ERROR: Generated models differ from committed models."
+            echo "Run 'python scripts/generate_models.py' and commit the result."
+            exit 1
+          fi
+
+      - name: Validate core_server outputs against schemas
+        run: |
+          python -c "
+          import json, sys
+          from pathlib import Path
+          from jsonschema import Draft202012Validator
+          from reference.python.core_server import (
+              authz_evaluate, ledger_append, health_status, error_response,
+          )
+
+          schema_dir = Path('schemas')
+          errors = 0
+
+          def check(instance, schema_name):
+              schema = json.loads((schema_dir / schema_name).read_text())
+              validator = Draft202012Validator(schema)
+              errs = list(validator.iter_errors(instance))
+              if errs:
+                  for e in errs:
+                      print(f'  FAIL: {schema_name}: {e.message}')
+                  return 1
+              print(f'  PASS: {schema_name}')
+              return 0
+
+          print('Validating authz_evaluate (ALLOW)...')
+          errors += check(authz_evaluate('auditor', 'ledger_query'), 'authz-decision.schema.json')
+
+          print('Validating authz_evaluate (DENY)...')
+          errors += check(authz_evaluate('auditor', 'fhir_read'), 'authz-decision.schema.json')
+
+          print('Validating ledger_append...')
+          errors += check(
+              ledger_append('trialmcp-ledger', 'ledger_append', 'robot_agent_001', 'OK'),
+              'audit-record.schema.json',
+          )
+
+          print('Validating health_status...')
+          errors += check(health_status(), 'health-status.schema.json')
+
+          print('Validating error_response...')
+          errors += check(
+              error_response('AUTHZ_DENIED', 'denied', 'evaluate', 'trialmcp-authz'),
+              'error-response.schema.json',
+          )
+
+          sys.exit(1 if errors else 0)
+          "
+
+  typescript-build:
+    name: typescript-build
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - name: Install TypeScript dependencies
+        working-directory: reference/typescript
+        run: npm install
+
+      - name: TypeScript compile check
+        working-directory: reference/typescript
+        run: npx tsc --noEmit
+
   docs-lint:
     name: docs-lint
     runs-on: ubuntu-latest
@@ -156,5 +252,5 @@ jobs:
               print(f'{errors} broken link(s) found')
           else:
               print('No broken internal links found.')
-          sys.exit(0)
+          sys.exit(1 if errors else 0)
           "

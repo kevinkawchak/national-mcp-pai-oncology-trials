@@ -6,6 +6,62 @@ This project follows [Semantic Versioning](https://semver.org/) as described in 
 
 ---
 
+## [0.6.0] — 2026-03-07
+
+### Fixed
+
+#### Schema/Code Contract Alignment
+- `reference/python/core_server.py` — `authz_evaluate()` now returns `allowed`, `effect`, `role`, `server`, `tool`, `matching_rules` (structured objects), `evaluated_at`, `deny_reason` per `authz-decision.schema.json` (previously returned `decision`, `resource_id`, `reason`, `matching_rules` as strings, `timestamp`)
+- `reference/python/core_server.py` — `ledger_append()` now returns `audit_id`, `previous_hash` per `audit-record.schema.json` (previously returned `record_id`, `prev_hash`)
+- `reference/python/core_server.py` — `health_status()` now returns `server_name`, `checked_at`, `dependencies` (array) per `health-status.schema.json` (previously returned `server`, `timestamp`, `dependencies` as object)
+- `reference/python/core_server.py` — `error_response()` now accepts optional `server` parameter for schema-valid output
+- `reference/python/core_server.py` — `ledger_verify()` now checks `previous_hash` field (was `prev_hash`)
+- `reference/typescript/core-server.ts` — `authzEvaluate()` aligned to `authz-decision.schema.json`: `allowed`, `effect`, `matching_rules` as `MatchingRule[]`, `evaluated_at`, `deny_reason`
+- `reference/typescript/core-server.ts` — `ledgerAppend()` aligned to `audit-record.schema.json`: `audit_id`, `previous_hash`
+- `reference/typescript/core-server.ts` — `healthStatus()` aligned to `health-status.schema.json`: `server_name`, `checked_at`, `dependencies` as typed array
+- `reference/typescript/core-server.ts` — `errorResponse()` aligned to `error-response.schema.json`: optional `server` parameter
+
+#### Maturity Labeling
+- `README.md` — "Normative Specification" → "Proposed Reference Standard"; "United States Industry Standard" → "United States"
+- `README.md` — Added maturity callout explaining normative vs illustrative boundaries
+- `README.md` — "Reference implementation" → "Level 1 illustrative implementation" throughout
+- `README.md` — Removed "Passing" from static test count badges; replaced `brightgreen` with `blue` for count-only badges
+- `reference/python/core_server.py` — Docstring updated: "NON-NORMATIVE Level 1 Illustrative Implementation"
+- `reference/typescript/core-server.ts` — Docstring updated: "NON-NORMATIVE Level 1 Illustrative Implementation"
+
+### Added
+
+#### Typed Model Generation Pipeline
+- `scripts/generate_models.py` — Reads all 13 `/schemas/*.schema.json` files, produces Python dataclasses (`models/python/generated_models.py`) and TypeScript interfaces (`models/typescript/generated_models.ts`)
+- `models/python/generated_models.py` — Auto-generated dataclasses for all 13 schemas (audit-record, authz-decision, capability-descriptor, consent-status, dicom-query, error-response, fhir-read, fhir-search, health-status, provenance-record, robot-capability-profile, site-capability-profile, task-order)
+- `models/typescript/generated_models.ts` — Auto-generated TypeScript interfaces for all 13 schemas
+
+#### CI/CD Pipeline Hardening
+- `.github/workflows/ci.yml` — Added `contract-consistency` job: regenerates models and fails if output differs from committed models; validates `core_server.py` runtime outputs against all relevant schemas
+- `.github/workflows/ci.yml` — Added `typescript-build` job: runs `npx tsc --noEmit` to verify TypeScript compiles
+- `.github/workflows/ci.yml` — `docs-lint` job: `sys.exit(0)` → `sys.exit(1 if errors else 0)` for broken link detection (now fails on errors)
+
+#### Unit Tests
+- `tests/test_core_server.py` — Expanded from 28 to 33 tests: added `test_deny_has_empty_matching_rules`, `test_deny_has_deny_reason`, `test_has_server_field`, `test_has_required_schema_fields`, `test_health_status_dependencies_is_array`, `test_health_status_server_name`; updated all assertions to use corrected field names (`effect`/`allowed`/`evaluated_at`/`audit_id`/`previous_hash`/`server_name`/`checked_at`)
+
+### Changed
+- `pyproject.toml` — Version 0.6.0, added `models` and `scripts` to known-first-party imports, updated description
+- `README.md` — v0.6.0 version, updated badges (44 unit tests, 313 total, 3 contributors), updated CI pipeline table (5 jobs), updated repository structure (added `models/`, `scripts/`, `peer-review/`), updated unit test summary table
+- `prompts.md` — v0.6.0 prompt archived
+- `releases.md` — v0.6.0 release notes added
+- `changelog.md` — This entry
+
+### Verified
+- `ruff check .` and `ruff format --check .` pass cleanly
+- `pytest tests/` — 44 unit tests pass
+- `pytest conformance/` — 269 conformance tests pass (+ 1 skipped)
+- All 13 schemas validate with `python reference/python/schema_validator.py`
+- Every `/spec/` file uses RFC 2119 MUST/SHOULD/MAY keywords
+- Every `/reference/` implementation file labeled NON-NORMATIVE
+- `.github/workflows/ci.yml` pipeline covers Python lint/test, TypeScript build, schema validation, contract consistency, and docs lint (with failure on errors)
+
+---
+
 ## [0.5.2] — 2026-03-07
 
 ### Added

@@ -4,6 +4,48 @@ Release notes for the National MCP-PAI Oncology Trials Standard.
 
 ---
 
+v0.6.0 - Phase 1: Correctness, Contract Alignment, and Schema-Code Drift Resolution
+
+## Summary
+
+Comprehensively fixes all schema/code/test drift and contract mismatches across the entire repository, establishing a single canonical source of truth for all data contracts. Introduces a typed model generation pipeline (`scripts/generate_models.py`) that produces Python dataclasses and TypeScript interfaces from the 13 JSON schemas, adds contract-consistency and TypeScript build CI jobs, and tightens maturity labeling throughout all documentation. All reference implementation outputs now validate against their canonical schemas end-to-end.
+
+## Features
+
+- **Schema/code contract alignment** — All 4 core functions (`authz_evaluate`, `ledger_append`, `health_status`, `error_response`) in both Python and TypeScript now produce schema-valid output:
+  - `authz_evaluate()`: `decision`/`resource_id`/`reason`/`timestamp` → `allowed`/`effect`/`server`/`evaluated_at` with structured `matching_rules` objects per `authz-decision.schema.json`
+  - `ledger_append()`: `record_id`/`prev_hash` → `audit_id`/`previous_hash` per `audit-record.schema.json`
+  - `health_status()`: `server`/`timestamp`/`dependencies{}` → `server_name`/`checked_at`/`dependencies[]` per `health-status.schema.json`
+  - `error_response()`: added optional `server` parameter for schema-valid output
+- **Typed model generation pipeline** (`scripts/generate_models.py`) — Reads all 13 schemas, produces `models/python/generated_models.py` (dataclasses) and `models/typescript/generated_models.ts` (interfaces)
+- **CI/CD pipeline hardening** (`.github/workflows/ci.yml`) — 3 new jobs:
+  - `contract-consistency`: regenerates models (fail if drift), validates runtime outputs against schemas
+  - `typescript-build`: `tsc --noEmit` compile check
+  - `docs-lint`: broken link check now fails on errors (`sys.exit(1 if errors else 0)`)
+- **Maturity labeling** — "Normative Specification" → "Proposed Reference Standard"; "reference implementation" → "Level 1 illustrative implementation"; added maturity callout in README distinguishing normative specs from illustrative code
+- **Expanded unit tests** — 28 → 44 tests covering corrected field names, structured matching rules, deny reasons, dependency arrays, server names
+- **Updated `pyproject.toml`** — Version 0.6.0, added `models` and `scripts` to known-first-party imports
+- **Updated `README.md`** — v0.6.0 badges, 5-job CI pipeline table, updated repository structure, updated test counts
+- **Updated `changelog.md`** — v0.6.0 changelog entry
+- **Updated `releases.md`** — v0.6.0 release notes (this entry)
+- **Updated `prompts.md`** — v0.6.0 prompt archived
+
+## Contributors
+@kevinkawchak
+@claude
+@openai
+
+## Notes
+- All 313 tests pass (44 unit + 269 conformance) across Python 3.10, 3.11, 3.12 with clean ruff lint and format checks
+- The typed model generation pipeline is the canonical contract source — CI fails if generated output differs from committed models
+- Contract-consistency CI validates that `authz_evaluate`, `ledger_append`, `health_status`, and `error_response` runtime outputs pass JSON Schema validation against their respective schemas
+- TypeScript build CI ensures the TypeScript reference compiles without errors
+- The docs-lint job now fails on broken internal links (previously exited with 0 regardless)
+- Maturity labeling distinguishes normative specifications (`/spec/`, `/schemas/`, `/profiles/`) from illustrative implementations (`/reference/`) and clarifies the path from specification to validated deployment
+- References: [TrialMCP](https://doi.org/10.5281/zenodo.18869776), [Physical AI Oncology Trials](https://doi.org/10.5281/zenodo.18445179), [PAI Oncology Trial FL](https://doi.org/10.5281/zenodo.18840880)
+
+---
+
 v0.5.2 - Peer Review Response + Implementation Roadmap Prompts for National MCP-PAI Oncology Trials Standard
 
 ## Summary

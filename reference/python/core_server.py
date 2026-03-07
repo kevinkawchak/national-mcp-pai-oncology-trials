@@ -1,9 +1,14 @@
-"""NON-NORMATIVE Reference Implementation — Core (Level 1) MCP Server.
+"""NON-NORMATIVE Level 1 Illustrative Implementation -- Core MCP Server.
 
 This module demonstrates the minimum viable MCP server that satisfies
 Level 1 (Core) conformance as defined in spec/conformance.md.  It
 implements the trialmcp-authz and trialmcp-ledger tool contracts
 required by profiles/base-profile.md.
+
+IMPORTANT: This is an illustrative implementation only.  It is
+provided to demonstrate schema-compliant payload shapes and is not
+suitable for production deployment.  The normative requirements are
+defined in /spec/, /schemas/, and /profiles/.
 
 See Also
 --------
@@ -87,26 +92,35 @@ GENESIS_HASH = "0" * 64
 # ---------------------------------------------------------------------------
 
 
-def authz_evaluate(role: str, tool: str, resource_id: str | None = None) -> dict[str, Any]:
+def authz_evaluate(role: str, tool: str, server: str = "trialmcp-authz") -> dict[str, Any]:
     """Evaluate an authorization request against the default policy.
 
     Returns a schema-valid authz-decision per
     schemas/authz-decision.schema.json.
+
+    Fields align to the canonical schema:
+      allowed, effect, role, server, tool, matching_rules (structured),
+      evaluated_at, and optionally deny_reason.
     """
     allowed_tools = DEFAULT_POLICY.get(role, [])
-    decision = "ALLOW" if tool in allowed_tools else "DENY"
-    return {
-        "decision": decision,
+    effect = "ALLOW" if tool in allowed_tools else "DENY"
+    allowed = effect == "ALLOW"
+    result: dict[str, Any] = {
+        "allowed": allowed,
+        "effect": effect,
         "role": role,
+        "server": server,
         "tool": tool,
-        "resource_id": resource_id or "",
-        "reason": (
-            f"Role '{role}' is {'permitted' if decision == 'ALLOW' else 'denied'} "
-            f"access to tool '{tool}' by default policy."
+        "matching_rules": (
+            [{"role": role, "server": server, "tool": tool, "effect": "ALLOW"}] if allowed else []
         ),
-        "matching_rules": [f"default_policy_{role}"],
-        "timestamp": datetime.now(timezone.utc).isoformat(),
+        "evaluated_at": datetime.now(timezone.utc).isoformat(),
     }
+    if not allowed:
+        result["deny_reason"] = (
+            f"Role '{role}' is denied access to tool '{tool}' by default policy."
+        )
+    return result
 
 
 def authz_issue_token(role: str, expires_in: int = 3600) -> dict[str, Any]:
@@ -180,25 +194,29 @@ def ledger_append(
     tool: str,
     caller: str,
     result_summary: str,
-    prev_hash: str = GENESIS_HASH,
+    previous_hash: str = GENESIS_HASH,
     parameters: dict[str, Any] | None = None,
 ) -> dict[str, Any]:
     """Append a new record to the audit ledger.
 
     Returns a schema-valid audit-record per
     schemas/audit-record.schema.json.
+
+    Fields align to the canonical schema:
+      audit_id, timestamp, server, tool, caller, parameters,
+      result_summary, previous_hash, hash.
     """
     record: dict[str, Any] = {
-        "record_id": str(uuid.uuid4()),
+        "audit_id": str(uuid.uuid4()),
         "timestamp": datetime.now(timezone.utc).isoformat(),
         "server": server,
         "tool": tool,
         "caller": caller,
         "parameters": parameters or {},
         "result_summary": result_summary,
-        "prev_hash": prev_hash,
+        "previous_hash": previous_hash,
     }
-    record["hash"] = compute_audit_hash(record, prev_hash)
+    record["hash"] = compute_audit_hash(record, previous_hash)
     return record
 
 
@@ -215,7 +233,7 @@ def ledger_verify(chain: list[dict[str, Any]]) -> dict[str, Any]:
                 "reason": f"HASH_MISMATCH at index {i}",
                 "index": i,
             }
-        if record.get("prev_hash") != prev:
+        if record.get("previous_hash") != prev:
             return {
                 "valid": False,
                 "reason": f"PREV_HASH_MISMATCH at index {i}",
@@ -230,24 +248,35 @@ def ledger_verify(chain: list[dict[str, Any]]) -> dict[str, Any]:
 # ---------------------------------------------------------------------------
 
 
-def health_status() -> dict[str, Any]:
-    """Return server health per schemas/health-status.schema.json."""
+def health_status(
+    server_name: str = "trialmcp-ledger",
+) -> dict[str, Any]:
+    """Return server health per schemas/health-status.schema.json.
+
+    Fields align to the canonical schema:
+      server_name, status, version, uptime_seconds, checked_at,
+      dependencies (array of typed objects).
+    """
     return {
-        "server": "trialmcp-core-reference",
+        "server_name": server_name,
         "status": "healthy",
-        "version": "0.5.0",
-        "timestamp": datetime.now(timezone.utc).isoformat(),
+        "version": "0.6.0",
         "uptime_seconds": 0,
-        "dependencies": {},
+        "checked_at": datetime.now(timezone.utc).isoformat(),
+        "dependencies": [],
     }
 
 
-def error_response(code: str, message: str, tool: str = "") -> dict[str, Any]:
+def error_response(code: str, message: str, tool: str = "", server: str = "") -> dict[str, Any]:
     """Return standardised error per schemas/error-response.schema.json."""
-    return {
+    resp: dict[str, Any] = {
         "error": True,
         "code": code,
         "message": message,
-        "tool": tool,
-        "timestamp": datetime.now(timezone.utc).isoformat(),
     }
+    if server:
+        resp["server"] = server
+    if tool:
+        resp["tool"] = tool
+    resp["timestamp"] = datetime.now(timezone.utc).isoformat()
+    return resp
