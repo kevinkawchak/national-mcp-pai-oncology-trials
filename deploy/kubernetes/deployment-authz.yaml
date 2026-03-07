@@ -1,0 +1,62 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: trialmcp-authz
+  namespace: trialmcp
+  labels:
+    app: trialmcp-authz
+    app.kubernetes.io/part-of: national-mcp-pai-oncology-trials
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: trialmcp-authz
+  template:
+    metadata:
+      labels:
+        app: trialmcp-authz
+    spec:
+      containers:
+        - name: authz
+          image: trialmcp-authz:0.7.0
+          ports:
+            - containerPort: 8001
+          env:
+            - name: TRIALMCP_STORAGE_BACKEND
+              valueFrom:
+                configMapKeyRef:
+                  name: trialmcp-config
+                  key: storage_backend
+            - name: TRIALMCP_LOG_LEVEL
+              valueFrom:
+                configMapKeyRef:
+                  name: trialmcp-config
+                  key: log_level
+          resources:
+            requests:
+              cpu: 100m
+              memory: 128Mi
+            limits:
+              cpu: 500m
+              memory: 512Mi
+          livenessProbe:
+            exec:
+              command:
+                - python
+                - -c
+                - "from servers.trialmcp_authz import AuthzServer; print('ok')"
+            initialDelaySeconds: 10
+            periodSeconds: 30
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: trialmcp-authz
+  namespace: trialmcp
+spec:
+  selector:
+    app: trialmcp-authz
+  ports:
+    - port: 8001
+      targetPort: 8001
+  type: ClusterIP

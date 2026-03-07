@@ -1,0 +1,34 @@
+{
+  "studies": [
+    {
+      "StudyInstanceUID": "1.2.840.113619.2.55.3.604688119.969.1234567890.1",
+      "PatientName": "Smith^John",
+      "PatientID": "patient-onc-001",
+      "StudyDate": "20250115",
+      "Modality": "CT",
+      "StudyDescription": "CT Chest Abdomen Pelvis with contrast",
+      "NumberOfSeries": 4,
+      "NumberOfInstances": 312
+    },
+    {
+      "StudyInstanceUID": "1.2.840.113619.2.55.3.604688119.969.1234567890.2",
+      "PatientName": "Johnson^Maria",
+      "PatientID": "patient-onc-002",
+      "StudyDate": "20250220",
+      "Modality": "MR",
+      "StudyDescription": "MR Brain with and without contrast",
+      "NumberOfSeries": 6,
+      "NumberOfInstances": 420
+    },
+    {
+      "StudyInstanceUID": "1.2.840.113619.2.55.3.604688119.969.1234567890.3",
+      "PatientName": "Smith^John",
+      "PatientID": "patient-onc-001",
+      "StudyDate": "20250301",
+      "Modality": "PT",
+      "StudyDescription": "PET/CT FDG whole body oncology staging",
+      "NumberOfSeries": 3,
+      "NumberOfInstances": 645
+    }
+  ]
+}

@@ -203,7 +203,7 @@ function healthStatus(serverName: string = "trialmcp-ledger"): HealthStatus {
   const status: HealthStatus = {
     server_name: serverName,
     status: "healthy",
-    version: "0.6.0",
+    version: "0.7.0",
     uptime_seconds: 0,
     checked_at: new Date().toISOString(),
     dependencies: [],

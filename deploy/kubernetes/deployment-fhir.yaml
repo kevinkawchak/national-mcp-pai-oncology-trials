@@ -1,0 +1,54 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: trialmcp-fhir
+  namespace: trialmcp
+  labels:
+    app: trialmcp-fhir
+    app.kubernetes.io/part-of: national-mcp-pai-oncology-trials
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: trialmcp-fhir
+  template:
+    metadata:
+      labels:
+        app: trialmcp-fhir
+    spec:
+      containers:
+        - name: fhir
+          image: trialmcp-fhir:0.7.0
+          ports:
+            - containerPort: 8002
+          env:
+            - name: TRIALMCP_STORAGE_BACKEND
+              valueFrom:
+                configMapKeyRef:
+                  name: trialmcp-config
+                  key: storage_backend
+            - name: TRIALMCP_LOG_LEVEL
+              valueFrom:
+                configMapKeyRef:
+                  name: trialmcp-config
+                  key: log_level
+          resources:
+            requests:
+              cpu: 100m
+              memory: 128Mi
+            limits:
+              cpu: 500m
+              memory: 512Mi
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: trialmcp-fhir
+  namespace: trialmcp
+spec:
+  selector:
+    app: trialmcp-fhir
+  ports:
+    - port: 8002
+      targetPort: 8002
+  type: ClusterIP

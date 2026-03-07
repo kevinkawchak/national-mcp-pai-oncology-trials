@@ -1,0 +1,105 @@
+# Multi-site deployment — Site A, Site B, and shared ledger
+# Usage: docker-compose -f docker-compose.multi-site.yml up
+version: "3.9"
+
+services:
+  # --- Shared National Ledger ---
+  shared-ledger:
+    build:
+      context: ../
+      dockerfile: deploy/docker/Dockerfile.ledger
+    container_name: trialmcp-shared-ledger
+    ports:
+      - "9004:8004"
+    environment:
+      - TRIALMCP_STORAGE_BACKEND=memory
+      - TRIALMCP_LOG_LEVEL=INFO
+    restart: unless-stopped
+
+  # --- Site A: Academic Medical Center ---
+  site-a-authz:
+    build:
+      context: ../
+      dockerfile: deploy/docker/Dockerfile.authz
+    container_name: site-a-authz
+    environment:
+      - TRIALMCP_STORAGE_BACKEND=memory
+      - TRIALMCP_LOG_LEVEL=INFO
+    restart: unless-stopped
+
+  site-a-fhir:
+    build:
+      context: ../
+      dockerfile: deploy/docker/Dockerfile.fhir
+    container_name: site-a-fhir
+    environment:
+      - TRIALMCP_STORAGE_BACKEND=memory
+    depends_on:
+      - site-a-authz
+    restart: unless-stopped
+
+  site-a-dicom:
+    build:
+      context: ../
+      dockerfile: deploy/docker/Dockerfile.dicom
+    container_name: site-a-dicom
+    environment:
+      - TRIALMCP_STORAGE_BACKEND=memory
+    depends_on:
+      - site-a-authz
+    restart: unless-stopped
+
+  site-a-provenance:
+    build:
+      context: ../
+      dockerfile: deploy/docker/Dockerfile.provenance
+    container_name: site-a-provenance
+    environment:
+      - TRIALMCP_STORAGE_BACKEND=memory
+    depends_on:
+      - site-a-authz
+    restart: unless-stopped
+
+  # --- Site B: Community Hospital ---
+  site-b-authz:
+    build:
+      context: ../
+      dockerfile: deploy/docker/Dockerfile.authz
+    container_name: site-b-authz
+    environment:
+      - TRIALMCP_STORAGE_BACKEND=memory
+      - TRIALMCP_LOG_LEVEL=INFO
+    restart: unless-stopped
+
+  site-b-fhir:
+    build:
+      context: ../
+      dockerfile: deploy/docker/Dockerfile.fhir
+    container_name: site-b-fhir
+    environment:
+      - TRIALMCP_STORAGE_BACKEND=memory
+    depends_on:
+      - site-b-authz
+    restart: unless-stopped
+
+  site-b-dicom:
+    build:
+      context: ../
+      dockerfile: deploy/docker/Dockerfile.dicom
+    container_name: site-b-dicom
+    environment:
+      - TRIALMCP_STORAGE_BACKEND=memory
+    depends_on:
+      - site-b-authz
+    restart: unless-stopped
+
+  site-b-provenance:
+    build:
+      context: ../
+      dockerfile: deploy/docker/Dockerfile.provenance
+    container_name: site-b-provenance
+    environment:
+      - TRIALMCP_STORAGE_BACKEND=memory
+    depends_on:
+      - site-b-authz
+    restart: unless-stopped

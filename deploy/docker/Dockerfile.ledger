@@ -1,0 +1,20 @@
+FROM python:3.12-slim
+
+LABEL maintainer="National MCP-PAI Oncology Trials <trialmcp@example.org>"
+LABEL description="trialmcp-ledger — Audit Ledger MCP Server"
+
+WORKDIR /app
+
+COPY pyproject.toml ./
+COPY servers/ ./servers/
+COPY models/ ./models/
+COPY schemas/ ./schemas/
+
+RUN pip install --no-cache-dir .
+
+EXPOSE 8004
+
+HEALTHCHECK --interval=30s --timeout=5s --retries=3 \
+    CMD python -c "from servers.trialmcp_ledger import LedgerServer; print('ok')" || exit 1
+
+ENTRYPOINT ["python", "-m", "servers.trialmcp_ledger.server"]

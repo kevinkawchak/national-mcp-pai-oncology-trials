@@ -1,0 +1,46 @@
+{
+  "resourceType": "Bundle",
+  "type": "collection",
+  "entry": [
+    {
+      "resource": {
+        "resourceType": "Patient",
+        "id": "patient-onc-001",
+        "name": [{"family": "Smith", "given": ["John"]}],
+        "birthDate": "1965-03-15",
+        "gender": "male",
+        "identifier": [
+          {
+            "system": "urn:oid:2.16.840.1.113883.4.3.6",
+            "value": "MRN-12345"
+          }
+        ]
+      }
+    },
+    {
+      "resource": {
+        "resourceType": "Patient",
+        "id": "patient-onc-002",
+        "name": [{"family": "Johnson", "given": ["Maria"]}],
+        "birthDate": "1972-08-22",
+        "gender": "female",
+        "identifier": [
+          {
+            "system": "urn:oid:2.16.840.1.113883.4.3.6",
+            "value": "MRN-67890"
+          }
+        ]
+      }
+    },
+    {
+      "resource": {
+        "resourceType": "ResearchStudy",
+        "id": "study-onc-001",
+        "title": "Phase III Robot-Assisted Oncology Surgical Trial",
+        "status": "active",
+        "phase": {"text": "Phase 3"},
+        "description": "Multi-site clinical trial evaluating robot-assisted surgical procedures in oncology care"
+      }
+    }
+  ]
+}

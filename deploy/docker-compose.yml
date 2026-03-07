@@ -1,0 +1,72 @@
+# Single-site deployment — all 5 MCP servers with in-memory storage
+# Usage: docker-compose up
+version: "3.9"
+
+services:
+  authz:
+    build:
+      context: ../
+      dockerfile: deploy/docker/Dockerfile.authz
+    container_name: trialmcp-authz
+    ports:
+      - "8001:8001"
+    environment:
+      - TRIALMCP_STORAGE_BACKEND=memory
+      - TRIALMCP_LOG_LEVEL=INFO
+    restart: unless-stopped
+
+  fhir:
+    build:
+      context: ../
+      dockerfile: deploy/docker/Dockerfile.fhir
+    container_name: trialmcp-fhir
+    ports:
+      - "8002:8002"
+    environment:
+      - TRIALMCP_STORAGE_BACKEND=memory
+      - TRIALMCP_LOG_LEVEL=INFO
+    depends_on:
+      - authz
+    restart: unless-stopped
+
+  dicom:
+    build:
+      context: ../
+      dockerfile: deploy/docker/Dockerfile.dicom
+    container_name: trialmcp-dicom
+    ports:
+      - "8003:8003"
+    environment:
+      - TRIALMCP_STORAGE_BACKEND=memory
+      - TRIALMCP_LOG_LEVEL=INFO
+    depends_on:
+      - authz
+    restart: unless-stopped
+
+  ledger:
+    build:
+      context: ../
+      dockerfile: deploy/docker/Dockerfile.ledger
+    container_name: trialmcp-ledger
+    ports:
+      - "8004:8004"
+    environment:
+      - TRIALMCP_STORAGE_BACKEND=memory
+      - TRIALMCP_LOG_LEVEL=INFO
+    depends_on:
+      - authz
+    restart: unless-stopped
+
+  provenance:
+    build:
+      context: ../
+      dockerfile: deploy/docker/Dockerfile.provenance
+    container_name: trialmcp-provenance
+    ports:
+      - "8005:8005"
+    environment:
+      - TRIALMCP_STORAGE_BACKEND=memory
+      - TRIALMCP_LOG_LEVEL=INFO
+    depends_on:
+      - authz
+    restart: unless-stopped

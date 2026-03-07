@@ -1,0 +1,10 @@
+# trialmcp-provenance server configuration
+server_name: trialmcp-provenance
+host: 0.0.0.0
+port: 8005
+log_level: INFO
+storage_backend: memory
+storage_dsn: ""
+extra:
+  max_dag_depth: 100
+  cross_site_merge: true

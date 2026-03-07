@@ -1,0 +1,9 @@
+# trialmcp-ledger server configuration
+server_name: trialmcp-ledger
+host: 0.0.0.0
+port: 8004
+log_level: INFO
+storage_backend: memory
+storage_dsn: ""
+extra:
+  genesis_hash: "0000000000000000000000000000000000000000000000000000000000000000"

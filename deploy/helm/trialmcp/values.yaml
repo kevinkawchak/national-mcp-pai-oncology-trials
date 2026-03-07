@@ -1,0 +1,71 @@
+# Default values for trialmcp Helm chart
+
+global:
+  storageBackend: memory
+  logLevel: INFO
+  imageTag: "0.7.0"
+
+authz:
+  enabled: true
+  replicas: 2
+  image: trialmcp-authz
+  port: 8001
+  resources:
+    requests:
+      cpu: 100m
+      memory: 128Mi
+    limits:
+      cpu: 500m
+      memory: 512Mi
+
+fhir:
+  enabled: true
+  replicas: 2
+  image: trialmcp-fhir
+  port: 8002
+  resources:
+    requests:
+      cpu: 100m
+      memory: 128Mi
+    limits:
+      cpu: 500m
+      memory: 512Mi
+
+dicom:
+  enabled: true
+  replicas: 2
+  image: trialmcp-dicom
+  port: 8003
+  resources:
+    requests:
+      cpu: 100m
+      memory: 128Mi
+    limits:
+      cpu: 500m
+      memory: 512Mi
+
+ledger:
+  enabled: true
+  replicas: 2
+  image: trialmcp-ledger
+  port: 8004
+  resources:
+    requests:
+      cpu: 100m
+      memory: 128Mi
+    limits:
+      cpu: 500m
+      memory: 512Mi
+
+provenance:
+  enabled: true
+  replicas: 2
+  image: trialmcp-provenance
+  port: 8005
+  resources:
+    requests:
+      cpu: 100m
+      memory: 128Mi
+    limits:
+      cpu: 500m
+      memory: 512Mi

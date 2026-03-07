@@ -1,0 +1,46 @@
+{{- range $name, $server := dict "authz" .Values.authz "fhir" .Values.fhir "dicom" .Values.dicom "ledger" .Values.ledger "provenance" .Values.provenance }}
+{{- if $server.enabled }}
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: trialmcp-{{ $name }}
+  labels:
+    app: trialmcp-{{ $name }}
+    app.kubernetes.io/part-of: national-mcp-pai-oncology-trials
+spec:
+  replicas: {{ $server.replicas }}
+  selector:
+    matchLabels:
+      app: trialmcp-{{ $name }}
+  template:
+    metadata:
+      labels:
+        app: trialmcp-{{ $name }}
+    spec:
+      containers:
+        - name: {{ $name }}
+          image: "{{ $server.image }}:{{ $.Values.global.imageTag }}"
+          ports:
+            - containerPort: {{ $server.port }}
+          env:
+            - name: TRIALMCP_STORAGE_BACKEND
+              value: {{ $.Values.global.storageBackend | quote }}
+            - name: TRIALMCP_LOG_LEVEL
+              value: {{ $.Values.global.logLevel | quote }}
+          resources:
+            {{- toYaml $server.resources | nindent 12 }}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: trialmcp-{{ $name }}
+spec:
+  selector:
+    app: trialmcp-{{ $name }}
+  ports:
+    - port: {{ $server.port }}
+      targetPort: {{ $server.port }}
+  type: ClusterIP
+{{- end }}
+{{- end }}

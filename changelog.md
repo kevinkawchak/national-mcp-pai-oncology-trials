@@ -6,6 +6,65 @@ This project follows [Semantic Versioning](https://semver.org/) as described in 
 
 ---
 
+## [0.7.0] — 2026-03-07
+
+### Added
+
+#### Production-Shaped MCP Server Packages
+- `servers/__init__.py` — Package root for all 5 MCP domain servers
+- `servers/common/` — Shared server infrastructure: MCP transport (stdin/stdout JSON-RPC 2.0), request routing, auth/audit middleware, 9-code error taxonomy, env var/YAML/JSON configuration management, structured JSON logging, health/readiness checker, schema validation utilities
+- `servers/storage/` — Persistence layer: abstract base interface, in-memory adapter, SQLite adapter, PostgreSQL adapter interface, schema migration utilities, config-driven storage factory
+- `servers/trialmcp_authz/` — Authorization server: deny-by-default RBAC policy engine with 6-actor matrix, SHA-256 token lifecycle, persistent policy/token stores, MCP server entrypoint with transport/routing/audit
+- `servers/trialmcp_fhir/` — FHIR clinical data server: HIPAA Safe Harbor de-identification pipeline (18-identifier removal), HMAC-SHA256 pseudonymization, FHIR adapter interface (mock/HAPI/SMART), capability statement generation
+- `servers/trialmcp_dicom/` — DICOM imaging server: role-based modality restrictions (MUST: CT, MR, PT; SHOULD: RTSTRUCT, RTPLAN), DICOM UID validation, patient name hashing (12-char SHA-256), retrieval-pointer handling
+- `servers/trialmcp_ledger/` — Audit ledger server: hash-chained immutable audit ledger with SHA-256 canonical JSON, genesis block, chain verification, concurrency-safe locking, query/export tools
+- `servers/trialmcp_provenance/` — Provenance server: DAG-based lineage graph with SHA-256 fingerprinting, W3C PROV alignment, forward/backward traversal, cycle detection, cross-site trace merging
+
+#### Deployment Infrastructure
+- `deploy/docker/Dockerfile.authz` through `Dockerfile.provenance` — Individual Dockerfiles for each server
+- `deploy/docker/Dockerfile.allinone` — All-in-one image with all 5 servers
+- `deploy/docker-compose.yml` — Single-site deployment with all 5 servers
+- `deploy/docker-compose.multi-site.yml` — Multi-site deployment (Site A + Site B + shared ledger)
+- `deploy/kubernetes/` — Reference Kubernetes manifests: namespace, configmap, secrets template, 5 deployment+service pairs
+- `deploy/helm/trialmcp/` — Helm chart with Chart.yaml, values.yaml, templated deployment
+- `deploy/config/` — Example YAML config files for each server, site-profile-example.yaml
+- `deploy/.env.example` — Environment configuration template
+
+#### End-to-End Demo
+- `examples/quickstart/run_demo.py` — Complete 5-server workflow demo: token issuance → validation → authz → FHIR read → DICOM query → ledger append → provenance record → chain verification → DAG verification
+- `examples/quickstart/demo_data/` — Synthetic FHIR Bundle (2 patients, 1 research study), DICOM metadata (3 studies: CT, MR, PT), site capability profile
+- `examples/quickstart/README.md` — Step-by-step quickstart guide
+
+#### TypeScript Expansion
+- `reference/typescript/authz-server.ts` — TypeScript AuthZ server with full policy engine and token lifecycle
+- `reference/typescript/ledger-server.ts` — TypeScript Ledger server with AuditChain class
+- `reference/typescript/interfaces.ts` — Generated TypeScript interfaces for all 13 schemas
+- `reference/typescript/authz-server.test.ts` — 12 Jest tests for AuthZ server
+- `reference/typescript/ledger-server.test.ts` — 9 Jest tests for Ledger server
+- `reference/typescript/jest.config.json` — Jest configuration for ts-jest
+
+### Changed
+- `pyproject.toml` — Version 0.7.0, added CLI entry points (`trialmcp-authz`, etc.), added optional dependency extras (`[fhir]`, `[dicom]`, `[dev]`, `[test]`, `[docs]`, `[all]`), added `servers` and `examples` to known-first-party imports
+- `reference/python/core_server.py` — Version string 0.6.0 → 0.7.0
+- `reference/typescript/core-server.ts` — Version string 0.6.0 → 0.7.0
+- `reference/typescript/package.json` — Version 0.7.0, added test/lint scripts, added jest/ts-jest devDependencies
+- `reference/typescript/tsconfig.json` — Added skipLibCheck, excluded test files from compilation
+- `README.md` — v0.7.0 version/badges, new MCP Server Implementations section with Mermaid diagram, Deployment Infrastructure section, Quickstart Demo section, updated repository structure
+- `prompts.md` — v0.7.0 prompt archived
+- `releases.md` — v0.7.0 release notes added
+- `changelog.md` — This entry
+
+### Verified
+- `ruff check .` and `ruff format --check .` pass cleanly across all 70 Python files
+- `pytest tests/` — 44 unit tests pass
+- `pytest conformance/` — 269 conformance tests pass (+ 1 skipped)
+- All 13 schemas validate with `python reference/python/schema_validator.py`
+- Generated models match committed models (`python scripts/generate_models.py`)
+- End-to-end demo (`python examples/quickstart/run_demo.py`) completes full 5-server workflow
+- All 5 server packages import and instantiate correctly
+
+---
+
 ## [0.6.0] — 2026-03-07
 
 ### Fixed

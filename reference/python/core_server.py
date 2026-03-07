@@ -260,7 +260,7 @@ def health_status(
     return {
         "server_name": server_name,
         "status": "healthy",
-        "version": "0.6.0",
+        "version": "0.7.0",
         "uptime_seconds": 0,
         "checked_at": datetime.now(timezone.utc).isoformat(),
         "dependencies": [],
