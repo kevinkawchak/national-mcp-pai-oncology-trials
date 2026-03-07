@@ -6,6 +6,34 @@ This project follows [Semantic Versioning](https://semver.org/) as described in 
 
 ---
 
+## [0.5.1] — 2026-03-07
+
+### Added
+
+#### Unit Test Suite
+- `tests/__init__.py` — Package initialization for unit test directory
+- `tests/test_core_server.py` — 28 unit tests for `reference.python.core_server`: AuthZ evaluate (6 tests), token lifecycle (7 tests), ledger operations (8 tests), health/error helpers (5 tests), policy matrix (1 test), genesis hash constant (1 test)
+- `tests/test_schema_validator.py` — 6 unit tests for `reference.python.schema_validator`: schema loading (2 tests), schema listing (2 tests), schema validation (2 tests)
+- `tests/test_conformance_runner.py` — 5 unit tests for `reference.python.conformance_runner`: pytest argument building (5 tests), level directory mapping (1 test)
+
+### Changed
+- `.github/workflows/ci.yml`: Added `pytest tests/ -v` step before conformance tests in `lint-and-format` job across Python 3.10, 3.11, 3.12
+- `pyproject.toml`: Version 0.5.1, added `tests` to testpaths and `tests` to known-first-party isort imports, updated description
+- `prompts.md`: v0.5.1 prompt archived
+- `releases.md`: v0.5.1 release notes added
+- `changelog.md`: This entry
+
+### Verified
+- `pytest tests/` — 39 unit tests pass
+- `pytest conformance/` — 269 conformance tests pass
+- `python reference/python/schema_validator.py` — All 13 schemas validate
+- Every `/spec/` file uses RFC 2119 MUST/SHOULD/MAY keywords
+- Every `/reference/` implementation file labeled NON-NORMATIVE
+- `.github/workflows/ci.yml` pipeline validated
+- `ruff check .` and `ruff format --check .` pass cleanly
+
+---
+
 ## [0.5.0] — 2026-03-06
 
 ### Added

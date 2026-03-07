@@ -1,3 +1,36 @@
+## Prompt v0.5.1
+
+Perform tests and fix code for national-mcp-pai-oncology-trials based on the following verifications and other comprehensive checks/tests repository wide. Make note of any changes made throughout relevant documentation. If necessary, create a new directory(s) on main.:
+1. pytest tests/ — All 39 existing tests still pass (no existing code modified)
+2. pytest conformance/ — Conformance suite runs against reference implementation
+3. python reference/python/schema_validator.py — All schemas validate
+4. Every /spec/ file uses RFC 2119 MUST/SHOULD/MAY
+5. Every /reference/ file labeled NON-NORMATIVE
+6. .github/workflows/ci.yml executes successfully
+7. prompts.md contains all 5 new prompts with comprehensive instructions
+8. Each version has releases.md entry and changelog.md entry
+
+Provide a copy of this exact prompt under main prompts.md. Be sure to fix and address errors that would cause failed checks for the single pull request (such as Python environment issues to avoid the following error during final checks): "3 failing checks
+x Cl / lint-and-format (3.10) (pull...
+x Cl / lint-and-format (3.11) (pull...
+x Cl / lint-and-format (3.12) (pull... " Place the new release notes in releases.md under main using the format below (which is the same format of the last published version). Update changelog.md using v0.5.1. When you are finished, auto-push the update to GitHub on your own for my review. The user will then review your updates in GitHub prior to finalization.
+
+"FORMAT"
+Release title
+v0.5.1 -
+
+## Summary
+
+## Features
+
+## Contributors
+@kevinkawchak
+@claude
+
+## Notes
+
+---
+
 ## Prompt v0.5.0
 
 Your goal in the comprehensive national-mcp-pai-oncology-trials v0.5.0 release is to continue scaling to a United States national industry-wide MCP standard for the physical ai oncology trials industry based in part from the prior kevinkawchak/mcp-pai-oncology-trials. It is important that only directories/files/modified files be used that are truly useful on the national scale rather than the prior repository being used as a reference implementation / seed specification.

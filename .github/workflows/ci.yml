@@ -37,6 +37,9 @@ jobs:
       - name: Ruff format check
         run: ruff format --check .
 
+      - name: Run unit tests
+        run: pytest tests/ -v
+
       - name: Run conformance tests
         run: pytest conformance/ -v
 
