@@ -1,15 +1,17 @@
 # National MCP Standard for Physical AI Oncology Clinical Trials
 
-**Version 0.6.0** | **Proposed Reference Standard** | **United States**
+**Version 0.7.0** | **Proposed Reference Standard** | **United States**
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 [![DOI](https://img.shields.io/badge/DOI-10.5281%2Fzenodo.18894758-blue)](https://doi.org/10.5281/zenodo.18894758)
-[![Version](https://img.shields.io/badge/Version-0.6.0-green.svg)](releases.md)
+[![Version](https://img.shields.io/badge/Version-0.7.0-green.svg)](releases.md)
 [![CI](https://github.com/kevinkawchak/national-mcp-pai-oncology-trials/actions/workflows/ci.yml/badge.svg)](.github/workflows/ci.yml)
 [![JSON Schema](https://img.shields.io/badge/JSON_Schema-Draft_2020--12-orange.svg)](schemas/)
 [![Python](https://img.shields.io/badge/Python-3.10%20|%203.11%20|%203.12-blue.svg)](https://www.python.org/)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.3-blue.svg)](reference/typescript/)
 [![Protocol](https://img.shields.io/badge/Protocol-MCP-purple.svg)](https://modelcontextprotocol.io/)
+[![Docker](https://img.shields.io/badge/Docker-Compose-blue.svg)](deploy/docker-compose.yml)
+[![Servers](https://img.shields.io/badge/MCP_Servers-5-blue.svg)](servers/)
 [![Profiles](https://img.shields.io/badge/Profiles-8-blue.svg)](profiles/)
 [![Schemas](https://img.shields.io/badge/Schemas-13-blue.svg)](schemas/)
 [![Tools](https://img.shields.io/badge/Tools-23-blue.svg)](spec/tool-contracts.md)
@@ -23,7 +25,7 @@ The **National MCP-PAI Oncology Trials Standard** is a proposed reference standa
 
 > **Scope**: This specification targets U.S. clinical sites, sponsors, CROs, and technology vendors operating Physical AI systems — surgical robots, therapeutic positioning systems, diagnostic needle-placement platforms, and rehabilitative exoskeletons — within FDA-regulated oncology trials.
 >
-> **Maturity**: This repository provides normative specifications (`/spec/`), machine-readable schemas (`/schemas/`), conformance profiles (`/profiles/`), and Level 1 illustrative implementations (`/reference/`). It does not yet include production server implementations, federated coordination infrastructure, or multi-stakeholder governance evidence. See the [adoption roadmap](docs/adoption-roadmap.md) for the path from specification to validated deployment.
+> **Maturity**: This repository provides normative specifications (`/spec/`), machine-readable schemas (`/schemas/`), conformance profiles (`/profiles/`), Level 1 illustrative implementations (`/reference/`), and production-shaped MCP server packages (`/servers/`) with persistence abstractions and Docker/Kubernetes deployment infrastructure (`/deploy/`). See the [adoption roadmap](docs/adoption-roadmap.md) for the path from specification to validated deployment.
 
 ---
 
@@ -31,6 +33,9 @@ The **National MCP-PAI Oncology Trials Standard** is a proposed reference standa
 
 - [Motivation](#motivation)
 - [National Architecture Overview](#national-architecture-overview)
+- [MCP Server Implementations](#mcp-server-implementations)
+- [Deployment Infrastructure](#deployment-infrastructure)
+- [Quickstart Demo](#quickstart-demo)
 - [Reference Implementations](#reference-implementations)
 - [Unit Test Suite](#unit-test-suite)
 - [CI/CD Pipeline](#cicd-pipeline)
@@ -195,6 +200,109 @@ ROBOT AGENT                MCP SERVER LAYER              CLINICAL SYSTEMS
             │  Privacy Budgets   │
             └────────────────────┘
 ```
+
+---
+
+## MCP Server Implementations
+
+v0.7.0 introduces production-shaped MCP server packages for all five domains, backed by persistence abstractions and deployable via Docker.
+
+### Five Domain Servers
+
+```mermaid
+graph LR
+    subgraph "servers/"
+        A[trialmcp-authz<br/>Authorization] --> C[common/<br/>Shared Infra]
+        B[trialmcp-fhir<br/>Clinical Data] --> C
+        D[trialmcp-dicom<br/>Imaging] --> C
+        E[trialmcp-ledger<br/>Audit Ledger] --> C
+        F[trialmcp-provenance<br/>Provenance] --> C
+        C --> S[storage/<br/>Persistence]
+    end
+```
+
+| Server | Package | Tools | Key Features |
+|--------|---------|-------|-------------|
+| **trialmcp-authz** | `servers/trialmcp_authz/` | `authz_evaluate`, `authz_issue_token`, `authz_validate_token`, `authz_revoke_token` | Deny-by-default RBAC, 6-actor policy matrix, SHA-256 token lifecycle |
+| **trialmcp-fhir** | `servers/trialmcp_fhir/` | `fhir_read`, `fhir_search`, `fhir_patient_lookup`, `fhir_study_status` | HIPAA Safe Harbor de-identification, HMAC-SHA256 pseudonymization |
+| **trialmcp-dicom** | `servers/trialmcp_dicom/` | `dicom_query`, `dicom_retrieve` | Role-based modality restrictions (CT, MR, PT), patient name hashing |
+| **trialmcp-ledger** | `servers/trialmcp_ledger/` | `ledger_append`, `ledger_verify`, `ledger_query`, `ledger_export` | Hash-chained immutable ledger, SHA-256 canonical JSON |
+| **trialmcp-provenance** | `servers/trialmcp_provenance/` | `provenance_record`, `provenance_query_forward`, `provenance_query_backward`, `provenance_verify` | DAG-based lineage, SHA-256 fingerprinting, W3C PROV alignment |
+
+### Shared Infrastructure
+
+| Component | Path | Purpose |
+|-----------|------|---------|
+| Transport | `servers/common/transport.py` | stdin/stdout MCP protocol (JSON-RPC 2.0) |
+| Routing | `servers/common/routing.py` | Tool-call request dispatching |
+| Middleware | `servers/common/middleware.py` | Auth and audit middleware |
+| Errors | `servers/common/errors.py` | 9-code error taxonomy |
+| Config | `servers/common/config.py` | Env vars, YAML/JSON config files |
+| Logging | `servers/common/logging.py` | Structured JSON logging |
+| Health | `servers/common/health.py` | Health/readiness endpoints |
+| Validation | `servers/common/validation.py` | Schema validation utilities |
+
+### Persistence Layer
+
+| Adapter | Path | Use Case |
+|---------|------|----------|
+| In-Memory | `servers/storage/memory.py` | Testing, local development |
+| SQLite | `servers/storage/sqlite_adapter.py` | Single-site deployment |
+| PostgreSQL | `servers/storage/postgres_adapter.py` | Production deployment |
+
+---
+
+## Deployment Infrastructure
+
+### Docker
+
+Individual Dockerfiles for each server and an all-in-one image are provided in `deploy/docker/`.
+
+```bash
+# Single-site deployment with all 5 servers:
+cd deploy && docker-compose up
+
+# Multi-site deployment (Site A + Site B + shared ledger):
+cd deploy && docker-compose -f docker-compose.multi-site.yml up
+```
+
+### Kubernetes
+
+Reference Kubernetes manifests for production deployment:
+
+```
+deploy/kubernetes/
+├── namespace.yaml          # trialmcp namespace
+├── configmap.yaml          # ConfigMap + Secrets template
+├── deployment-authz.yaml   # AuthZ Deployment + Service
+├── deployment-fhir.yaml    # FHIR Deployment + Service
+├── deployment-dicom.yaml   # DICOM Deployment + Service
+├── deployment-ledger.yaml  # Ledger Deployment + Service
+└── deployment-provenance.yaml  # Provenance Deployment + Service
+```
+
+### Helm Chart
+
+Configurable Helm chart for deployment:
+
+```bash
+helm install trialmcp deploy/helm/trialmcp \
+  --set global.storageBackend=sqlite \
+  --set global.logLevel=INFO
+```
+
+---
+
+## Quickstart Demo
+
+Run the complete workflow across all 5 MCP servers in under 5 minutes:
+
+```bash
+pip install -e .
+python examples/quickstart/run_demo.py
+```
+
+The demo executes: token issuance → authorization → FHIR read (de-identified) → DICOM query → ledger append → provenance record → chain verification → DAG verification.
 
 ---
 
@@ -843,112 +951,83 @@ See [spec/security.md](spec/security.md) and [spec/privacy.md](spec/privacy.md) 
 
 ```
 national-mcp-pai-oncology-trials/
-├── reference/                    # NON-NORMATIVE Level 1 illustrative implementations
+├── servers/                      # Production-shaped MCP server packages (v0.7.0)
+│   ├── common/                   # Shared server infrastructure
+│   │   ├── transport.py          # stdin/stdout MCP protocol (JSON-RPC 2.0)
+│   │   ├── routing.py            # Tool-call request dispatching
+│   │   ├── middleware.py         # Auth and audit middleware
+│   │   ├── errors.py             # 9-code error taxonomy
+│   │   ├── config.py             # Env vars, YAML/JSON config files
+│   │   ├── logging.py            # Structured JSON logging
+│   │   ├── health.py             # Health/readiness endpoints
+│   │   └── validation.py         # Schema validation utilities
+│   ├── storage/                  # Persistence layer
+│   │   ├── base.py               # Abstract storage interface
+│   │   ├── memory.py             # In-memory adapter (testing)
+│   │   ├── sqlite_adapter.py     # SQLite adapter (single-site)
+│   │   ├── postgres_adapter.py   # PostgreSQL adapter (production)
+│   │   ├── migrations.py         # Schema migration utilities
+│   │   └── factory.py            # Config-driven backend selection
+│   ├── trialmcp_authz/           # Authorization server
+│   │   ├── server.py             # MCP server entrypoint
+│   │   ├── policy_engine.py      # Deny-by-default RBAC engine
+│   │   └── token_store.py        # SHA-256 token lifecycle
+│   ├── trialmcp_fhir/            # FHIR clinical data server
+│   │   ├── server.py             # MCP server entrypoint
+│   │   ├── deid_pipeline.py      # HIPAA Safe Harbor de-identification
+│   │   └── fhir_adapter.py       # Backend FHIR adapters (mock/HAPI/SMART)
+│   ├── trialmcp_dicom/           # DICOM imaging server
+│   │   ├── server.py             # MCP server entrypoint
+│   │   └── dicom_adapter.py      # Backend DICOM adapters (mock/Orthanc/dcm4chee)
+│   ├── trialmcp_ledger/          # Audit ledger server
+│   │   ├── server.py             # MCP server entrypoint
+│   │   └── chain.py              # Hash-chained immutable audit ledger
+│   └── trialmcp_provenance/      # Provenance server
+│       ├── server.py             # MCP server entrypoint
+│       └── dag.py                # DAG-based lineage graph
+├── deploy/                       # Deployment infrastructure (v0.7.0)
+│   ├── docker/                   # Dockerfiles for each server + all-in-one
+│   ├── docker-compose.yml        # Single-site deployment (5 servers)
+│   ├── docker-compose.multi-site.yml # Multi-site (Site A + B + shared ledger)
+│   ├── kubernetes/               # Reference K8s manifests
+│   ├── helm/trialmcp/            # Helm chart for configurable deployment
+│   ├── config/                   # Example YAML config files per server
+│   └── .env.example              # Environment configuration template
+├── examples/                     # End-to-end demos (v0.7.0)
+│   └── quickstart/               # 5-minute local demo
+│       ├── run_demo.py           # Complete 5-server workflow script
+│       ├── demo_data/            # Synthetic FHIR Bundles, DICOM metadata
+│       └── README.md             # Step-by-step guide
+├── reference/                    # NON-NORMATIVE illustrative implementations
 │   ├── python/                   # Python illustrative implementation
-│   │   ├── __init__.py           # Package documentation
 │   │   ├── core_server.py        # Level 1 illustrative Core MCP server
 │   │   ├── schema_validator.py   # JSON Schema validation utilities
 │   │   └── conformance_runner.py # CLI conformance test runner
 │   └── typescript/               # TypeScript illustrative implementation
 │       ├── core-server.ts        # Level 1 illustrative Core server with ajv
-│       ├── package.json          # Dependencies (ajv, uuid)
-│       ├── tsconfig.json         # TypeScript configuration
-│       └── README.md             # TypeScript reference documentation
-├── docs/                         # Extended documentation (v0.5.0)
-│   ├── architecture.md           # 5-server topology, data flow, audit chain
-│   ├── adoption-roadmap.md       # Phase 0–3 adoption roadmap
-│   └── glossary.md               # Standard terminology
-├── .github/                      # CI/CD and community templates
-│   ├── workflows/
-│   │   └── ci.yml                # Lint, test, schema validation, docs lint (v0.5.0)
-│   ├── ISSUE_TEMPLATE/
-│   │   ├── bug_report.md         # Bug report template
-│   │   ├── feature_request.md    # Feature request template
-│   │   └── spec_change.md        # Specification change template
-│   └── PULL_REQUEST_TEMPLATE.md  # Pull request template
-├── conformance/                  # NORMATIVE conformance test suite (v0.4.0)
-│   ├── README.md                 # Harness overview, how to run, how to add tests
+│       ├── authz-server.ts       # Level 2 AuthZ server implementation
+│       ├── ledger-server.ts      # Level 2 Ledger server implementation
+│       ├── interfaces.ts         # Generated TypeScript interfaces
+│       ├── *.test.ts             # Jest test suites
+│       └── package.json          # Dependencies (ajv, uuid, jest)
+├── conformance/                  # NORMATIVE conformance test suite
 │   ├── conftest.py               # Shared fixtures, schema validation helpers
 │   ├── fixtures/                 # Test fixture data (extracted from schemas)
-│   │   ├── audit_records.py      # Sample audit records and hash chains
-│   │   ├── authz_decisions.py    # Sample authorization decisions
-│   │   ├── clinical_resources.py # Sample FHIR and DICOM resources
-│   │   └── provenance_records.py # Sample provenance DAG records
 │   ├── positive/                 # Correct behavior validation
-│   │   ├── test_core_conformance.py          # Audit, errors, health, authz
-│   │   ├── test_clinical_read_conformance.py # FHIR + de-identification
-│   │   └── test_imaging_conformance.py       # DICOM conformance
 │   ├── negative/                 # Invalid input rejection
-│   │   ├── test_invalid_inputs.py            # Malformed requests, schema mismatches
-│   │   └── test_unauthorized_access.py       # Deny-by-default RBAC
 │   ├── security/                 # Security control validation
-│   │   ├── test_ssrf_prevention.py           # URL injection prevention
-│   │   ├── test_token_lifecycle.py           # Token expiry, revocation
-│   │   └── test_chain_integrity.py           # Hash chain tampering
 │   └── interoperability/         # Multi-server coordination
-│       ├── test_cross_server_trace.py        # Multi-server audit linkage
-│       └── test_schema_validation.py         # All outputs against 13 schemas
-├── profiles/                     # NORMATIVE conformance profiles and overlays (v0.3.0)
-│   ├── base-profile.md           # Core conformance: authz + audit + error taxonomy
-│   ├── clinical-read.md          # FHIR read/search + HIPAA de-identification
-│   ├── imaging-guided-oncology.md # DICOM query/retrieve + role-based modality
-│   ├── multi-site-federated.md   # Cross-site provenance, federated audit chain
-│   ├── robot-assisted-procedure.md # Robot capability, task-order, safety matrix, USL
-│   ├── state-us-ca.md            # California CCPA/CPRA overlay
-│   ├── state-us-ny.md            # New York health information overlay
-│   └── country-us-fda.md         # FDA 21 CFR Part 11 overlay
-├── schemas/                      # NORMATIVE machine-readable JSON schemas (v0.2.0)
-│   ├── capability-descriptor.schema.json    # Server capability advertisement
-│   ├── robot-capability-profile.schema.json # Robot platform with USL scoring
-│   ├── site-capability-profile.schema.json  # Site jurisdiction and data residency
-│   ├── task-order.schema.json               # Clinical trial task scheduling
-│   ├── audit-record.schema.json             # Hash-chained audit ledger record
-│   ├── provenance-record.schema.json        # DAG lineage with SHA-256 fingerprinting
-│   ├── consent-status.schema.json           # Patient consent state machine
-│   ├── authz-decision.schema.json           # RBAC authorization decision
-│   ├── dicom-query.schema.json              # DICOM query params and output
-│   ├── fhir-read.schema.json               # FHIR R4 single resource read
-│   ├── fhir-search.schema.json             # FHIR R4 collection search
-│   ├── error-response.schema.json          # Standardized error format
-│   └── health-status.schema.json           # Server health check
-├── spec/                         # NORMATIVE specification (v0.1.0)
-│   ├── core.md                   # Protocol scope and design principles
-│   ├── actor-model.md            # 6-actor permission model
-│   ├── tool-contracts.md         # 23 tool signatures and contracts
-│   ├── security.md               # RBAC, token lifecycle, SSRF prevention
-│   ├── privacy.md                # HIPAA Safe Harbor, pseudonymization
-│   ├── provenance.md             # DAG lineage, SHA-256 fingerprinting
-│   ├── audit.md                  # Hash-chained ledger, 21 CFR Part 11
-│   ├── conformance.md            # 5 conformance levels
-│   └── versioning.md             # SemVer, compatibility, extensions
+├── profiles/                     # NORMATIVE conformance profiles and overlays
+├── schemas/                      # NORMATIVE machine-readable JSON schemas (13)
+├── spec/                         # NORMATIVE specification (9 modules)
 ├── governance/                   # Governance framework
-│   ├── CHARTER.md                # Organization charter
-│   ├── DECISION_PROCESS.md       # Decision-making procedures
-│   ├── EXTENSIONS.md             # Extension namespace rules
-│   ├── VERSION_COMPATIBILITY.md  # Version compatibility policy
-│   └── CODEOWNERS                # Code ownership assignments
 ├── regulatory/                   # NORMATIVE regulatory overlays
-│   ├── US_FDA.md                 # FDA AI/ML guidance mapping
-│   ├── HIPAA.md                  # HIPAA compliance mapping
-│   ├── CFR_PART_11.md            # 21 CFR Part 11 mapping
-│   └── IRB_SITE_POLICY_TEMPLATE.md # IRB site policy template
-├── models/                      # Auto-generated typed models from schemas (v0.6.0)
-│   ├── python/
-│   │   └── generated_models.py  # Python dataclasses for all 13 schemas
-│   └── typescript/
-│       └── generated_models.ts  # TypeScript interfaces for all 13 schemas
-├── scripts/                     # Build and generation scripts (v0.6.0)
-│   └── generate_models.py       # Schema-to-code model generator
-├── tests/                       # Unit tests for reference implementations
-│   ├── __init__.py              # Package marker
-│   ├── test_core_server.py      # 33 unit tests for core_server.py
-│   ├── test_schema_validator.py # 6 unit tests for schema_validator.py
-│   └── test_conformance_runner.py # 5 unit tests for conformance_runner.py
-├── peer-review/                 # External peer review responses and prompts
-├── pyproject.toml                # Python project config (ruff, pytest)
-├── CODE_OF_CONDUCT.md            # Contributor Covenant
-├── LICENSE                       # MIT License
-├── README.md                     # This file
+├── models/                       # Auto-generated typed models from schemas
+├── scripts/                      # Build and generation scripts
+├── tests/                        # Unit tests (44 tests)
+├── docs/                         # Extended documentation
+├── peer-review/                  # External peer review responses and prompts
+├── pyproject.toml                # Python project config (entry points, ruff, pytest)
 ├── changelog.md                  # Version history
 ├── releases.md                   # Release notes
 └── prompts.md                    # Prompt archive

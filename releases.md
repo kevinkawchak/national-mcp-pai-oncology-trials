@@ -4,6 +4,53 @@ Release notes for the National MCP-PAI Oncology Trials Standard.
 
 ---
 
+v0.7.0 - Phase 2: Real Server Implementations, Persistence, and Deployment Infrastructure
+
+## Summary
+
+Transforms the repository from a specification-and-fixtures project into a repository containing real, runnable, production-shaped MCP server implementations for all five server domains (authz, fhir, dicom, ledger, provenance), backed by persistence abstractions (in-memory, SQLite, PostgreSQL) and deployable via Docker, Kubernetes, and Helm. Adds shared server infrastructure (`servers/common/`), a storage adapter layer (`servers/storage/`), deployment manifests (`deploy/`), an end-to-end quickstart demo (`examples/quickstart/`), expanded TypeScript server implementations with Jest tests, and CLI entry points for all five servers. All 313 existing tests continue to pass with clean ruff lint and format checks.
+
+## Features
+
+- **5 production-shaped MCP server packages** (`servers/`) — Each with MCP transport entrypoint, tool routing, audit hooks, health/readiness endpoints, structured JSON logging, and configuration management:
+  - `trialmcp_authz/` — Deny-by-default RBAC policy engine (6-actor matrix), SHA-256 token lifecycle, persistent policy/token stores
+  - `trialmcp_fhir/` — HIPAA Safe Harbor de-identification pipeline (18-identifier removal), HMAC-SHA256 pseudonymization, FHIR adapter interface (mock/HAPI/SMART)
+  - `trialmcp_dicom/` — Role-based modality restrictions (MUST: CT, MR, PT; SHOULD: RTSTRUCT, RTPLAN), DICOM UID validation, patient name hashing (12-char SHA-256)
+  - `trialmcp_ledger/` — Hash-chained immutable audit ledger with SHA-256 canonical JSON, genesis block, chain verification, concurrency-safe locking
+  - `trialmcp_provenance/` — DAG-based lineage graph with SHA-256 fingerprinting, W3C PROV alignment, forward/backward traversal, cycle detection
+- **Shared server infrastructure** (`servers/common/`) — MCP transport layer (stdin/stdout JSON-RPC 2.0), request routing, auth/audit middleware, 9-code error taxonomy, env var/YAML/JSON config, structured JSON logging, health checker, schema validation
+- **Persistence layer** (`servers/storage/`) — Abstract base interface, in-memory adapter (testing), SQLite adapter (single-site), PostgreSQL adapter interface (production), migration utilities, config-driven factory
+- **Docker deployment** (`deploy/docker/`) — Individual Dockerfiles for each server + all-in-one image, `docker-compose.yml` for single-site (5 servers), `docker-compose.multi-site.yml` for Site A + Site B + shared ledger
+- **Kubernetes deployment** (`deploy/kubernetes/`) — Namespace, ConfigMap, Secrets template, Deployment + Service for each of the 5 servers
+- **Helm chart** (`deploy/helm/trialmcp/`) — Configurable Helm chart with values for replicas, resources, storage backend, log level
+- **Configuration files** (`deploy/config/`) — Example YAML config for each server, site-profile-example.yaml, .env.example
+- **End-to-end quickstart demo** (`examples/quickstart/`) — `run_demo.py` script executing complete workflow: token issuance → validation → authz evaluation → FHIR read (de-identified) → DICOM query (hashed) → ledger append → provenance record → chain verification → DAG verification
+- **Expanded TypeScript** (`reference/typescript/`) — AuthZ server (`authz-server.ts`) and Ledger server (`ledger-server.ts`) implementations, generated interfaces (`interfaces.ts`), Jest test suites (`*.test.ts`), npm test/lint scripts
+- **CLI entry points** — `trialmcp-authz`, `trialmcp-fhir`, `trialmcp-dicom`, `trialmcp-ledger`, `trialmcp-provenance` via `pyproject.toml` scripts
+- **Updated `pyproject.toml`** — Version 0.7.0, entry points, optional dependency extras (`[fhir]`, `[dicom]`, `[dev]`, `[test]`, `[docs]`, `[all]`), `servers` and `examples` in known-first-party imports
+- **Updated `README.md`** — v0.7.0 badges (Docker, MCP Servers: 5), new MCP Server Implementations section with Mermaid diagram, Deployment Infrastructure section, Quickstart Demo section, updated repository structure
+- **Updated `changelog.md`** — v0.7.0 changelog entry
+- **Updated `releases.md`** — v0.7.0 release notes (this entry)
+- **Updated `prompts.md`** — v0.7.0 prompt archived
+
+## Contributors
+@kevinkawchak
+@claude
+@openai
+
+## Notes
+- All 313 tests pass (44 unit + 269 conformance) across Python 3.10, 3.11, 3.12 with clean ruff lint and format checks
+- The 5 server packages implement all 23 tool contracts from spec/tool-contracts.md across their respective domains
+- Each server follows the same architectural pattern: config → storage → domain logic → router → transport → middleware
+- The persistence layer supports 3 backends: memory (testing), SQLite (single-site), PostgreSQL (production) — selected via config
+- Docker Compose files support both single-site (5 servers) and multi-site (Site A + Site B + shared ledger) topologies
+- The quickstart demo runs entirely in-process without network dependencies, exercising all 5 servers end-to-end
+- TypeScript implementation expanded from 1 file (core-server.ts) to 6 files including dedicated authz and ledger servers with Jest test coverage
+- Server entry points are registered as console_scripts in pyproject.toml, installable via `pip install -e .`
+- References: [TrialMCP](https://doi.org/10.5281/zenodo.18869776), [Physical AI Oncology Trials](https://doi.org/10.5281/zenodo.18445179), [PAI Oncology Trial FL](https://doi.org/10.5281/zenodo.18840880)
+
+---
+
 v0.6.0 - Phase 1: Correctness, Contract Alignment, and Schema-Code Drift Resolution
 
 ## Summary

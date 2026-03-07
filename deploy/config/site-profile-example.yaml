@@ -1,0 +1,51 @@
+# Example site capability profile configuration
+# Copy and modify for your site deployment
+
+site_id: "site-us-ca-stanford"
+site_name: "Stanford Medical Center"
+site_type: "academic_medical_center"
+
+jurisdiction:
+  country: "US"
+  state: "CA"
+  federal_requirements:
+    - "HIPAA"
+    - "21_CFR_Part_11"
+  state_requirements:
+    - "CCPA"
+    - "CPRA"
+
+conformance_level: 5
+
+servers:
+  - name: trialmcp-authz
+    port: 8001
+    enabled: true
+  - name: trialmcp-fhir
+    port: 8002
+    enabled: true
+  - name: trialmcp-dicom
+    port: 8003
+    enabled: true
+  - name: trialmcp-ledger
+    port: 8004
+    enabled: true
+  - name: trialmcp-provenance
+    port: 8005
+    enabled: true
+
+data_residency:
+  storage_region: "us-west-2"
+  encryption_at_rest: true
+  encryption_in_transit: true
+
+irb_approval:
+  protocol_id: "IRB-2026-ONCP-001"
+  approved_date: "2026-01-15"
+  expiry_date: "2027-01-15"
+
+robots:
+  - robot_id: "robot-da-vinci-001"
+    platform: "da Vinci Xi"
+    robot_type: "surgical"
+    usl_score: 0.92

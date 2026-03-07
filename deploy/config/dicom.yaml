@@ -1,0 +1,16 @@
+# trialmcp-dicom server configuration
+server_name: trialmcp-dicom
+host: 0.0.0.0
+port: 8003
+log_level: INFO
+storage_backend: memory
+storage_dsn: ""
+extra:
+  dicom_backend: mock
+  must_modalities:
+    - CT
+    - MR
+    - PT
+  should_modalities:
+    - RTSTRUCT
+    - RTPLAN

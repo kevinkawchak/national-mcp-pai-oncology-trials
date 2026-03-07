@@ -1,3 +1,165 @@
+## Prompt v0.7.0
+
+Your goal for national-mcp-pai-oncology-trials is to implement the main prompt below  comprehensively for the physical ai oncology trials industry. It is imperative that all types of information utilized for the repository be accurate and appropriate for the national scale. Update relevant readme files and documentation throughout the repo based on all changes made (diagrams, mermaid diagrams, badges, text, repository structure, etc.)
+
+Provide a copy of this exact prompt under main prompts.md. Be sure to fix and address errors that would cause failed checks for the single pull request (such as Python environment issues to avoid the following error during final checks): "3 failing checks
+x Cl / lint-and-format (3.10) (pull...
+x Cl / lint-and-format (3.11) (pull...
+x Cl / lint-and-format (3.12) (pull... " Place the new release notes in releases.md under main using the format below (which is the same format of the last published version). Update changelog.md using v0.7.0. When you are finished, auto-push the update to GitHub on your own for my review. The user will then review your updates in GitHub prior to finalization.
+
+"FORMAT"
+Release title
+v0.7.0 -
+
+\## Summary
+
+\## Features
+
+\## Contributors
+@kevinkawchak
+@claude
+@openai
+
+\## Notes
+
+
+"START MAIN PROMPT"
+v0.7.0 - Phase 2: Real Server Implementations, Persistence, and Deployment Infrastructure
+
+Your goal is to transform national-mcp-pai-oncology-trials from a specification-and-fixtures repository into a repository containing real, runnable, production-shaped MCP server implementations for all five server domains, backed by persistence abstractions and deployable via Docker. This is the phase that makes the repository credible as the canonical national implementation source. It is imperative that all code now be accurate, end-to-end, and appropriate for a national scale.
+
+**1. Implement All Five MCP Server Packages**
+
+Create `servers/` with production-shaped server packages for each domain:
+
+- `servers/trialmcp_authz/` — Authorization server:
+  - Real MCP server entrypoint with transport support (stdin/stdout MCP protocol)
+  - Request routing for all authz tools: `authz_evaluate`, `authz_issue_token`, `authz_validate_token`, `authz_revoke_token`
+  - Deny-by-default RBAC policy engine with 6-actor policy matrix
+  - SHA-256 token lifecycle with configurable expiry
+  - Persistent token store interface (in-memory default + SQLite/PostgreSQL adapter)
+  - Persistent policy store interface
+  - Audit hook emission for all authorization decisions
+  - Health/readiness endpoints, structured error responses
+  - Configuration loading (environment variables, YAML/JSON config files)
+  - Structured JSON logging
+
+- `servers/trialmcp_fhir/` — FHIR clinical data server:
+  - MCP server entrypoint with transport support
+  - Tools: `fhir_read`, `fhir_search`, `fhir_patient_lookup`, `fhir_study_status`
+  - HIPAA Safe Harbor de-identification pipeline (18-identifier removal)
+  - HMAC-SHA256 pseudonymization
+  - Patient/resource access filters
+  - Capability statement generation
+  - Adapter interface for backend FHIR sources (mock, HAPI FHIR, SMART-on-FHIR)
+  - Synthetic FHIR Bundle loading for local testing
+  - Audit hooks, health/readiness, structured errors, config, logging
+
+- `servers/trialmcp_dicom/` — DICOM imaging server:
+  - MCP server entrypoint with transport support
+  - Tools: `dicom_query`, `dicom_retrieve`
+  - Role-based modality restrictions (MUST: CT, MR, PT; SHOULD: RTSTRUCT, RTPLAN)
+  - DICOM UID validation
+  - Patient name hashing (12-char SHA-256)
+  - Retrieval-pointer handling (metadata only, no pixel data transfer)
+  - Adapter interface for backend DICOM sources (mock, Orthanc, dcm4chee)
+  - Audit hooks, health/readiness, structured errors, config, logging
+
+- `servers/trialmcp_ledger/` — Audit ledger server:
+  - MCP server entrypoint with transport support
+  - Tools: `ledger_append`, `ledger_verify`, `ledger_query`, `ledger_export`
+  - Hash-chained immutable audit ledger with SHA-256 canonical JSON serialization
+  - Genesis block initialization
+  - Chain verification algorithm
+  - Persistent audit storage interface (in-memory default + SQLite/PostgreSQL adapter)
+  - Concurrency and locking strategy for ledger writes
+  - Idempotency behavior for append operations
+  - Audit hooks, health/readiness, structured errors, config, logging
+
+- `servers/trialmcp_provenance/` — Provenance server:
+  - MCP server entrypoint with transport support
+  - Tools: `provenance_record`, `provenance_query_forward`, `provenance_query_backward`, `provenance_verify`
+  - DAG-based lineage graph creation and management
+  - SHA-256 fingerprinting
+  - W3C PROV alignment
+  - Cross-site trace merging support
+  - Persistent provenance graph storage interface
+  - Audit hooks, health/readiness, structured errors, config, logging
+
+**2. Add Shared Infrastructure**
+
+- `servers/common/` — Shared server infrastructure:
+  - MCP transport layer (stdin/stdout protocol handling)
+  - Request routing and dispatching
+  - Authentication/authorization middleware
+  - Audit emission middleware
+  - Health/readiness endpoint base
+  - Structured error response helpers
+  - Configuration management (env vars, config files, defaults)
+  - Structured JSON logging setup
+  - Storage interface base classes (abstract adapters for SQLite, PostgreSQL)
+  - Schema validation utilities (import from generated models)
+
+**3. Add Persistence Layer**
+
+- `servers/storage/` — Storage adapters:
+  - Abstract base storage interface
+  - In-memory storage adapter (for testing and local development)
+  - SQLite storage adapter (for single-site deployment)
+  - PostgreSQL storage adapter interface (for production deployment)
+  - Migration utilities for schema versioning
+  - Storage factory with config-driven selection
+
+**4. Add Deployment Infrastructure**
+
+- `deploy/docker/` — Dockerfiles for each server and an all-in-one image
+- `deploy/docker-compose.yml` — Single-site deployment with all 5 servers, SQLite storage, mock FHIR/DICOM backends
+- `deploy/docker-compose.multi-site.yml` — Multi-site deployment with Site A, Site B, shared ledger
+- `deploy/kubernetes/` — Reference Kubernetes manifests (Deployments, Services, ConfigMaps, Secrets templates)
+- `deploy/helm/` — Helm chart for configurable deployment
+- `deploy/.env.example` — Example environment configuration
+- `deploy/config/` — Example YAML configuration files for each server
+- `deploy/config/site-profile-example.yaml` — Sample site capability profile configuration
+
+**5. Add End-to-End Demo**
+
+- `examples/quickstart/` — 5-minute local demo:
+  - `run_demo.py` — Script that starts all 5 servers, executes a complete workflow (robot requests token → token validated → FHIR read → DICOM query → ledger append → provenance record), and prints results
+  - `demo_data/` — Seeded synthetic FHIR Bundles, DICOM metadata, site profiles
+  - `README.md` — Step-by-step quickstart guide
+
+**6. Package Layout and Dependencies**
+
+- Update `pyproject.toml` with:
+  - Entry points / CLI scripts for each server (`trialmcp-authz`, `trialmcp-fhir`, etc.)
+  - Runtime dependencies (structured separately from test dependencies)
+  - Extras for `[fhir]`, `[dicom]`, `[dev]`, `[test]`, `[docs]`, `[all]`
+  - Package discovery including `servers/`, `models/`
+- Add proper `__init__.py` files for all new packages
+- Add typed configuration dataclasses
+- Add package boundaries and dependency rules
+
+**7. Update TypeScript to Maintained Implementation**
+
+Expand `reference/typescript/` from a stub into a maintained implementation:
+- Add TypeScript server entrypoints for at least authz and ledger servers
+- Add proper npm scripts for build, test, lint
+- Add TypeScript tests with a testing framework (jest or vitest)
+- Add generated TypeScript interfaces from schemas
+
+**8. Verify Repository-Wide Quality**
+
+After all changes:
+1. `ruff check .` and `ruff format --check .` pass cleanly across all Python files
+2. All existing unit tests and conformance tests still pass
+3. New server packages can be imported and instantiated
+4. Docker build succeeds for all images
+5. `docker-compose up` starts all 5 servers successfully
+6. End-to-end demo script completes the full workflow
+7. All generated models match their source schemas
+
+---
+
 ## Prompt v0.6.0
 
 Your goal for national-mcp-pai-oncology-trials is to implement the main prompt below  comprehensively for the physical ai oncology trials industry. It is imperative that all types of information utilized for the repository be accurate and appropriate for the national scale. Update relevant readme files and documentation throughout the repo based on all changes made (diagrams, mermaid diagrams, badges, text, repository structure, etc.)(contributors=3)

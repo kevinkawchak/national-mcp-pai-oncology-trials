@@ -1,0 +1,23 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: trialmcp-config
+  namespace: trialmcp
+  labels:
+    app.kubernetes.io/part-of: national-mcp-pai-oncology-trials
+data:
+  storage_backend: "memory"
+  log_level: "INFO"
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: trialmcp-secrets
+  namespace: trialmcp
+  labels:
+    app.kubernetes.io/part-of: national-mcp-pai-oncology-trials
+type: Opaque
+stringData:
+  # Replace with actual values in production
+  hmac_key: "change-this-to-a-secure-random-key"
+  storage_dsn: ""

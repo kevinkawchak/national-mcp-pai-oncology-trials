@@ -1,0 +1,15 @@
+apiVersion: v2
+name: trialmcp
+description: Helm chart for the National MCP-PAI Oncology Trials Standard servers
+type: application
+version: 0.7.0
+appVersion: "0.7.0"
+keywords:
+  - mcp
+  - oncology
+  - clinical-trials
+  - physical-ai
+  - fhir
+  - dicom
+maintainers:
+  - name: kevinkawchak

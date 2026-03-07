@@ -1,7 +1,7 @@
 [project]
 name = "national-mcp-pai-oncology-trials"
-version = "0.6.0"
-description = "National MCP Standard for Physical AI Oncology Clinical Trials — Phase 1: Correctness, Contract Alignment, and Schema-Code Drift Resolution"
+version = "0.7.0"
+description = "National MCP Standard for Physical AI Oncology Clinical Trials — Phase 2: Real Server Implementations, Persistence, and Deployment Infrastructure"
 requires-python = ">=3.10"
 license = {text = "MIT"}
 
@@ -10,6 +10,26 @@ test = [
     "pytest>=7.0",
     "jsonschema>=4.17",
 ]
+fhir = []
+dicom = []
+dev = [
+    "ruff>=0.1.0",
+    "pytest>=7.0",
+    "jsonschema>=4.17",
+]
+docs = []
+all = [
+    "pytest>=7.0",
+    "jsonschema>=4.17",
+    "ruff>=0.1.0",
+]
+
+[project.scripts]
+trialmcp-authz = "servers.trialmcp_authz.server:main"
+trialmcp-fhir = "servers.trialmcp_fhir.server:main"
+trialmcp-dicom = "servers.trialmcp_dicom.server:main"
+trialmcp-ledger = "servers.trialmcp_ledger.server:main"
+trialmcp-provenance = "servers.trialmcp_provenance.server:main"
 
 [tool.ruff]
 target-version = "py310"
@@ -24,7 +44,7 @@ select = [
 ]
 
 [tool.ruff.lint.isort]
-known-first-party = ["conformance", "models", "reference", "scripts", "tests"]
+known-first-party = ["conformance", "examples", "models", "reference", "scripts", "servers", "tests"]
 
 [tool.pytest.ini_options]
 testpaths = ["conformance", "tests"]

@@ -1,0 +1,10 @@
+# trialmcp-authz server configuration
+server_name: trialmcp-authz
+host: 0.0.0.0
+port: 8001
+log_level: INFO
+storage_backend: memory
+storage_dsn: ""
+extra:
+  token_default_expiry: 3600
+  token_max_expiry: 86400

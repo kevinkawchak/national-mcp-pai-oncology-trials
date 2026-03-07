@@ -1,0 +1,54 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: trialmcp-ledger
+  namespace: trialmcp
+  labels:
+    app: trialmcp-ledger
+    app.kubernetes.io/part-of: national-mcp-pai-oncology-trials
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: trialmcp-ledger
+  template:
+    metadata:
+      labels:
+        app: trialmcp-ledger
+    spec:
+      containers:
+        - name: ledger
+          image: trialmcp-ledger:0.7.0
+          ports:
+            - containerPort: 8004
+          env:
+            - name: TRIALMCP_STORAGE_BACKEND
+              valueFrom:
+                configMapKeyRef:
+                  name: trialmcp-config
+                  key: storage_backend
+            - name: TRIALMCP_LOG_LEVEL
+              valueFrom:
+                configMapKeyRef:
+                  name: trialmcp-config
+                  key: log_level
+          resources:
+            requests:
+              cpu: 100m
+              memory: 128Mi
+            limits:
+              cpu: 500m
+              memory: 512Mi
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: trialmcp-ledger
+  namespace: trialmcp
+spec:
+  selector:
+    app: trialmcp-ledger
+  ports:
+    - port: 8004
+      targetPort: 8004
+  type: ClusterIP
