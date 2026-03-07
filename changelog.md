@@ -6,6 +6,28 @@ This project follows [Semantic Versioning](https://semver.org/) as described in 
 
 ---
 
+## [0.5.2] — 2026-03-07
+
+### Added
+
+#### Peer Review Response
+- `peer-review/response-A-2026-03-06.md` — Structured response tables for all recommendations from two ChatGPT 5.4 Thinking peer reviews (Feedback 1: 8 sections, 44 recommendations; Feedback 2: 17 sections, 56 recommendations), each categorized as Add/Fix/Remove with Implemented/Deferred status and prompt assignment
+
+#### Implementation Roadmap Prompts
+- `peer-review/claude-1-2026-03-06.md` — Prompt 1 (v0.6.0): Phase 1 — Correctness, contract alignment, schema-code drift resolution, generated typed models, CI hardening (TypeScript build/test, docs lint failure), maturity labeling
+- `peer-review/claude-2-2026-03-06.md` — Prompt 2 (v0.7.0): Phase 2 — Real MCP server implementations for all 5 domains (authz, fhir, dicom, ledger, provenance), shared server infrastructure, persistence layer (SQLite/PostgreSQL adapters), deployment infrastructure (Docker/Kubernetes/Helm), end-to-end demo, TypeScript expansion
+- `peer-review/claude-3-2026-03-06.md` — Prompt 3 (v0.8.0): Phase 3 — Black-box conformance harness with pluggable transport adapters, conformance suite refactoring (unit/integration/blackbox tiers), adversarial test packs (authz bypass, PHI leakage, replay attacks, chain tampering, rate limiting), national interoperability testbed (multi-site docker-compose, actor personas, mock EHR/PACS), certification and evidence generation, benchmarks
+- `peer-review/claude-4-2026-03-06.md` — Prompt 4 (v0.9.0): Phase 4 — FHIR integration adapters (HAPI, SMART-on-FHIR, de-identification, terminology mapping, Bundle handling), DICOM integration adapters (Orthanc, dcm4chee, DICOMweb, RECIST validators), identity/security adapters (OIDC/JWT, mTLS, KMS), clinical operations adapters, robot safety boundaries (safety gate service, robot registry, task validator, approval checkpoints, e-stop, procedure state machine), privacy/regulatory modules, federated coordination
+- `peer-review/claude-5-2026-03-06.md` — Prompt 5 (v1.0.0): Phase 5 — Python/TypeScript SDKs with actor-role examples, CLI tools (init, scaffold, validate, certify), code generation, stakeholder guides (hospital IT, robot vendor, sponsor/CRO, regulator/IRB, standards community), operational documentation (runbook, incident response, key management, backup/recovery, SLO guidance), governance evidence, architecture decision records, repository strategy
+
+### Changed
+- `prompts.md`: v0.5.2 prompt archived
+- `releases.md`: v0.5.2 release notes added
+- `changelog.md`: This entry
+- `pyproject.toml`: Version 0.5.2, updated description
+
+---
+
 ## [0.5.1] — 2026-03-07
 
 ### Added

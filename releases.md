@@ -4,6 +4,42 @@ Release notes for the National MCP-PAI Oncology Trials Standard.
 
 ---
 
+v0.5.2 - Peer Review Response + Implementation Roadmap Prompts for National MCP-PAI Oncology Trials Standard
+
+## Summary
+
+Responds to two comprehensive external peer reviews (ChatGPT 5.4 Thinking) with structured response tables documenting Implemented/Deferred status for all recommendations, creates 5 comprehensive implementation prompts (`claude-1` through `claude-5`) targeting future 1M token processing sessions to transform the repository from a specification-and-fixtures repo into a canonical national implementation source, and archives the v0.5.2 development prompt in `prompts.md`.
+
+## Features
+
+- **Peer review response tables** (`/peer-review/response-A-2026-03-06.md`) — Structured response to all recommendations from two ChatGPT 5.4 Thinking reviews:
+  - Feedback 1 (8 sections, 44 recommendations): candid repo review covering contract mismatches, conformance testing, operational credibility, code surface expansion, packaging, governance, and restructuring plan
+  - Feedback 2 (17 sections, 56 recommendations): strategic gap analysis covering canonical integration repo, server consolidation, integration adapters, interoperability testbed, deployment artifacts, stakeholder guides, SDKs, benchmarks, robot safety, documentation quality, and software engineering hygiene
+  - Each recommendation categorized as Add/Fix/Remove with Implemented/Deferred status and prompt assignment
+- **5 comprehensive implementation prompts** (`/peer-review/claude-1-2026-03-06.md` through `claude-5-2026-03-06.md`):
+  - Prompt 1 (v0.6.0): Phase 1 — Correctness, contract alignment, schema-code drift resolution, CI hardening, maturity labeling
+  - Prompt 2 (v0.7.0): Phase 2 — Real server implementations for all 5 domains, persistence layer, deployment infrastructure (Docker/Kubernetes/Helm), end-to-end demo
+  - Prompt 3 (v0.8.0): Phase 3 — Black-box conformance harness, national interoperability testbed, adversarial test packs, certification/evidence generation, benchmarks
+  - Prompt 4 (v0.9.0): Phase 4 — Integration adapters (FHIR/DICOM/identity/clinical), robot safety boundaries, clinical safety guardrails, privacy/regulatory modules, federated coordination
+  - Prompt 5 (v1.0.0): Phase 5 — Python/TypeScript SDKs, CLI tools, stakeholder guides, operational documentation, governance evidence, architecture decision records, repository strategy
+- **Updated `prompts.md`** — v0.5.2 prompt archived
+- **Updated `releases.md`** — v0.5.2 release notes added
+- **Updated `changelog.md`** — v0.5.2 changelog entry added
+
+## Contributors
+@kevinkawchak
+@claude
+@openai
+
+## Notes
+- This release contains no code changes to existing reference implementations, conformance tests, or schemas — all 308 tests (39 unit + 269 conformance) remain passing
+- The 5 prompts collectively address 100 specific recommendations across both peer reviews, with only 1 recommendation deferred (renaming `reference/` → `examples/minimal-reference/` deferred for user continuity)
+- Prompts are designed for sequential execution in separate 1M token Claude Code Opus 4.6 sessions, each building on the prior phase
+- The phased roadmap aligns with both peer reviews' recommended restructuring plans: Phase 1 (correctness) → Phase 2 (runnable source) → Phase 3 (conformance credibility) → Phase 4 (integration + safety) → Phase 5 (stakeholder readiness)
+- References: [TrialMCP](https://doi.org/10.5281/zenodo.18869776), [Physical AI Oncology Trials](https://doi.org/10.5281/zenodo.18445179), [PAI Oncology Trial FL](https://doi.org/10.5281/zenodo.18840880)
+
+---
+
 v0.5.1 - Unit Tests + Verification + CI/CD Hardening for National MCP-PAI Oncology Trials Standard
 
 ## Summary
