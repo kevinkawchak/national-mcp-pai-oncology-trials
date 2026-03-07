@@ -97,11 +97,13 @@ def validate(instance: dict[str, Any], schema_name: str) -> list[str]:
     RuntimeError
         If ``jsonschema`` is not installed.
     """
-    if Draft202012Validator is None:
+    try:
+        from jsonschema import Draft202012Validator as _Validator
+    except ImportError:
         msg = "jsonschema is required for validation. Install with: pip install jsonschema>=4.17"
         raise RuntimeError(msg)
     schema = load_schema(schema_name)
-    validator = Draft202012Validator(schema)
+    validator = _Validator(schema)
     return [e.message for e in validator.iter_errors(instance)]
 
 

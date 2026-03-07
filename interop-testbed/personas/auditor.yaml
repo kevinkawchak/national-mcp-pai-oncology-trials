@@ -1,0 +1,32 @@
+# Auditor Persona — National MCP-PAI Oncology Trials Interoperability Testbed
+
+persona:
+  name: auditor
+  display_name: "Compliance Auditor"
+  role: auditor
+  description: >
+    Regulatory compliance auditor with read-only access to audit
+    ledger and provenance records for 21 CFR Part 11 verification.
+
+credentials:
+  token_type: bearer
+  default_expiry_seconds: 28800
+  max_expiry_seconds: 86400
+
+capabilities:
+  servers:
+    trialmcp-authz:
+      - authz_evaluate
+      - authz_validate_token
+    trialmcp-ledger:
+      - ledger_verify
+      - ledger_query
+      - ledger_replay
+      - ledger_chain_status
+
+restrictions:
+  read_only: true
+  ledger_read_only: true
+  no_clinical_data_access: true
+  no_imaging_access: true
+  max_concurrent_sessions: 2

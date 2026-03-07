@@ -1,0 +1,65 @@
+# Robot Agent Persona — National MCP-PAI Oncology Trials Interoperability Testbed
+#
+# Physical AI robot agent performing clinical trial procedures.
+# Has access to clinical data (FHIR, DICOM) and must record
+# all actions in the audit ledger and provenance DAG.
+
+persona:
+  name: robot_agent
+  display_name: "Robot Agent 001"
+  role: robot_agent
+  description: >
+    Physical AI robot agent authorized to perform clinical trial
+    procedures including patient data retrieval, imaging access,
+    procedure execution, and audit recording.
+
+credentials:
+  token_type: bearer
+  default_expiry_seconds: 3600
+  max_expiry_seconds: 86400
+
+capabilities:
+  servers:
+    trialmcp-authz:
+      - authz_evaluate
+      - authz_validate_token
+    trialmcp-fhir:
+      - fhir_read
+      - fhir_search
+      - fhir_patient_lookup
+    trialmcp-dicom:
+      - dicom_query
+      - dicom_retrieve_pointer
+      - dicom_study_metadata
+      - dicom_recist_measurements
+    trialmcp-ledger:
+      - ledger_append
+    trialmcp-provenance:
+      - provenance_record_access
+      - provenance_get_lineage
+
+  dicom_modalities:
+    - CT
+    - MR
+    - PT
+
+  dicom_query_levels:
+    - STUDY
+    - SERIES
+
+restrictions:
+  cannot_issue_tokens: true
+  cannot_revoke_tokens: true
+  cannot_modify_policies: true
+  read_only_ledger: false
+  max_concurrent_sessions: 1
+
+robot_profile:
+  usl_score: 7.2
+  safety_level: "clinical_grade"
+  simulation_required: true
+  pre_procedure_checks:
+    - patient_consent_verified
+    - authorization_valid
+    - imaging_available
+    - safety_matrix_passed

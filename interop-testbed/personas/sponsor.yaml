@@ -1,0 +1,28 @@
+# Sponsor Persona — National MCP-PAI Oncology Trials Interoperability Testbed
+
+persona:
+  name: sponsor
+  display_name: "Trial Sponsor"
+  role: sponsor
+  description: >
+    Pharmaceutical or biotech trial sponsor with minimal access
+    limited to authorization policy review.
+
+credentials:
+  token_type: bearer
+  default_expiry_seconds: 14400
+  max_expiry_seconds: 86400
+
+capabilities:
+  servers:
+    trialmcp-authz:
+      - authz_evaluate
+      - authz_list_policies
+
+restrictions:
+  minimal_access: true
+  no_clinical_data: true
+  no_imaging_data: true
+  no_ledger_write: true
+  no_provenance_access: true
+  max_concurrent_sessions: 2

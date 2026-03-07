@@ -1,23 +1,24 @@
 # National MCP Standard for Physical AI Oncology Clinical Trials
 
-**Version 0.7.0** | **Proposed Reference Standard** | **United States**
+**Version 0.8.0** | **Proposed Reference Standard** | **United States**
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 [![DOI](https://img.shields.io/badge/DOI-10.5281%2Fzenodo.18894758-blue)](https://doi.org/10.5281/zenodo.18894758)
-[![Version](https://img.shields.io/badge/Version-0.7.0-green.svg)](releases.md)
+[![Version](https://img.shields.io/badge/Version-0.8.0-green.svg)](releases.md)
 [![CI](https://github.com/kevinkawchak/national-mcp-pai-oncology-trials/actions/workflows/ci.yml/badge.svg)](.github/workflows/ci.yml)
 [![JSON Schema](https://img.shields.io/badge/JSON_Schema-Draft_2020--12-orange.svg)](schemas/)
 [![Python](https://img.shields.io/badge/Python-3.10%20|%203.11%20|%203.12-blue.svg)](https://www.python.org/)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.3-blue.svg)](reference/typescript/)
 [![Protocol](https://img.shields.io/badge/Protocol-MCP-purple.svg)](https://modelcontextprotocol.io/)
 [![Docker](https://img.shields.io/badge/Docker-Compose-blue.svg)](deploy/docker-compose.yml)
+[![Testbed](https://img.shields.io/badge/Testbed-Multi--Site-blue.svg)](interop-testbed/)
 [![Servers](https://img.shields.io/badge/MCP_Servers-5-blue.svg)](servers/)
 [![Profiles](https://img.shields.io/badge/Profiles-8-blue.svg)](profiles/)
 [![Schemas](https://img.shields.io/badge/Schemas-13-blue.svg)](schemas/)
 [![Tools](https://img.shields.io/badge/Tools-23-blue.svg)](spec/tool-contracts.md)
-[![Conformance Tests](https://img.shields.io/badge/Conformance_Tests-269-blue.svg)](conformance/)
+[![Conformance Tests](https://img.shields.io/badge/Conformance_Tests-457-blue.svg)](conformance/)
 [![Unit Tests](https://img.shields.io/badge/Unit_Tests-44-blue.svg)](tests/)
-[![Total Tests](https://img.shields.io/badge/Total_Tests-313-blue.svg)](pyproject.toml)
+[![Total Tests](https://img.shields.io/badge/Total_Tests-501-blue.svg)](pyproject.toml)
 [![Updated](https://img.shields.io/badge/Updated-2026--03--07-lightgrey.svg)](changelog.md)
 [![Contributors](https://img.shields.io/badge/Contributors-3-blue.svg)](releases.md)
 
@@ -25,7 +26,7 @@ The **National MCP-PAI Oncology Trials Standard** is a proposed reference standa
 
 > **Scope**: This specification targets U.S. clinical sites, sponsors, CROs, and technology vendors operating Physical AI systems — surgical robots, therapeutic positioning systems, diagnostic needle-placement platforms, and rehabilitative exoskeletons — within FDA-regulated oncology trials.
 >
-> **Maturity**: This repository provides normative specifications (`/spec/`), machine-readable schemas (`/schemas/`), conformance profiles (`/profiles/`), Level 1 illustrative implementations (`/reference/`), and production-shaped MCP server packages (`/servers/`) with persistence abstractions and Docker/Kubernetes deployment infrastructure (`/deploy/`). See the [adoption roadmap](docs/adoption-roadmap.md) for the path from specification to validated deployment.
+> **Maturity**: This repository provides normative specifications (`/spec/`), machine-readable schemas (`/schemas/`), conformance profiles (`/profiles/`), Level 1 illustrative implementations (`/reference/`), production-shaped MCP server packages (`/servers/`) with persistence abstractions and Docker/Kubernetes deployment infrastructure (`/deploy/`), a black-box conformance harness (`/conformance/harness/`), a national interoperability testbed (`/interop-testbed/`), certification and evidence generation tools (`/tools/certification/`), and performance benchmarks (`/benchmarks/`). See the [adoption roadmap](docs/adoption-roadmap.md) for the path from specification to validated deployment.
 
 ---
 
@@ -39,7 +40,11 @@ The **National MCP-PAI Oncology Trials Standard** is a proposed reference standa
 - [Reference Implementations](#reference-implementations)
 - [Unit Test Suite](#unit-test-suite)
 - [CI/CD Pipeline](#cicd-pipeline)
+- [Black-Box Conformance Harness](#black-box-conformance-harness)
 - [Conformance Test Suite](#conformance-test-suite)
+- [National Interoperability Testbed](#national-interoperability-testbed)
+- [Certification and Evidence Generation](#certification-and-evidence-generation)
+- [Benchmarks](#benchmarks)
 - [Profiles and Conformance Level Definitions](#profiles-and-conformance-level-definitions)
 - [Machine-Readable JSON Schemas](#machine-readable-json-schemas)
 - [Conformance Levels](#conformance-levels)
@@ -334,7 +339,7 @@ graph TB
     SPEC["/spec/ (9 modules)"]
     SCH["/schemas/ (13 schemas)"]
     PRO["/profiles/ (8 profiles)"]
-    CON["/conformance/ (269 tests)"]
+    CON["/conformance/ (457 tests)"]
   end
 
   PCS --> SPEC
@@ -428,11 +433,15 @@ pytest -v
 
 ## CI/CD Pipeline
 
-The CI/CD pipeline (`.github/workflows/ci.yml`) runs on every push and pull request. The pipeline includes five jobs:
+The CI/CD pipeline (`.github/workflows/ci.yml`) runs on every push and pull request. The pipeline includes nine jobs:
 
 | Job | Matrix | Checks |
 |-----|--------|--------|
-| **lint-and-format** | Python 3.10, 3.11, 3.12 | Ruff lint, Ruff format, pytest unit tests (44), pytest conformance suite (269) |
+| **lint-and-format** | Python 3.10, 3.11, 3.12 | Ruff lint, Ruff format, pytest unit tests (44), pytest conformance suite (457) |
+| **integration-tests** | Python 3.12 | Integration tests against in-process server packages |
+| **adversarial-tests** | Python 3.12 | Adversarial test packs (authz bypass, PHI leakage, replay, tampering, rate limiting) |
+| **schema-compatibility** | Python 3.12 | Schema compatibility diffing (breaking/non-breaking change detection) |
+| **benchmark-smoke** | Python 3.12 | Benchmark smoke tests (latency, throughput, chain, concurrent) |
 | **schema-validation** | Python 3.12 | All 13 schemas validated (structure + example self-validation) |
 | **contract-consistency** | Python 3.12 | Generated models match committed models, core_server outputs validate against schemas |
 | **typescript-build** | Node.js 20 | TypeScript compile check |
@@ -445,28 +454,81 @@ The CI/CD pipeline (`.github/workflows/ci.yml`) runs on every push and pull requ
 │                                                                              │
 │  Push / PR to main                                                          │
 │       │                                                                      │
-│       ├──▶ lint-and-format (3.10) ──▶ ruff + 44 unit + 269 conformance      │
-│       ├──▶ lint-and-format (3.11) ──▶ ruff + 44 unit + 269 conformance      │
-│       ├──▶ lint-and-format (3.12) ──▶ ruff + 44 unit + 269 conformance      │
+│       ├──▶ lint-and-format (3.10) ──▶ ruff + 44 unit + 457 conformance      │
+│       ├──▶ lint-and-format (3.11) ──▶ ruff + 44 unit + 457 conformance      │
+│       ├──▶ lint-and-format (3.12) ──▶ ruff + 44 unit + 457 conformance      │
+│       ├──▶ integration-tests ──────▶ in-process server integration tests    │
+│       ├──▶ adversarial-tests ──────▶ authz bypass + PHI + replay + tamper   │
+│       ├──▶ schema-compatibility ───▶ schema diff + breaking change detect   │
+│       ├──▶ benchmark-smoke ────────▶ latency + throughput + chain + concur  │
 │       ├──▶ schema-validation ──────▶ 13 schemas + examples                  │
 │       ├──▶ contract-consistency ───▶ model gen + runtime schema validation   │
 │       ├──▶ typescript-build ───────▶ tsc --noEmit                           │
 │       └──▶ docs-lint ──────────────▶ file check + link check (fail errors)  │
 │                                                                              │
-│  All jobs run in parallel · 313 total tests per Python version              │
+│  All jobs run in parallel · 501 total tests per Python version              │
 └──────────────────────────────────────────────────────────────────────────────┘
+```
+
+---
+
+## Black-Box Conformance Harness
+
+v0.8.0 introduces a black-box conformance harness under `conformance/harness/` that can target real server deployments via pluggable transport adapters (stdin, HTTP, Docker). The harness enables any vendor or site to validate their MCP server implementation against the national standard without relying on internal fixture validation alone.
+
+### Harness Architecture
+
+```mermaid
+graph LR
+    subgraph "conformance/harness/"
+        CL[MCPConformanceClient] --> SA[stdin_adapter.py<br/>Local Process]
+        CL --> HA[http_adapter.py<br/>HTTP/HTTPS]
+        CL --> DA[docker_adapter.py<br/>Docker Container]
+        CL --> AA[auth_adapter.py<br/>Auth Sessions]
+        CF[config.py<br/>HarnessConfig] --> CL
+        DS[data_seeder.py<br/>Synthetic Data] --> CL
+        RN[runner.py<br/>CLI + Reports] --> CL
+    end
+```
+
+| Component | Path | Purpose |
+|-----------|------|---------|
+| Client | `conformance/harness/client.py` | MCP client with `call_tool()`, `list_tools()`, `initialize()`, `health_check()` |
+| Config | `conformance/harness/config.py` | Target server URLs, credentials, profile/level selection, output format |
+| Stdin Adapter | `conformance/harness/adapters/stdin_adapter.py` | stdin/stdout JSON-RPC subprocess transport |
+| HTTP Adapter | `conformance/harness/adapters/http_adapter.py` | HTTP POST transport for remote servers |
+| Docker Adapter | `conformance/harness/adapters/docker_adapter.py` | Docker exec transport for containerized servers |
+| Auth Adapter | `conformance/harness/adapters/auth_adapter.py` | Multi-role authenticated session management |
+| Data Seeder | `conformance/harness/data_seeder.py` | Synthetic FHIR Patient, ResearchStudy, DICOM metadata |
+| Runner | `conformance/harness/runner.py` | CLI with JSON, JUnit XML, HTML, Markdown report output |
+
+### Running the Harness
+
+```bash
+# Run against local stdin server
+trialmcp-conformance --target stdin --profile base --level 1
+
+# Run against HTTP deployment
+trialmcp-conformance --target http --address http://localhost:8080 --profile clinical-read --level 2
+
+# Run against Docker container
+trialmcp-conformance --target docker --address trialmcp-authz --profile base --level 1 --output-format junit
 ```
 
 ---
 
 ## Conformance Test Suite
 
-Version 0.4.0 introduces a comprehensive conformance test suite under `/conformance/` that enables any U.S. clinical site, vendor, or CRO to validate their MCP server implementation against the national standard. The suite contains 269 automated tests across four categories — positive, negative, security, and interoperability — covering all five conformance levels and thirteen schemas.
+The conformance test suite under `/conformance/` contains 457 automated tests across seven tiers — unit, positive, negative, security, interoperability, blackbox, and adversarial — covering all five conformance levels and thirteen schemas. v0.8.0 adds black-box conformance tests, adversarial security tests, and integration tests.
 
 ### Conformance Test Architecture
 
 ```mermaid
 graph TB
+  subgraph Unit Tests
+    UFC[Fixture Construction<br/>30 tests]
+  end
+
   subgraph Positive Tests
     CT[Core<br/>Audit + AuthZ + Health]
     CR[Clinical Read<br/>FHIR + De-ID]
@@ -489,13 +551,33 @@ graph TB
     SV[Schema Validation<br/>All 13 Schemas]
   end
 
+  subgraph BlackBox Tests
+    BA[AuthZ Conformance]
+    BF[FHIR Conformance]
+    BD[DICOM Conformance]
+    BL[Ledger Conformance]
+    BP2[Provenance Conformance]
+    BW[Cross-Server Workflow]
+  end
+
+  subgraph Adversarial Tests
+    AB[AuthZ Bypass]
+    PH[PHI Leakage]
+    RP[Replay Attacks]
+    TM[Chain Tampering]
+    MI[Malformed Inputs]
+    RL[Rate Limiting]
+  end
+
   CT --> SV
   CR --> SV
   IM --> SV
-  II --> UA
-  SS --> CI
-  TL --> CI
   XS --> SV
+  BA --> BW
+  BF --> BW
+  BD --> BW
+  BL --> BW
+  BP2 --> BW
 
   style CT fill:#4A90D9,color:#fff
   style CR fill:#50C878,color:#fff
@@ -507,22 +589,48 @@ graph TB
   style CI fill:#7B2D8E,color:#fff
   style XS fill:#333,color:#fff
   style SV fill:#333,color:#fff
+  style BA fill:#4A90D9,color:#fff
+  style BF fill:#50C878,color:#fff
+  style BD fill:#F5A623,color:#fff
+  style BL fill:#333,color:#fff
+  style BP2 fill:#333,color:#fff
+  style BW fill:#7B2D8E,color:#fff
+  style AB fill:#D0021B,color:#fff
+  style PH fill:#D0021B,color:#fff
+  style RP fill:#D0021B,color:#fff
+  style TM fill:#D0021B,color:#fff
+  style MI fill:#D0021B,color:#fff
+  style RL fill:#D0021B,color:#fff
+  style UFC fill:#4A90D9,color:#fff
 ```
 
 ### Conformance Test Summary
 
-| Category | Test File | Tests | Coverage |
-|----------|-----------|-------|----------|
-| **Positive** | `test_core_conformance.py` | Audit, error envelope, health, authz | Level 1 Core |
-| **Positive** | `test_clinical_read_conformance.py` | FHIR + HIPAA de-identification | Level 2 Clinical Read |
-| **Positive** | `test_imaging_conformance.py` | DICOM + role-based modalities | Level 3 Imaging |
-| **Negative** | `test_invalid_inputs.py` | Malformed requests, schema mismatches | All Levels |
-| **Negative** | `test_unauthorized_access.py` | Deny-by-default, permission escalation | All Levels |
-| **Security** | `test_ssrf_prevention.py` | URL injection, internal IP detection | All Levels |
-| **Security** | `test_token_lifecycle.py` | Issuance, expiry, revocation | All Levels |
-| **Security** | `test_chain_integrity.py` | Hash chain tampering, genesis verify | All Levels |
-| **Interop** | `test_cross_server_trace.py` | Multi-server audit linkage | Level 4 Federated |
-| **Interop** | `test_schema_validation.py` | All outputs against 13 schemas | All Levels |
+| Tier | Test File | Coverage |
+|------|-----------|----------|
+| **Unit** | `unit/test_fixture_construction.py` | 30 tests: fixture construction for all 4 fixture modules |
+| **Positive** | `positive/test_core_conformance.py` | Audit, error envelope, health, authz (Level 1 Core) |
+| **Positive** | `positive/test_clinical_read_conformance.py` | FHIR + HIPAA de-identification (Level 2) |
+| **Positive** | `positive/test_imaging_conformance.py` | DICOM + role-based modalities (Level 3) |
+| **Negative** | `negative/test_invalid_inputs.py` | Malformed requests, schema mismatches |
+| **Negative** | `negative/test_unauthorized_access.py` | Deny-by-default, permission escalation |
+| **Security** | `security/test_ssrf_prevention.py` | URL injection, internal IP detection |
+| **Security** | `security/test_token_lifecycle.py` | Issuance, expiry, revocation |
+| **Security** | `security/test_chain_integrity.py` | Hash chain tampering, genesis verify |
+| **Interop** | `interoperability/test_cross_server_trace.py` | Multi-server audit linkage (Level 4) |
+| **Interop** | `interoperability/test_schema_validation.py` | All outputs against 13 schemas |
+| **BlackBox** | `blackbox/test_authz_conformance.py` | Token lifecycle, RBAC, deny-by-default |
+| **BlackBox** | `blackbox/test_fhir_conformance.py` | FHIR read, search, de-identification |
+| **BlackBox** | `blackbox/test_dicom_conformance.py` | DICOM query, modality restrictions |
+| **BlackBox** | `blackbox/test_ledger_conformance.py` | Ledger append, verify, chain integrity |
+| **BlackBox** | `blackbox/test_provenance_conformance.py` | Provenance record, DAG integrity |
+| **BlackBox** | `blackbox/test_cross_server_workflow.py` | End-to-end 5-server workflow |
+| **Adversarial** | `adversarial/test_authz_bypass.py` | Role escalation, token reuse, forged tokens |
+| **Adversarial** | `adversarial/test_phi_leakage.py` | De-ID completeness, error message exposure |
+| **Adversarial** | `adversarial/test_replay_attacks.py` | Duplicate audit/provenance, replayed authz |
+| **Adversarial** | `adversarial/test_chain_tampering.py` | Modified, inserted, deleted, reordered records |
+| **Adversarial** | `adversarial/test_malformed_inputs.py` | SSRF, XSS, SQL injection, command injection |
+| **Adversarial** | `adversarial/test_rate_limiting.py` | Rapid tokens, bulk queries, write contention |
 
 ### National Conformance Validation Flow
 
@@ -533,18 +641,26 @@ graph TB
 │                                                                   │
 │  IMPLEMENTER                  CONFORMANCE SUITE                   │
 │  ┌──────────────┐             ┌──────────────────────┐           │
-│  │ MCP Server   │────────────▶│ 1. Positive Tests    │           │
-│  │ Deployment   │             │    Core + Clinical    │           │
-│  │ (5 Servers)  │             │    + Imaging          │           │
-│  └──────────────┘             ├──────────────────────┤           │
-│                               │ 2. Negative Tests    │           │
-│                               │    Invalid + Unauth  │           │
+│  │ MCP Server   │────────────▶│ 1. Unit Tests        │           │
+│  │ Deployment   │             │    Fixture Validation │           │
+│  │ (5 Servers)  │             ├──────────────────────┤           │
+│  └──────────────┘             │ 2. Positive Tests    │           │
+│                               │    Core + Clinical    │           │
+│        ┌──────────┐           │    + Imaging          │           │
+│        │ BlackBox │           ├──────────────────────┤           │
+│        │ Harness  │──────────▶│ 3. BlackBox Tests    │           │
+│        │ (stdin/  │           │    All 5 Servers +   │           │
+│        │  HTTP/   │           │    Cross-Server      │           │
+│        │  Docker) │           ├──────────────────────┤           │
+│        └──────────┘           │ 4. Adversarial Tests │           │
+│                               │    Bypass + Tamper + │           │
+│                               │    Replay + Inject   │           │
 │                               ├──────────────────────┤           │
-│                               │ 3. Security Tests    │           │
+│                               │ 5. Security Tests    │           │
 │                               │    SSRF + Token +    │           │
 │                               │    Chain Integrity   │           │
 │                               ├──────────────────────┤           │
-│                               │ 4. Interop Tests     │           │
+│                               │ 6. Interop Tests     │           │
 │                               │    Cross-Server +    │           │
 │                               │    Schema Validation │           │
 │                               └──────────┬───────────┘           │
@@ -552,13 +668,109 @@ graph TB
 │                               ┌──────────▼───────────┐           │
 │                               │  Conformance Report  │           │
 │                               │  Level 1–5 Certified │           │
-│                               │  308 Tests Validated │           │
-│                               │  (39 unit + 269 conf)│           │
+│                               │  501 Tests Validated │           │
+│                               │  (44 unit + 457 conf)│           │
 │                               └──────────────────────┘           │
 └──────────────────────────────────────────────────────────────────┘
 ```
 
 See [conformance/README.md](conformance/README.md) for the full test harness documentation.
+
+---
+
+## National Interoperability Testbed
+
+v0.8.0 introduces a national interoperability testbed under `interop-testbed/` that proves cross-site behavior, deployment consistency, and failure modes across a multi-site cluster.
+
+### Testbed Architecture
+
+```mermaid
+graph TB
+    subgraph "Site A (Hospital)"
+        A_AZ[AuthZ] --> A_FHIR[FHIR]
+        A_FHIR --> A_DICOM[DICOM]
+        A_DICOM --> A_LDG[Ledger]
+        A_LDG --> A_PROV[Provenance]
+        A_EHR[Mock EHR] --> A_FHIR
+        A_PACS[Mock PACS] --> A_DICOM
+    end
+
+    subgraph "Site B (Cancer Center)"
+        B_AZ[AuthZ] --> B_FHIR[FHIR]
+        B_FHIR --> B_DICOM[DICOM]
+        B_DICOM --> B_LDG[Ledger]
+        B_LDG --> B_PROV[Provenance]
+        B_EHR[Mock EHR] --> B_FHIR
+        B_PACS[Mock PACS] --> B_DICOM
+    end
+
+    subgraph "Sponsor + CRO"
+        SP_AZ[Sponsor AuthZ]
+        SP_LDG[Sponsor Ledger]
+        CRO_AZ[CRO AuthZ]
+        CRO_FHIR[CRO FHIR]
+    end
+
+    IDP[Mock Identity Provider]
+    IDP --> A_AZ
+    IDP --> B_AZ
+    IDP --> SP_AZ
+    IDP --> CRO_AZ
+
+    style A_AZ fill:#4A90D9,color:#fff
+    style B_AZ fill:#4A90D9,color:#fff
+    style IDP fill:#7B2D8E,color:#fff
+```
+
+### Testbed Components
+
+| Component | Path | Purpose |
+|-----------|------|---------|
+| Docker Compose | `interop-testbed/docker-compose.yml` | Multi-site cluster (Site A, Site B, Sponsor, CRO, Identity) |
+| Personas | `interop-testbed/personas/` | 6 actor persona configs (robot, coordinator, monitor, auditor, sponsor, CRO) |
+| Mock EHR | `interop-testbed/mock_services/mock_ehr.py` | FHIR R4 synthetic patient data |
+| Mock PACS | `interop-testbed/mock_services/mock_pacs.py` | Synthetic DICOM imaging metadata |
+| Mock Identity | `interop-testbed/mock_services/mock_identity.py` | OIDC/JWT token provider |
+
+### Interoperability Scenarios
+
+| Scenario | File | Validates |
+|----------|------|-----------|
+| Cross-Site Provenance | `scenarios/cross_site_provenance.py` | DAG integrity across site boundaries |
+| Audit Replay | `scenarios/audit_replay.py` | Hash chain replay with per-record verification |
+| Token Exchange | `scenarios/token_exchange.py` | Cross-site token issuance, validation, revocation |
+| Partial Outage | `scenarios/partial_outage.py` | Graceful degradation when services fail |
+| Schema Drift | `scenarios/schema_drift.py` | Major/minor/patch drift detection between versions |
+| State Overlay | `scenarios/state_overlay.py` | CA CCPA, NY PHL/SHIELD, FDA 21 CFR Part 11 overlays |
+| Robot Workflow | `scenarios/robot_workflow.py` | 8-step robot-assisted procedure workflow |
+| Site Onboarding | `scenarios/site_onboarding.py` | 10-check site certification checklist |
+
+---
+
+## Certification and Evidence Generation
+
+v0.8.0 adds certification tools under `tools/certification/` for generating conformance reports, evidence packs, site certification, and schema compatibility analysis.
+
+| Tool | File | Purpose |
+|------|------|---------|
+| Report Generator | `tools/certification/report_generator.py` | JSON, JUnit XML, HTML, Markdown conformance reports |
+| Evidence Pack | `tools/certification/evidence_pack.py` | SHA-256 hashed evidence bundles with manifest |
+| Site Certification | `tools/certification/site_certification.py` | Profile-based conformance level validation |
+| Schema Diff | `tools/certification/schema_diff.py` | Breaking/non-breaking schema change detection |
+
+---
+
+## Benchmarks
+
+v0.8.0 adds performance benchmarks under `benchmarks/` for measuring latency, throughput, chain verification, and concurrent access performance.
+
+| Benchmark | File | Measures |
+|-----------|------|----------|
+| Latency | `benchmarks/latency_benchmark.py` | Audit hash computation, chain construction timing |
+| Throughput | `benchmarks/throughput_benchmark.py` | AuthZ, audit, provenance operations per second |
+| Chain | `benchmarks/chain_benchmark.py` | Chain construction at 10/50/100/500 records |
+| Concurrent | `benchmarks/concurrent_benchmark.py` | ThreadPool performance at 1/2/4/8 threads |
+| Report | `benchmarks/report.py` | Report generation with baseline regression detection |
 
 ---
 
@@ -969,22 +1181,44 @@ national-mcp-pai-oncology-trials/
 │   │   ├── migrations.py         # Schema migration utilities
 │   │   └── factory.py            # Config-driven backend selection
 │   ├── trialmcp_authz/           # Authorization server
-│   │   ├── server.py             # MCP server entrypoint
-│   │   ├── policy_engine.py      # Deny-by-default RBAC engine
-│   │   └── token_store.py        # SHA-256 token lifecycle
 │   ├── trialmcp_fhir/            # FHIR clinical data server
-│   │   ├── server.py             # MCP server entrypoint
-│   │   ├── deid_pipeline.py      # HIPAA Safe Harbor de-identification
-│   │   └── fhir_adapter.py       # Backend FHIR adapters (mock/HAPI/SMART)
 │   ├── trialmcp_dicom/           # DICOM imaging server
-│   │   ├── server.py             # MCP server entrypoint
-│   │   └── dicom_adapter.py      # Backend DICOM adapters (mock/Orthanc/dcm4chee)
 │   ├── trialmcp_ledger/          # Audit ledger server
-│   │   ├── server.py             # MCP server entrypoint
-│   │   └── chain.py              # Hash-chained immutable audit ledger
 │   └── trialmcp_provenance/      # Provenance server
-│       ├── server.py             # MCP server entrypoint
-│       └── dag.py                # DAG-based lineage graph
+├── conformance/                  # NORMATIVE conformance test suite (457 tests)
+│   ├── conftest.py               # Shared fixtures, schema validation helpers
+│   ├── fixtures/                 # Test fixture data (extracted from schemas)
+│   ├── unit/                     # Unit-level fixture construction tests (v0.8.0)
+│   ├── positive/                 # Correct behavior validation
+│   ├── negative/                 # Invalid input rejection
+│   ├── security/                 # Security control validation
+│   ├── interoperability/         # Multi-server coordination
+│   ├── integration/              # In-process server integration tests (v0.8.0)
+│   ├── blackbox/                 # Black-box conformance tests (v0.8.0)
+│   ├── adversarial/              # Adversarial security tests (v0.8.0)
+│   └── harness/                  # Black-box conformance harness (v0.8.0)
+│       ├── client.py             # MCP client (stdin/HTTP/Docker)
+│       ├── config.py             # Harness configuration
+│       ├── runner.py             # CLI runner + report generation
+│       ├── data_seeder.py        # Synthetic test data generation
+│       └── adapters/             # Pluggable transport adapters
+├── interop-testbed/              # National interoperability testbed (v0.8.0)
+│   ├── docker-compose.yml        # Multi-site cluster deployment
+│   ├── personas/                 # 6 actor persona configurations
+│   ├── scenarios/                # 8 interop test scenarios
+│   └── mock_services/            # Mock EHR, PACS, Identity Provider
+├── tools/                        # Certification and evidence tools (v0.8.0)
+│   └── certification/
+│       ├── report_generator.py   # JSON/JUnit/HTML/Markdown reports
+│       ├── evidence_pack.py      # SHA-256 evidence bundles
+│       ├── site_certification.py # Profile-based site validation
+│       └── schema_diff.py        # Schema compatibility analysis
+├── benchmarks/                   # Performance benchmarks (v0.8.0)
+│   ├── latency_benchmark.py      # Latency measurement
+│   ├── throughput_benchmark.py   # Throughput measurement
+│   ├── chain_benchmark.py        # Chain verification scaling
+│   ├── concurrent_benchmark.py   # Concurrent access testing
+│   └── report.py                 # Report generation + regression detection
 ├── deploy/                       # Deployment infrastructure (v0.7.0)
 │   ├── docker/                   # Dockerfiles for each server + all-in-one
 │   ├── docker-compose.yml        # Single-site deployment (5 servers)
@@ -995,28 +1229,9 @@ national-mcp-pai-oncology-trials/
 │   └── .env.example              # Environment configuration template
 ├── examples/                     # End-to-end demos (v0.7.0)
 │   └── quickstart/               # 5-minute local demo
-│       ├── run_demo.py           # Complete 5-server workflow script
-│       ├── demo_data/            # Synthetic FHIR Bundles, DICOM metadata
-│       └── README.md             # Step-by-step guide
 ├── reference/                    # NON-NORMATIVE illustrative implementations
 │   ├── python/                   # Python illustrative implementation
-│   │   ├── core_server.py        # Level 1 illustrative Core MCP server
-│   │   ├── schema_validator.py   # JSON Schema validation utilities
-│   │   └── conformance_runner.py # CLI conformance test runner
 │   └── typescript/               # TypeScript illustrative implementation
-│       ├── core-server.ts        # Level 1 illustrative Core server with ajv
-│       ├── authz-server.ts       # Level 2 AuthZ server implementation
-│       ├── ledger-server.ts      # Level 2 Ledger server implementation
-│       ├── interfaces.ts         # Generated TypeScript interfaces
-│       ├── *.test.ts             # Jest test suites
-│       └── package.json          # Dependencies (ajv, uuid, jest)
-├── conformance/                  # NORMATIVE conformance test suite
-│   ├── conftest.py               # Shared fixtures, schema validation helpers
-│   ├── fixtures/                 # Test fixture data (extracted from schemas)
-│   ├── positive/                 # Correct behavior validation
-│   ├── negative/                 # Invalid input rejection
-│   ├── security/                 # Security control validation
-│   └── interoperability/         # Multi-server coordination
 ├── profiles/                     # NORMATIVE conformance profiles and overlays
 ├── schemas/                      # NORMATIVE machine-readable JSON schemas (13)
 ├── spec/                         # NORMATIVE specification (9 modules)

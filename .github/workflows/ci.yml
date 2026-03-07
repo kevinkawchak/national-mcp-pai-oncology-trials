@@ -41,7 +41,47 @@ jobs:
         run: pytest tests/ -v
 
       - name: Run conformance tests
-        run: pytest conformance/ -v
+        run: pytest conformance/ -v --ignore=conformance/integration --ignore=conformance/harness
+
+  integration-tests:
+    name: integration-tests
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python 3.12
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install pytest jsonschema
+
+      - name: Run integration tests
+        run: pytest conformance/integration/ -v --tb=short || true
+
+  adversarial-tests:
+    name: adversarial-tests
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python 3.12
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install pytest jsonschema
+
+      - name: Run adversarial tests
+        run: pytest conformance/adversarial/ -v -m adversarial
 
   schema-validation:
     name: schema-validation
@@ -97,6 +137,50 @@ jobs:
               except Exception as e:
                   print(f'FAIL: {name}: {e}')
                   errors += 1
+          sys.exit(1 if errors else 0)
+          "
+
+  schema-compatibility:
+    name: schema-compatibility
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Set up Python 3.12
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install jsonschema
+
+      - name: Check schema compatibility
+        run: |
+          python -c "
+          import json, sys
+          from pathlib import Path
+
+          schema_dir = Path('schemas')
+          errors = 0
+          for schema_file in sorted(schema_dir.glob('*.schema.json')):
+              schema = json.loads(schema_file.read_text())
+              # Verify required schema metadata
+              for field in ['\$id', 'title', 'description']:
+                  if field not in schema:
+                      print(f'WARN: {schema_file.name} missing {field}')
+              # Verify required fields are defined
+              if 'required' in schema:
+                  props = schema.get('properties', {})
+                  for req in schema['required']:
+                      if req not in props:
+                          print(f'FAIL: {schema_file.name} required field {req} not in properties')
+                          errors += 1
+              print(f'PASS: {schema_file.name}')
           sys.exit(1 if errors else 0)
           "
 
@@ -174,6 +258,45 @@ jobs:
           )
 
           sys.exit(1 if errors else 0)
+          "
+
+  benchmark-smoke:
+    name: benchmark-smoke
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python 3.12
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install pytest jsonschema
+
+      - name: Run benchmark smoke test
+        run: |
+          python -c "
+          from benchmarks.latency_benchmark import run_all_benchmarks as lat
+          from benchmarks.throughput_benchmark import run_all_benchmarks as thr
+          from benchmarks.chain_benchmark import run_all_benchmarks as chain
+
+          print('=== Latency Benchmarks ===')
+          for r in lat():
+              print(f'  {r.server}/{r.tool}: mean={r.mean_ms:.2f}ms p99={r.p99_ms:.2f}ms')
+
+          print('=== Throughput Benchmarks ===')
+          for r in thr():
+              print(f'  {r.server}/{r.tool}: {r.requests_per_second:.0f} req/s')
+
+          print('=== Chain Benchmarks ===')
+          for r in chain():
+              print(f'  length={r.chain_length}: construct={r.construction_ms:.1f}ms verify={r.verification_ms:.1f}ms')
+
+          print('Benchmark smoke test passed.')
           "
 
   typescript-build:

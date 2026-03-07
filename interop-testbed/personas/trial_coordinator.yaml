@@ -1,0 +1,50 @@
+# Trial Coordinator Persona — National MCP-PAI Oncology Trials Interoperability Testbed
+
+persona:
+  name: trial_coordinator
+  display_name: "Trial Coordinator"
+  role: trial_coordinator
+  description: >
+    Clinical trial coordinator with broad access to manage
+    trial operations, issue tokens, and oversee data access.
+
+credentials:
+  token_type: bearer
+  default_expiry_seconds: 28800
+  max_expiry_seconds: 86400
+
+capabilities:
+  servers:
+    trialmcp-authz:
+      - authz_evaluate
+      - authz_issue_token
+      - authz_validate_token
+      - authz_list_policies
+      - authz_revoke_token
+    trialmcp-fhir:
+      - fhir_read
+      - fhir_search
+      - fhir_patient_lookup
+      - fhir_study_status
+    trialmcp-dicom:
+      - dicom_query
+      - dicom_retrieve_pointer
+      - dicom_study_metadata
+      - dicom_recist_measurements
+    trialmcp-ledger:
+      - ledger_append
+      - ledger_query
+    trialmcp-provenance:
+      - provenance_register_source
+      - provenance_record_access
+
+  dicom_query_levels:
+    - PATIENT
+    - STUDY
+    - SERIES
+
+restrictions:
+  can_issue_tokens: true
+  can_revoke_tokens: true
+  can_modify_policies: false
+  max_concurrent_sessions: 5

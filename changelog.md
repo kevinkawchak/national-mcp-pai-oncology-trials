@@ -6,6 +6,97 @@ This project follows [Semantic Versioning](https://semver.org/) as described in 
 
 ---
 
+## [0.8.0] — 2026-03-07
+
+### Added
+
+#### Black-Box Conformance Harness
+- `conformance/harness/__init__.py` — Package initialization
+- `conformance/harness/client.py` — `MCPConformanceClient` with `call_tool()`, `list_tools()`, `initialize()`, `health_check()` methods; `MCPResponse` dataclass; `create_client_from_config()` factory
+- `conformance/harness/config.py` — `HarnessConfig`, `ServerTarget`, `SeedConfig` dataclasses; `from_file()` supports JSON/YAML; `default_config()` for local stdin servers
+- `conformance/harness/adapters/__init__.py` — Adapters package initialization
+- `conformance/harness/adapters/stdin_adapter.py` — `StdinAdapter` managing subprocess stdin/stdout JSON-RPC
+- `conformance/harness/adapters/http_adapter.py` — `HttpAdapter` using urllib for HTTP POST
+- `conformance/harness/adapters/docker_adapter.py` — `DockerAdapter` using `docker exec` for container communication
+- `conformance/harness/adapters/auth_adapter.py` — `AuthSession` and `AuthManager` for multi-role session management
+- `conformance/harness/data_seeder.py` — `DataSeeder` with synthetic FHIR Patient, ResearchStudy, DICOM metadata generation; `SeedResult` dataclass
+- `conformance/harness/runner.py` — CLI with `--target`, `--profile`, `--level`, `--output-format` flags; `ConformanceReport` with `to_json()`, `to_junit_xml()`, `to_html()`, `to_markdown()` serializers
+
+#### Conformance Suite Refactoring (Unit/Integration/BlackBox Tiers)
+- `conformance/unit/__init__.py` — Unit tier package
+- `conformance/unit/test_fixture_construction.py` — 30 tests validating fixture construction for audit records, authz decisions, clinical resources, provenance records
+- `conformance/integration/__init__.py` — Integration tier package
+- `conformance/integration/test_server_integration.py` — Tests for all 5 server packages via in-process calls
+- `conformance/blackbox/__init__.py` — BlackBox tier package
+- `conformance/blackbox/test_authz_conformance.py` — Token lifecycle, RBAC evaluation, deny-by-default tests
+- `conformance/blackbox/test_fhir_conformance.py` — FHIR read, search, de-identification, consent tests
+- `conformance/blackbox/test_dicom_conformance.py` — DICOM query, modality restrictions, UID validation tests
+- `conformance/blackbox/test_ledger_conformance.py` — Ledger append, verify, chain integrity, genesis tests
+- `conformance/blackbox/test_provenance_conformance.py` — Provenance record, query, DAG integrity tests
+- `conformance/blackbox/test_cross_server_workflow.py` — End-to-end 5-server workflow, token exchange tests
+
+#### Adversarial Test Packs
+- `conformance/adversarial/__init__.py` — Adversarial tier package
+- `conformance/adversarial/test_authz_bypass.py` — Role escalation, token reuse, forged tokens
+- `conformance/adversarial/test_phi_leakage.py` — De-identification completeness, search result filtering, error message exposure
+- `conformance/adversarial/test_replay_attacks.py` — Duplicate audit records, replayed authorization, duplicate provenance
+- `conformance/adversarial/test_chain_tampering.py` — Modified records, inserted foreign records, deleted records, reordered records, hash collision attempts
+- `conformance/adversarial/test_malformed_inputs.py` — Invalid FHIR/DICOM IDs, oversized payloads, SSRF/XSS/SQL/command injection
+- `conformance/adversarial/test_rate_limiting.py` — Rapid token issuance, bulk query flooding, concurrent write contention
+
+#### National Interoperability Testbed
+- `interop-testbed/docker-compose.yml` — Multi-site cluster: Site A, Site B, Sponsor, CRO, Mock Identity Provider
+- `interop-testbed/personas/robot_agent.yaml` — Robot agent persona
+- `interop-testbed/personas/trial_coordinator.yaml` — Trial coordinator persona
+- `interop-testbed/personas/data_monitor.yaml` — Data monitor persona
+- `interop-testbed/personas/auditor.yaml` — Auditor persona
+- `interop-testbed/personas/sponsor.yaml` — Sponsor persona
+- `interop-testbed/personas/cro.yaml` — CRO persona
+- `interop-testbed/scenarios/cross_site_provenance.py` — Cross-site DAG construction and verification
+- `interop-testbed/scenarios/audit_replay.py` — Hash chain replay with per-record verification
+- `interop-testbed/scenarios/token_exchange.py` — Cross-site token issuance, validation, revocation
+- `interop-testbed/scenarios/partial_outage.py` — Graceful degradation under service failure
+- `interop-testbed/scenarios/schema_drift.py` — Major/minor/patch schema drift detection
+- `interop-testbed/scenarios/state_overlay.py` — CA CCPA, NY PHL/SHIELD, FDA 21 CFR Part 11 overlays
+- `interop-testbed/scenarios/robot_workflow.py` — 8-step robot-assisted procedure workflow
+- `interop-testbed/scenarios/site_onboarding.py` — 10-check site certification checklist
+- `interop-testbed/mock_services/mock_ehr.py` — Mock FHIR R4 EHR with synthetic patients
+- `interop-testbed/mock_services/mock_pacs.py` — Mock DICOM PACS with synthetic imaging
+- `interop-testbed/mock_services/mock_identity.py` — Mock OIDC/JWT Identity Provider
+
+#### Certification and Evidence Generation
+- `tools/certification/__init__.py` — Package initialization
+- `tools/certification/report_generator.py` — JSON, JUnit XML, HTML, Markdown conformance reports
+- `tools/certification/evidence_pack.py` — SHA-256 hashed evidence bundles with manifest
+- `tools/certification/site_certification.py` — Profile-based conformance level validation
+- `tools/certification/schema_diff.py` — Breaking/non-breaking schema change detection
+
+#### Performance Benchmarks
+- `benchmarks/__init__.py` — Package initialization
+- `benchmarks/latency_benchmark.py` — Audit hash and chain construction latency measurement
+- `benchmarks/throughput_benchmark.py` — AuthZ, audit, provenance throughput benchmarks
+- `benchmarks/chain_benchmark.py` — Chain construction at 10/50/100/500 records
+- `benchmarks/concurrent_benchmark.py` — ThreadPool performance at 1/2/4/8 threads
+- `benchmarks/report.py` — Report generation with baseline regression detection
+
+### Changed
+- `pyproject.toml` — Version 0.8.0, added `trialmcp-conformance` CLI entry point, added `benchmarks`, `interop_testbed`, `tools` to known-first-party, added `blackbox`, `adversarial`, `integration` pytest markers
+- `.github/workflows/ci.yml` — Added 4 new jobs: `integration-tests`, `adversarial-tests`, `schema-compatibility`, `benchmark-smoke`; lint job ignores `conformance/integration` and `conformance/harness`
+- `reference/python/schema_validator.py` — Changed `validate()` to use lazy import for `Draft202012Validator`
+- `README.md` — v0.8.0 badges (457 conformance, 501 total, Testbed badge), new Black-Box Conformance Harness section, National Interoperability Testbed section, Certification section, Benchmarks section, updated CI pipeline (9 jobs), updated conformance test architecture, updated repository structure
+- `prompts.md` — v0.8.0 prompt archived
+- `releases.md` — v0.8.0 release notes added
+- `changelog.md` — This entry
+
+### Verified
+- `ruff check .` and `ruff format --check .` pass cleanly across all Python files
+- `pytest tests/` — 44 unit tests pass
+- `pytest conformance/ --ignore=conformance/integration --ignore=conformance/harness` — 457 conformance tests pass (+ 1 skipped)
+- All benchmarks run successfully without errors
+- Total: 501 tests passing
+
+---
+
 ## [0.7.0] — 2026-03-07
 
 ### Added
