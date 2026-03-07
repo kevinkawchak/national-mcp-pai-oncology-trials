@@ -1,10 +1,10 @@
 # National MCP Standard for Physical AI Oncology Clinical Trials
 
-**Version 0.5.0** | **Normative Specification** | **United States Industry Standard**
+**Version 0.5.1** | **Normative Specification** | **United States Industry Standard**
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 [![DOI](https://img.shields.io/badge/DOI-10.5281%2Fzenodo.18894758-blue)](https://doi.org/10.5281/zenodo.18894758)
-[![Version](https://img.shields.io/badge/Version-0.5.0-green.svg)](releases.md)
+[![Version](https://img.shields.io/badge/Version-0.5.1-green.svg)](releases.md)
 [![CI](https://img.shields.io/badge/CI-Passing-brightgreen.svg)](.github/workflows/ci.yml)
 [![JSON Schema](https://img.shields.io/badge/JSON_Schema-Draft_2020--12-orange.svg)](schemas/)
 [![Python](https://img.shields.io/badge/Python-3.10%20|%203.11%20|%203.12-blue.svg)](https://www.python.org/)
@@ -15,7 +15,9 @@
 [![Tools](https://img.shields.io/badge/Tools-23-brightgreen.svg)](spec/tool-contracts.md)
 [![Conformance Tests](https://img.shields.io/badge/Conformance_Tests-269_Passing-brightgreen.svg)](conformance/)
 [![Ref Tests](https://img.shields.io/badge/Ref_Tests-39_Passing-brightgreen.svg)](https://github.com/kevinkawchak/mcp-pai-oncology-trials)
-[![Updated](https://img.shields.io/badge/Updated-2026--03--06-lightgrey.svg)](changelog.md)
+[![Unit Tests](https://img.shields.io/badge/Unit_Tests-39_Passing-brightgreen.svg)](tests/)
+[![Total Tests](https://img.shields.io/badge/Total_Tests-308_Passing-brightgreen.svg)](pyproject.toml)
+[![Updated](https://img.shields.io/badge/Updated-2026--03--07-lightgrey.svg)](changelog.md)
 [![Contributors](https://img.shields.io/badge/Contributors-2-blue.svg)](releases.md)
 
 The **National MCP-PAI Oncology Trials Standard** is a normative specification for deploying Model Context Protocol (MCP) servers across federated Physical AI oncology clinical trial systems in the United States. This standard defines protocol contracts, actor models, security baselines, regulatory overlays, machine-readable JSON schemas, and governance processes required for industry-wide interoperability of autonomous robotic systems in regulated clinical environments.
@@ -29,6 +31,7 @@ The **National MCP-PAI Oncology Trials Standard** is a normative specification f
 - [Motivation](#motivation)
 - [National Architecture Overview](#national-architecture-overview)
 - [Reference Implementations](#reference-implementations)
+- [Unit Test Suite](#unit-test-suite)
 - [CI/CD Pipeline](#cicd-pipeline)
 - [Conformance Test Suite](#conformance-test-suite)
 - [Profiles and Conformance Level Definitions](#profiles-and-conformance-level-definitions)
@@ -196,7 +199,7 @@ ROBOT AGENT                MCP SERVER LAYER              CLINICAL SYSTEMS
 
 ## Reference Implementations
 
-Version 0.5.0 introduces NON-NORMATIVE reference implementations in Python and TypeScript under `/reference/`. These are informative examples — the authoritative requirements are defined in `/spec/`, `/schemas/`, and `/profiles/`.
+Version 0.5.0 introduced NON-NORMATIVE reference implementations in Python and TypeScript under `/reference/`. These are informative examples — the authoritative requirements are defined in `/spec/`, `/schemas/`, and `/profiles/`. Version 0.5.1 added a dedicated unit test suite under `/tests/` with 39 tests covering all reference implementation modules.
 
 ### Reference Implementation Architecture
 
@@ -212,6 +215,12 @@ graph TB
     TCS[core-server.ts<br/>Core L1 Server + ajv]
   end
 
+  subgraph "Unit Tests (39 tests)"
+    TCS_T[test_core_server.py<br/>28 tests]
+    TSV_T[test_schema_validator.py<br/>6 tests]
+    TCR_T[test_conformance_runner.py<br/>5 tests]
+  end
+
   subgraph "Normative Artifacts"
     SPEC["/spec/ (9 modules)"]
     SCH["/schemas/ (13 schemas)"]
@@ -224,11 +233,17 @@ graph TB
   PCR --> CON
   TCS --> SCH
   TCS --> SPEC
+  TCS_T --> PCS
+  TSV_T --> PSV
+  TCR_T --> PCR
 
   style PCS fill:#4A90D9,color:#fff
   style PSV fill:#50C878,color:#fff
   style PCR fill:#F5A623,color:#fff
   style TCS fill:#7B2D8E,color:#fff
+  style TCS_T fill:#4A90D9,color:#fff,stroke:#fff
+  style TSV_T fill:#50C878,color:#fff,stroke:#fff
+  style TCR_T fill:#F5A623,color:#fff,stroke:#fff
   style SPEC fill:#333,color:#fff
   style SCH fill:#333,color:#fff
   style PRO fill:#333,color:#fff
@@ -250,31 +265,83 @@ Both reference implementations demonstrate:
 
 ---
 
+## Unit Test Suite
+
+Version 0.5.1 introduces a dedicated unit test suite under `/tests/` with 39 tests that validate the reference Python implementation's public API. These tests complement the 269 conformance tests by verifying the correctness of the NON-NORMATIVE reference code itself.
+
+### Unit Test Architecture
+
+```mermaid
+graph TB
+  subgraph "tests/"
+    TCS[test_core_server.py<br/>28 tests]
+    TSV[test_schema_validator.py<br/>6 tests]
+    TCR[test_conformance_runner.py<br/>5 tests]
+  end
+
+  subgraph "reference/python/"
+    CS[core_server.py<br/>9 public functions]
+    SV[schema_validator.py<br/>4 public functions]
+    CR[conformance_runner.py<br/>CLI runner]
+  end
+
+  TCS --> CS
+  TSV --> SV
+  TCR --> CR
+
+  style TCS fill:#4A90D9,color:#fff
+  style TSV fill:#50C878,color:#fff
+  style TCR fill:#F5A623,color:#fff
+  style CS fill:#4A90D9,color:#fff,stroke-dasharray:5
+  style SV fill:#50C878,color:#fff,stroke-dasharray:5
+  style CR fill:#F5A623,color:#fff,stroke-dasharray:5
+```
+
+### Unit Test Summary
+
+| Test File | Tests | Coverage |
+|-----------|-------|----------|
+| `test_core_server.py` | 28 | AuthZ evaluate (6), token lifecycle (7), ledger operations (8), health/error helpers (5), policy matrix (1), genesis hash (1) |
+| `test_schema_validator.py` | 6 | Schema loading (2), schema listing (2), validation (2) |
+| `test_conformance_runner.py` | 5 | Pytest argument building (5), level directory mapping (1) |
+
+### Running Unit Tests
+
+```bash
+# Run all unit tests
+pytest tests/ -v
+
+# Run all tests (unit + conformance)
+pytest -v
+```
+
+---
+
 ## CI/CD Pipeline
 
-Version 0.5.0 adds a CI/CD pipeline (`.github/workflows/ci.yml`) that runs on every push and pull request. The pipeline includes three jobs:
+Version 0.5.0 added a CI/CD pipeline (`.github/workflows/ci.yml`) that runs on every push and pull request. The pipeline includes three jobs:
 
 | Job | Matrix | Checks |
 |-----|--------|--------|
-| **lint-and-format** | Python 3.10, 3.11, 3.12 | Ruff lint, Ruff format, pytest conformance suite (269 tests) |
+| **lint-and-format** | Python 3.10, 3.11, 3.12 | Ruff lint, Ruff format, pytest unit tests (39), pytest conformance suite (269) |
 | **schema-validation** | Python 3.12 | All 13 schemas validated (structure + example self-validation) |
 | **docs-lint** | — | Required documentation files exist, internal markdown links checked |
 
 ```
-┌──────────────────────────────────────────────────────────────────┐
-│                       CI/CD PIPELINE                              │
-├──────────────────────────────────────────────────────────────────┤
-│                                                                   │
-│  Push / PR to main                                               │
-│       │                                                           │
-│       ├──▶ lint-and-format (3.10) ──▶ ruff check + format + test │
-│       ├──▶ lint-and-format (3.11) ──▶ ruff check + format + test │
-│       ├──▶ lint-and-format (3.12) ──▶ ruff check + format + test │
-│       ├──▶ schema-validation ──────▶ 13 schemas + examples       │
-│       └──▶ docs-lint ──────────────▶ file check + link check     │
-│                                                                   │
-│  All jobs run in parallel for fast feedback                      │
-└──────────────────────────────────────────────────────────────────┘
+┌──────────────────────────────────────────────────────────────────────────┐
+│                           CI/CD PIPELINE                                  │
+├──────────────────────────────────────────────────────────────────────────┤
+│                                                                           │
+│  Push / PR to main                                                       │
+│       │                                                                   │
+│       ├──▶ lint-and-format (3.10) ──▶ ruff + 39 unit + 269 conformance   │
+│       ├──▶ lint-and-format (3.11) ──▶ ruff + 39 unit + 269 conformance   │
+│       ├──▶ lint-and-format (3.12) ──▶ ruff + 39 unit + 269 conformance   │
+│       ├──▶ schema-validation ──────▶ 13 schemas + examples               │
+│       └──▶ docs-lint ──────────────▶ file check + link check             │
+│                                                                           │
+│  All jobs run in parallel · 308 total tests per Python version           │
+└──────────────────────────────────────────────────────────────────────────┘
 ```
 
 ---
@@ -372,7 +439,8 @@ graph TB
 │                               ┌──────────▼───────────┐           │
 │                               │  Conformance Report  │           │
 │                               │  Level 1–5 Certified │           │
-│                               │  269 Tests Validated │           │
+│                               │  308 Tests Validated │           │
+│                               │  (39 unit + 269 conf)│           │
 │                               └──────────────────────┘           │
 └──────────────────────────────────────────────────────────────────┘
 ```
@@ -859,6 +927,11 @@ national-mcp-pai-oncology-trials/
 │   ├── HIPAA.md                  # HIPAA compliance mapping
 │   ├── CFR_PART_11.md            # 21 CFR Part 11 mapping
 │   └── IRB_SITE_POLICY_TEMPLATE.md # IRB site policy template
+├── tests/                       # Unit tests for reference implementations (v0.5.1)
+│   ├── __init__.py              # Package marker
+│   ├── test_core_server.py      # 28 unit tests for core_server.py
+│   ├── test_schema_validator.py # 6 unit tests for schema_validator.py
+│   └── test_conformance_runner.py # 5 unit tests for conformance_runner.py
 ├── pyproject.toml                # Python project config (ruff, pytest)
 ├── CODE_OF_CONDUCT.md            # Contributor Covenant
 ├── LICENSE                       # MIT License
@@ -884,8 +957,9 @@ national-mcp-pai-oncology-trials/
 8. Validate server inputs/outputs against the [JSON schemas](schemas/) for your profile level
 9. Apply security requirements from [spec/security.md](spec/security.md) and [spec/privacy.md](spec/privacy.md)
 10. Apply applicable state overlays ([California](profiles/state-us-ca.md), [New York](profiles/state-us-ny.md)) and the [FDA overlay](profiles/country-us-fda.md)
-11. Run the [conformance test suite](conformance/) against your implementation: `pytest conformance/ -v`
-12. Validate against the conformance test subset for your target profile
+11. Run the [unit tests](tests/) against the reference implementation: `pytest tests/ -v`
+12. Run the [conformance test suite](conformance/) against your implementation: `pytest conformance/ -v`
+13. Validate against the conformance test subset for your target profile
 
 ### For Regulators and Compliance Officers
 
