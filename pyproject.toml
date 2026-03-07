@@ -1,7 +1,7 @@
 [project]
 name = "national-mcp-pai-oncology-trials"
-version = "0.7.0"
-description = "National MCP Standard for Physical AI Oncology Clinical Trials — Phase 2: Real Server Implementations, Persistence, and Deployment Infrastructure"
+version = "0.8.0"
+description = "National MCP Standard for Physical AI Oncology Clinical Trials — Phase 3: Black-Box Conformance, National Interoperability Testbed, and Evidence Generation"
 requires-python = ">=3.10"
 license = {text = "MIT"}
 
@@ -30,6 +30,7 @@ trialmcp-fhir = "servers.trialmcp_fhir.server:main"
 trialmcp-dicom = "servers.trialmcp_dicom.server:main"
 trialmcp-ledger = "servers.trialmcp_ledger.server:main"
 trialmcp-provenance = "servers.trialmcp_provenance.server:main"
+trialmcp-conformance = "conformance.harness.runner:main"
 
 [tool.ruff]
 target-version = "py310"
@@ -44,11 +45,14 @@ select = [
 ]
 
 [tool.ruff.lint.isort]
-known-first-party = ["conformance", "examples", "models", "reference", "scripts", "servers", "tests"]
+known-first-party = ["benchmarks", "conformance", "examples", "interop_testbed", "models", "reference", "scripts", "servers", "tests", "tools"]
 
 [tool.pytest.ini_options]
 testpaths = ["conformance", "tests"]
 markers = [
     "security: Security conformance tests",
     "interoperability: Interoperability conformance tests",
+    "blackbox: Black-box conformance tests",
+    "adversarial: Adversarial security tests",
+    "integration: Integration tests for reference servers",
 ]

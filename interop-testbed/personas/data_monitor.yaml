@@ -1,0 +1,39 @@
+# Data Monitor Persona — National MCP-PAI Oncology Trials Interoperability Testbed
+
+persona:
+  name: data_monitor
+  display_name: "Data Safety Monitor"
+  role: data_monitor
+  description: >
+    Data safety monitoring board member with read-only access
+    to clinical data for safety oversight and monitoring.
+
+credentials:
+  token_type: bearer
+  default_expiry_seconds: 14400
+  max_expiry_seconds: 86400
+
+capabilities:
+  servers:
+    trialmcp-authz:
+      - authz_evaluate
+      - authz_validate_token
+    trialmcp-fhir:
+      - fhir_read
+      - fhir_search
+      - fhir_patient_lookup
+      - fhir_study_status
+    trialmcp-dicom:
+      - dicom_query
+      - dicom_study_metadata
+
+  dicom_query_levels:
+    - PATIENT
+    - STUDY
+
+restrictions:
+  read_only: true
+  cannot_issue_tokens: true
+  cannot_write_ledger: true
+  cannot_write_provenance: true
+  max_concurrent_sessions: 3

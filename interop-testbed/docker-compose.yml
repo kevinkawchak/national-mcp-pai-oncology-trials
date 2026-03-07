@@ -1,0 +1,300 @@
+###############################################################################
+# National MCP-PAI Oncology Trials — Multi-Site Interoperability Testbed
+#
+# Simulates a national-scale deployment with:
+#   Site A (Hospital):  5 MCP servers + mock EHR + mock PACS
+#   Site B (Hospital):  5 MCP servers + mock EHR + mock PACS
+#   Sponsor:            AuthZ + Ledger + Provenance servers
+#   CRO:                AuthZ + FHIR + Ledger servers
+#   Auditor:            Read-only Ledger + Provenance access
+#
+# Usage:
+#   docker-compose -f interop-testbed/docker-compose.yml up -d
+#   docker-compose -f interop-testbed/docker-compose.yml down
+###############################################################################
+
+version: "3.9"
+
+networks:
+  trialmcp-national:
+    driver: bridge
+    name: trialmcp-national
+
+services:
+  # ──────────────────────────────────────────────────────────────────────────
+  # Site A — Hospital (full deployment)
+  # ──────────────────────────────────────────────────────────────────────────
+  site-a-authz:
+    build:
+      context: ..
+      dockerfile: deploy/docker/Dockerfile.authz
+    container_name: site-a-authz
+    environment:
+      TRIALMCP_SERVER_NAME: site-a-authz
+      TRIALMCP_STORAGE_BACKEND: sqlite
+      TRIALMCP_STORAGE_DSN: /data/authz.db
+      TRIALMCP_LOG_LEVEL: INFO
+    networks: [trialmcp-national]
+    volumes: [site-a-data:/data]
+
+  site-a-fhir:
+    build:
+      context: ..
+      dockerfile: deploy/docker/Dockerfile.fhir
+    container_name: site-a-fhir
+    environment:
+      TRIALMCP_SERVER_NAME: site-a-fhir
+      TRIALMCP_STORAGE_BACKEND: sqlite
+      TRIALMCP_STORAGE_DSN: /data/fhir.db
+      TRIALMCP_LOG_LEVEL: INFO
+    networks: [trialmcp-national]
+    volumes: [site-a-data:/data]
+
+  site-a-dicom:
+    build:
+      context: ..
+      dockerfile: deploy/docker/Dockerfile.dicom
+    container_name: site-a-dicom
+    environment:
+      TRIALMCP_SERVER_NAME: site-a-dicom
+      TRIALMCP_STORAGE_BACKEND: sqlite
+      TRIALMCP_STORAGE_DSN: /data/dicom.db
+      TRIALMCP_LOG_LEVEL: INFO
+    networks: [trialmcp-national]
+    volumes: [site-a-data:/data]
+
+  site-a-ledger:
+    build:
+      context: ..
+      dockerfile: deploy/docker/Dockerfile.ledger
+    container_name: site-a-ledger
+    environment:
+      TRIALMCP_SERVER_NAME: site-a-ledger
+      TRIALMCP_STORAGE_BACKEND: sqlite
+      TRIALMCP_STORAGE_DSN: /data/ledger.db
+      TRIALMCP_LOG_LEVEL: INFO
+    networks: [trialmcp-national]
+    volumes: [site-a-data:/data]
+
+  site-a-provenance:
+    build:
+      context: ..
+      dockerfile: deploy/docker/Dockerfile.provenance
+    container_name: site-a-provenance
+    environment:
+      TRIALMCP_SERVER_NAME: site-a-provenance
+      TRIALMCP_STORAGE_BACKEND: sqlite
+      TRIALMCP_STORAGE_DSN: /data/provenance.db
+      TRIALMCP_LOG_LEVEL: INFO
+    networks: [trialmcp-national]
+    volumes: [site-a-data:/data]
+
+  site-a-mock-ehr:
+    build:
+      context: .
+      dockerfile: mock_services/Dockerfile.ehr
+    container_name: site-a-mock-ehr
+    environment:
+      SITE_ID: site-a
+      PATIENT_COUNT: "20"
+    networks: [trialmcp-national]
+
+  site-a-mock-pacs:
+    build:
+      context: .
+      dockerfile: mock_services/Dockerfile.pacs
+    container_name: site-a-mock-pacs
+    environment:
+      SITE_ID: site-a
+      STUDY_COUNT: "15"
+    networks: [trialmcp-national]
+
+  # ──────────────────────────────────────────────────────────────────────────
+  # Site B — Hospital (full deployment)
+  # ──────────────────────────────────────────────────────────────────────────
+  site-b-authz:
+    build:
+      context: ..
+      dockerfile: deploy/docker/Dockerfile.authz
+    container_name: site-b-authz
+    environment:
+      TRIALMCP_SERVER_NAME: site-b-authz
+      TRIALMCP_STORAGE_BACKEND: sqlite
+      TRIALMCP_STORAGE_DSN: /data/authz.db
+      TRIALMCP_LOG_LEVEL: INFO
+    networks: [trialmcp-national]
+    volumes: [site-b-data:/data]
+
+  site-b-fhir:
+    build:
+      context: ..
+      dockerfile: deploy/docker/Dockerfile.fhir
+    container_name: site-b-fhir
+    environment:
+      TRIALMCP_SERVER_NAME: site-b-fhir
+      TRIALMCP_STORAGE_BACKEND: sqlite
+      TRIALMCP_STORAGE_DSN: /data/fhir.db
+      TRIALMCP_LOG_LEVEL: INFO
+    networks: [trialmcp-national]
+    volumes: [site-b-data:/data]
+
+  site-b-dicom:
+    build:
+      context: ..
+      dockerfile: deploy/docker/Dockerfile.dicom
+    container_name: site-b-dicom
+    environment:
+      TRIALMCP_SERVER_NAME: site-b-dicom
+      TRIALMCP_STORAGE_BACKEND: sqlite
+      TRIALMCP_STORAGE_DSN: /data/dicom.db
+      TRIALMCP_LOG_LEVEL: INFO
+    networks: [trialmcp-national]
+    volumes: [site-b-data:/data]
+
+  site-b-ledger:
+    build:
+      context: ..
+      dockerfile: deploy/docker/Dockerfile.ledger
+    container_name: site-b-ledger
+    environment:
+      TRIALMCP_SERVER_NAME: site-b-ledger
+      TRIALMCP_STORAGE_BACKEND: sqlite
+      TRIALMCP_STORAGE_DSN: /data/ledger.db
+      TRIALMCP_LOG_LEVEL: INFO
+    networks: [trialmcp-national]
+    volumes: [site-b-data:/data]
+
+  site-b-provenance:
+    build:
+      context: ..
+      dockerfile: deploy/docker/Dockerfile.provenance
+    container_name: site-b-provenance
+    environment:
+      TRIALMCP_SERVER_NAME: site-b-provenance
+      TRIALMCP_STORAGE_BACKEND: sqlite
+      TRIALMCP_STORAGE_DSN: /data/provenance.db
+      TRIALMCP_LOG_LEVEL: INFO
+    networks: [trialmcp-national]
+    volumes: [site-b-data:/data]
+
+  site-b-mock-ehr:
+    build:
+      context: .
+      dockerfile: mock_services/Dockerfile.ehr
+    container_name: site-b-mock-ehr
+    environment:
+      SITE_ID: site-b
+      PATIENT_COUNT: "15"
+    networks: [trialmcp-national]
+
+  site-b-mock-pacs:
+    build:
+      context: .
+      dockerfile: mock_services/Dockerfile.pacs
+    container_name: site-b-mock-pacs
+    environment:
+      SITE_ID: site-b
+      STUDY_COUNT: "10"
+    networks: [trialmcp-national]
+
+  # ──────────────────────────────────────────────────────────────────────────
+  # Sponsor — Authorization + Audit + Provenance
+  # ──────────────────────────────────────────────────────────────────────────
+  sponsor-authz:
+    build:
+      context: ..
+      dockerfile: deploy/docker/Dockerfile.authz
+    container_name: sponsor-authz
+    environment:
+      TRIALMCP_SERVER_NAME: sponsor-authz
+      TRIALMCP_STORAGE_BACKEND: sqlite
+      TRIALMCP_STORAGE_DSN: /data/authz.db
+      TRIALMCP_LOG_LEVEL: INFO
+    networks: [trialmcp-national]
+    volumes: [sponsor-data:/data]
+
+  sponsor-ledger:
+    build:
+      context: ..
+      dockerfile: deploy/docker/Dockerfile.ledger
+    container_name: sponsor-ledger
+    environment:
+      TRIALMCP_SERVER_NAME: sponsor-ledger
+      TRIALMCP_STORAGE_BACKEND: sqlite
+      TRIALMCP_STORAGE_DSN: /data/ledger.db
+      TRIALMCP_LOG_LEVEL: INFO
+    networks: [trialmcp-national]
+    volumes: [sponsor-data:/data]
+
+  sponsor-provenance:
+    build:
+      context: ..
+      dockerfile: deploy/docker/Dockerfile.provenance
+    container_name: sponsor-provenance
+    environment:
+      TRIALMCP_SERVER_NAME: sponsor-provenance
+      TRIALMCP_STORAGE_BACKEND: sqlite
+      TRIALMCP_STORAGE_DSN: /data/provenance.db
+      TRIALMCP_LOG_LEVEL: INFO
+    networks: [trialmcp-national]
+    volumes: [sponsor-data:/data]
+
+  # ──────────────────────────────────────────────────────────────────────────
+  # CRO — Authorization + FHIR + Ledger
+  # ──────────────────────────────────────────────────────────────────────────
+  cro-authz:
+    build:
+      context: ..
+      dockerfile: deploy/docker/Dockerfile.authz
+    container_name: cro-authz
+    environment:
+      TRIALMCP_SERVER_NAME: cro-authz
+      TRIALMCP_STORAGE_BACKEND: sqlite
+      TRIALMCP_STORAGE_DSN: /data/authz.db
+      TRIALMCP_LOG_LEVEL: INFO
+    networks: [trialmcp-national]
+    volumes: [cro-data:/data]
+
+  cro-fhir:
+    build:
+      context: ..
+      dockerfile: deploy/docker/Dockerfile.fhir
+    container_name: cro-fhir
+    environment:
+      TRIALMCP_SERVER_NAME: cro-fhir
+      TRIALMCP_STORAGE_BACKEND: sqlite
+      TRIALMCP_STORAGE_DSN: /data/fhir.db
+      TRIALMCP_LOG_LEVEL: INFO
+    networks: [trialmcp-national]
+    volumes: [cro-data:/data]
+
+  cro-ledger:
+    build:
+      context: ..
+      dockerfile: deploy/docker/Dockerfile.ledger
+    container_name: cro-ledger
+    environment:
+      TRIALMCP_SERVER_NAME: cro-ledger
+      TRIALMCP_STORAGE_BACKEND: sqlite
+      TRIALMCP_STORAGE_DSN: /data/ledger.db
+      TRIALMCP_LOG_LEVEL: INFO
+    networks: [trialmcp-national]
+    volumes: [cro-data:/data]
+
+  # ──────────────────────────────────────────────────────────────────────────
+  # Mock Identity Provider (shared)
+  # ──────────────────────────────────────────────────────────────────────────
+  mock-identity:
+    build:
+      context: .
+      dockerfile: mock_services/Dockerfile.identity
+    container_name: mock-identity
+    environment:
+      ISSUER: "https://identity.trialmcp.example.com"
+    networks: [trialmcp-national]
+
+volumes:
+  site-a-data:
+  site-b-data:
+  sponsor-data:
+  cro-data:

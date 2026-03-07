@@ -1,0 +1,29 @@
+# CRO Persona — National MCP-PAI Oncology Trials Interoperability Testbed
+
+persona:
+  name: cro
+  display_name: "Contract Research Organization"
+  role: cro
+  description: >
+    Contract Research Organization with limited access to
+    authorization policy review and token validation.
+
+credentials:
+  token_type: bearer
+  default_expiry_seconds: 14400
+  max_expiry_seconds: 86400
+
+capabilities:
+  servers:
+    trialmcp-authz:
+      - authz_evaluate
+      - authz_list_policies
+      - authz_validate_token
+
+restrictions:
+  limited_access: true
+  no_clinical_data: true
+  no_imaging_data: true
+  no_ledger_write: true
+  no_provenance_access: true
+  max_concurrent_sessions: 3

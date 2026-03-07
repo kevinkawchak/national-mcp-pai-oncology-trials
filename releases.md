@@ -4,6 +4,76 @@ Release notes for the National MCP-PAI Oncology Trials Standard.
 
 ---
 
+v0.8.0 - Phase 3: Black-Box Conformance, National Interoperability Testbed, and Evidence Generation
+
+## Summary
+
+Adds a black-box conformance harness with pluggable transport adapters (stdin, HTTP, Docker) for targeting real server deployments, refactors the conformance suite into unit/integration/blackbox tiers, introduces 6 adversarial test packs (authz bypass, PHI leakage, replay attacks, chain tampering, malformed inputs, rate limiting), builds a national interoperability testbed with multi-site Docker Compose cluster and 8 interop scenarios, adds certification and evidence generation tools, and adds performance benchmarks with regression detection. Expands test count from 313 to 501 (44 unit + 457 conformance) with all tests passing and clean ruff lint/format checks.
+
+## Features
+
+- **Black-box conformance harness** (`conformance/harness/`) — Pluggable transport adapters for targeting real MCP server deployments:
+  - `client.py` — `MCPConformanceClient` with `call_tool()`, `list_tools()`, `initialize()`, `health_check()` methods
+  - `config.py` — `HarnessConfig`, `ServerTarget`, `SeedConfig` dataclasses with JSON/YAML loading
+  - `adapters/stdin_adapter.py` — stdin/stdout JSON-RPC subprocess transport
+  - `adapters/http_adapter.py` — HTTP POST transport for remote servers
+  - `adapters/docker_adapter.py` — Docker exec transport for containerized servers
+  - `adapters/auth_adapter.py` — Multi-role authenticated session management
+  - `data_seeder.py` — Synthetic FHIR Patient, ResearchStudy, DICOM metadata generation
+  - `runner.py` — CLI runner with `--target`, `--profile`, `--level`, `--output-format` flags; JSON, JUnit XML, HTML, Markdown report generation
+- **Conformance suite refactoring** — Reorganized into 7 tiers:
+  - `conformance/unit/` — 30 unit tests for fixture construction validation
+  - `conformance/integration/` — Integration tests for in-process server packages
+  - `conformance/blackbox/` — 6 black-box conformance test files targeting all 5 servers plus cross-server workflow
+  - `conformance/adversarial/` — 6 adversarial test packs (see below)
+  - Plus existing positive, negative, security, and interoperability tiers
+- **Adversarial test packs** (`conformance/adversarial/`) — 6 test files:
+  - `test_authz_bypass.py` — Role escalation, token reuse after revocation, forged tokens
+  - `test_phi_leakage.py` — De-identification completeness, search result filtering, error message data exposure
+  - `test_replay_attacks.py` — Duplicate audit records, replayed authorization requests, duplicate provenance records
+  - `test_chain_tampering.py` — Modified records, inserted foreign records, deleted records, reordered records, hash collision attempts
+  - `test_malformed_inputs.py` — Invalid FHIR/DICOM IDs, oversized payloads, SSRF/XSS/SQL/command injection
+  - `test_rate_limiting.py` — Rapid token issuance, bulk query flooding, concurrent write contention
+- **National interoperability testbed** (`interop-testbed/`) — Multi-site simulation environment:
+  - `docker-compose.yml` — Multi-site cluster: Site A (5 servers + mock EHR + mock PACS), Site B (same), Sponsor (authz + ledger + provenance), CRO (authz + fhir + ledger), Mock Identity Provider
+  - `personas/` — 6 actor persona configs (robot_agent, trial_coordinator, data_monitor, auditor, sponsor, CRO)
+  - `scenarios/` — 8 interop scenarios: cross-site provenance, audit replay, token exchange, partial outage, schema drift, state overlay (CA/NY/FDA), robot workflow, site onboarding
+  - `mock_services/` — Mock EHR (FHIR R4), Mock PACS (DICOM), Mock OIDC/JWT Identity Provider
+- **Certification and evidence generation** (`tools/certification/`) — 4 tools:
+  - `report_generator.py` — JSON, JUnit XML, HTML, Markdown conformance reports
+  - `evidence_pack.py` — SHA-256 hashed evidence bundles with manifest
+  - `site_certification.py` — Profile-based conformance level validation
+  - `schema_diff.py` — Breaking/non-breaking schema change detection
+- **Performance benchmarks** (`benchmarks/`) — 5 benchmark modules:
+  - `latency_benchmark.py` — Audit hash computation, chain construction latency
+  - `throughput_benchmark.py` — AuthZ, audit, provenance throughput (ops/sec)
+  - `chain_benchmark.py` — Chain construction at 10/50/100/500 records
+  - `concurrent_benchmark.py` — ThreadPool performance at 1/2/4/8 threads
+  - `report.py` — Report generation with baseline regression detection
+- **Updated CI pipeline** (`.github/workflows/ci.yml`) — 4 new jobs: `integration-tests`, `adversarial-tests`, `schema-compatibility`, `benchmark-smoke`
+- **Updated `pyproject.toml`** — Version 0.8.0, added `trialmcp-conformance` entry point, added `blackbox`, `adversarial`, `integration` pytest markers
+- **Updated `README.md`** — v0.8.0 badges, new Black-Box Conformance Harness section, National Interoperability Testbed section, Certification section, Benchmarks section, updated CI pipeline (9 jobs), updated conformance test suite (457 tests), updated repository structure
+- **Updated `changelog.md`** — v0.8.0 changelog entry
+- **Updated `releases.md`** — v0.8.0 release notes (this entry)
+- **Updated `prompts.md`** — v0.8.0 prompt archived
+
+## Contributors
+@kevinkawchak
+@claude
+@openai
+
+## Notes
+- All 501 tests pass (44 unit + 457 conformance) across Python 3.10, 3.11, 3.12 with clean ruff lint and format checks
+- The black-box conformance harness supports 3 transport adapters: stdin (local process), HTTP (remote), Docker (containerized)
+- The national interoperability testbed models 4 organizational entities (Site A, Site B, Sponsor, CRO) with 6 actor personas
+- Adversarial tests cover the OWASP top 10 categories relevant to MCP servers: injection, authentication bypass, data exposure, and rate limiting
+- Evidence packs produce SHA-256 hashed manifests for reproducible certification
+- Schema diff tool detects breaking changes: removed properties, type changes, added required fields
+- Benchmarks include regression detection via configurable percentage thresholds
+- References: [TrialMCP](https://doi.org/10.5281/zenodo.18869776), [Physical AI Oncology Trials](https://doi.org/10.5281/zenodo.18445179), [PAI Oncology Trial FL](https://doi.org/10.5281/zenodo.18840880)
+
+---
+
 v0.7.0 - Phase 2: Real Server Implementations, Persistence, and Deployment Infrastructure
 
 ## Summary
