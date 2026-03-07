@@ -1,3 +1,79 @@
+## Prompt v0.6.0
+
+Your goal for national-mcp-pai-oncology-trials is to implement the main prompt below  comprehensively for the physical ai oncology trials industry. It is imperative that all types of information utilized for the repository be accurate and appropriate for the national scale. Update relevant readme files and documentation throughout the repo based on all changes made (diagrams, mermaid diagrams, badges, text, repository structure, etc.)(contributors=3)
+
+Provide a copy of this exact prompt under main prompts.md. Be sure to fix and address errors that would cause failed checks for the single pull request (such as Python environment issues to avoid the following error during final checks): "3 failing checks
+x Cl / lint-and-format (3.10) (pull...
+x Cl / lint-and-format (3.11) (pull...
+x Cl / lint-and-format (3.12) (pull... " Place the new release notes in releases.md under main using the format below (which is the same format of the last published version). Update changelog.md using v0.6.0. When you are finished, auto-push the update to GitHub on your own for my review. The user will then review your updates in GitHub prior to finalization.
+
+"FORMAT"
+Release title
+v0.6.0 -
+
+## Summary
+
+## Features
+
+## Contributors
+@kevinkawchak
+@claude
+@openai
+
+## Notes
+
+
+"START MAIN PROMPT"
+v0.6.0 - Phase 1: Correctness, Contract Alignment, and Schema-Code Drift Resolution
+Your goal is to comprehensively fix all schema/code/test drift and contract mismatches across the entire national-mcp-pai-oncology-trials repository, establishing a single canonical source of truth for all data contracts and making the CI pipeline rigorous enough to catch any future drift. This is the foundational correctness phase — every subsequent phase depends on the contracts being accurate and verifiable. It is imperative that all code now be accurate, end-to-end, and appropriate for a national scale.
+1. Fix All Schema/Code Contract Mismatches
+Resolve every field-name and structural mismatch between the 13 JSON schemas (/schemas/), the Python reference implementation (/reference/python/core_server.py), the TypeScript reference (/reference/typescript/core-server.ts), the conformance test fixtures (/conformance/fixtures/), and the unit tests (/tests/):
+* authz_evaluate() currently returns decision, resource_id, reason, matching_rules(strings), timestamp — align to schema fields: allowed, effect, role, server, tool, evaluated_at, with matching_rules as structured objects per authz-decision.schema.json
+* ledger_append() currently returns record_id, prev_hash — align to schema fields: audit_id, previous_hash per audit-record.schema.json
+* health_status() currently returns server, timestamp, dependencies (object) — align to schema fields: server_name, checked_at, dependencies (array of typed objects) per health-status.schema.json
+* Apply the same fixes to the TypeScript reference (core-server.ts) for authzEvaluate(), ledgerAppend(), computeAuditHash(), healthStatus(), errorResponse()
+* Rename and normalize fields consistently across all repository artifacts: record_id → audit_id, prev_hash → previous_hash, server → server_name where schema requires it, timestamp → checked_at or evaluated_atwhere schema specifies, unify decision/effect and allowedsemantics
+2. Generate Typed Models from Schemas
+Create a canonical contract generation pipeline:
+* Add models/python/ with generated typed dataclasses or Pydantic models for all 13 schemas
+* Add models/typescript/ with generated TypeScript interfaces for all 13 schemas
+* Add a scripts/generate_models.py that reads /schemas/*.schema.jsonand produces both Python and TypeScript typed models
+* Ensure all reference implementations import from the generated models rather than hand-maintaining payload shapes
+* Remove duplicate hand-maintained payload definitions in fixtures once generated canonical models exist
+3. Add Contract Validation to CI
+Extend .github/workflows/ci.ymlwith:
+* Schema-to-code consistency check: a CI step that regenerates models and fails if generated output differs from committed models
+* Snapshot tests for all example payloads in all 13 schemas
+* Contract tests that validate every runtime output from core_server.py and core-server.ts against the corresponding schema
+* TypeScript build, lint, and test steps (the current CI only validates Python)
+* Docs lint that actually fails on broken links (change sys.exit(0)to sys.exit(1 if errors else 0) in the docs-lint job)
+4. Tighten Scope and Maturity Labeling
+Throughout the repository:
+* Clarify what is normative, what is reference implementation, what is mock/synthetic only, what is planned, what is demonstrated, and what is validated
+* Where applicable, revise "reference implementation" to "Level 1 illustrative implementation"
+* Frame "national standard" as "proposed national standard / reference standard" unless multi-stakeholder governance and adoption evidence exists
+* Distinguish "schema coverage" from "production readiness" and "federated architecture defined" from "federated coordination implementation supplied"
+* Remove or soften any static maturity signals (badges, claims) that read more mature than the current code supports
+* Reduce generic marketing language that is not paired with actionable implementation guidance
+* Add clear normative vs informative boundary markers throughout all docs
+5. Update All Affected Tests
+* Update all 39 unit tests in /tests/to align with the corrected field names and structures
+* Update all 269 conformance tests in /conformance/ to use the corrected field names
+* Update all fixture data in /conformance/fixtures/ to match the corrected schemas
+* Add new contract-validation tests that round-trip reference implementation outputs through schema validation
+* Ensure all tests pass with pytest tests/ -v and pytest conformance/ -v
+6. Verify Repository-Wide Quality
+After all changes:
+1. ruff check . and ruff format --check . pass cleanly
+2. pytest tests/ — all unit tests pass
+3. pytest conformance/ — all conformance tests pass
+4. All 13 schemas validate with python reference/python/schema_validator.py
+5. Every /spec/ file uses RFC 2119 MUST/SHOULD/MAY keywords
+6. Every /reference/implementation file labeled NON-NORMATIVE
+7. .github/workflows/ci.ymlpipeline covers Python lint/test, TypeScript build/test, schema validation, contract consistency, and docs lint (with failure on errors)
+
+---
+
 ## Prompt v0.5.2
 
 Your goal is to create 5 comprehensive prompts for national-mcp-pai-oncology-trials that will be run in separate conversations based on the two following sets of feedback (For future comprehensive 1M token processing using Claude Code Opus 4.6). The biggest concern is to make the codebase comprehensive and appropriate for national-level physical ai oncology trials mcp servers. The primary focus is to make the repository more practical, useful, and substantive in code (with any supporting code documentation needed). Do not process the 5 prompt's instructions.
