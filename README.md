@@ -1,10 +1,10 @@
 # National MCP Standard for Physical AI Oncology Clinical Trials
 
-**Version 0.8.0** | **Proposed Reference Standard** | **United States**
+**Version 0.9.0** | **Proposed Reference Standard** | **United States**
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 [![DOI](https://img.shields.io/badge/DOI-10.5281%2Fzenodo.18894758-blue)](https://doi.org/10.5281/zenodo.18894758)
-[![Version](https://img.shields.io/badge/Version-0.8.0-green.svg)](releases.md)
+[![Version](https://img.shields.io/badge/Version-0.9.0-green.svg)](releases.md)
 [![CI](https://github.com/kevinkawchak/national-mcp-pai-oncology-trials/actions/workflows/ci.yml/badge.svg)](.github/workflows/ci.yml)
 [![JSON Schema](https://img.shields.io/badge/JSON_Schema-Draft_2020--12-orange.svg)](schemas/)
 [![Python](https://img.shields.io/badge/Python-3.10%20|%203.11%20|%203.12-blue.svg)](https://www.python.org/)
@@ -13,12 +13,13 @@
 [![Docker](https://img.shields.io/badge/Docker-Compose-blue.svg)](deploy/docker-compose.yml)
 [![Testbed](https://img.shields.io/badge/Testbed-Multi--Site-blue.svg)](interop-testbed/)
 [![Servers](https://img.shields.io/badge/MCP_Servers-5-blue.svg)](servers/)
+[![Integration Adapters](https://img.shields.io/badge/Integration_Adapters-42-blue.svg)](integrations/)
+[![Safety Modules](https://img.shields.io/badge/Safety_Modules-7-blue.svg)](safety/)
 [![Profiles](https://img.shields.io/badge/Profiles-8-blue.svg)](profiles/)
 [![Schemas](https://img.shields.io/badge/Schemas-13-blue.svg)](schemas/)
 [![Tools](https://img.shields.io/badge/Tools-23-blue.svg)](spec/tool-contracts.md)
 [![Conformance Tests](https://img.shields.io/badge/Conformance_Tests-457-blue.svg)](conformance/)
 [![Unit Tests](https://img.shields.io/badge/Unit_Tests-44-blue.svg)](tests/)
-[![Total Tests](https://img.shields.io/badge/Total_Tests-501-blue.svg)](pyproject.toml)
 [![Updated](https://img.shields.io/badge/Updated-2026--03--07-lightgrey.svg)](changelog.md)
 [![Contributors](https://img.shields.io/badge/Contributors-3-blue.svg)](releases.md)
 
@@ -26,7 +27,7 @@ The **National MCP-PAI Oncology Trials Standard** is a proposed reference standa
 
 > **Scope**: This specification targets U.S. clinical sites, sponsors, CROs, and technology vendors operating Physical AI systems — surgical robots, therapeutic positioning systems, diagnostic needle-placement platforms, and rehabilitative exoskeletons — within FDA-regulated oncology trials.
 >
-> **Maturity**: This repository provides normative specifications (`/spec/`), machine-readable schemas (`/schemas/`), conformance profiles (`/profiles/`), Level 1 illustrative implementations (`/reference/`), production-shaped MCP server packages (`/servers/`) with persistence abstractions and Docker/Kubernetes deployment infrastructure (`/deploy/`), a black-box conformance harness (`/conformance/harness/`), a national interoperability testbed (`/interop-testbed/`), certification and evidence generation tools (`/tools/certification/`), and performance benchmarks (`/benchmarks/`). See the [adoption roadmap](docs/adoption-roadmap.md) for the path from specification to validated deployment.
+> **Maturity**: This repository provides normative specifications (`/spec/`), machine-readable schemas (`/schemas/`), conformance profiles (`/profiles/`), Level 1 illustrative implementations (`/reference/`), production-shaped MCP server packages (`/servers/`) with persistence abstractions and Docker/Kubernetes deployment infrastructure (`/deploy/`), production-grade integration adapters for FHIR, DICOM, identity, clinical operations, privacy, and federation (`/integrations/`), robot safety and execution boundaries (`/safety/`), a black-box conformance harness (`/conformance/harness/`), a national interoperability testbed (`/interop-testbed/`), certification and evidence generation tools (`/tools/certification/`), and performance benchmarks (`/benchmarks/`). See the [adoption roadmap](docs/adoption-roadmap.md) for the path from specification to validated deployment.
 
 ---
 
@@ -35,6 +36,9 @@ The **National MCP-PAI Oncology Trials Standard** is a proposed reference standa
 - [Motivation](#motivation)
 - [National Architecture Overview](#national-architecture-overview)
 - [MCP Server Implementations](#mcp-server-implementations)
+- [Integration Adapters](#integration-adapters)
+- [Robot Safety and Execution Boundaries](#robot-safety-and-execution-boundaries)
+- [MCP Process Diagrams](#mcp-process-diagrams)
 - [Deployment Infrastructure](#deployment-infrastructure)
 - [Quickstart Demo](#quickstart-demo)
 - [Reference Implementations](#reference-implementations)
@@ -215,15 +219,29 @@ v0.7.0 introduces production-shaped MCP server packages for all five domains, ba
 ### Five Domain Servers
 
 ```mermaid
-graph LR
-    subgraph "servers/"
-        A[trialmcp-authz<br/>Authorization] --> C[common/<br/>Shared Infra]
-        B[trialmcp-fhir<br/>Clinical Data] --> C
-        D[trialmcp-dicom<br/>Imaging] --> C
-        E[trialmcp-ledger<br/>Audit Ledger] --> C
-        F[trialmcp-provenance<br/>Provenance] --> C
-        C --> S[storage/<br/>Persistence]
+graph TB
+    subgraph SERVERS["MCP Server Layer (servers/)"]
+        direction TB
+        subgraph DOMAIN["Domain Servers"]
+            direction LR
+            A["trialmcp-authz<br/>Authorization<br/>(RBAC + Tokens)"]
+            B["trialmcp-fhir<br/>Clinical Data<br/>(FHIR R4 + De-ID)"]
+            D["trialmcp-dicom<br/>Imaging<br/>(Modality + Safety)"]
+            E["trialmcp-ledger<br/>Audit Ledger<br/>(Hash Chain)"]
+            F["trialmcp-provenance<br/>Provenance<br/>(DAG Lineage)"]
+        end
+        subgraph INFRA["Shared Infrastructure"]
+            direction LR
+            C["common/<br/>Transport, Routing,<br/>Middleware, Errors"]
+            S["storage/<br/>Memory, SQLite,<br/>PostgreSQL"]
+        end
     end
+    A --> C
+    B --> C
+    D --> C
+    E --> C
+    F --> C
+    C --> S
 ```
 
 | Server | Package | Tools | Key Features |
@@ -254,6 +272,194 @@ graph LR
 | In-Memory | `servers/storage/memory.py` | Testing, local development |
 | SQLite | `servers/storage/sqlite_adapter.py` | Single-site deployment |
 | PostgreSQL | `servers/storage/postgres_adapter.py` | Production deployment |
+
+---
+
+## Integration Adapters
+
+v0.9.0 introduces production-grade integration adapters that connect MCP servers to real hospital infrastructure.
+
+### Integration Architecture
+
+```mermaid
+graph TB
+    subgraph "MCP Servers"
+        A["trialmcp-authz"]
+        B["trialmcp-fhir"]
+        C["trialmcp-dicom"]
+        D["trialmcp-ledger"]
+        E["trialmcp-provenance"]
+    end
+    subgraph "integrations/"
+        subgraph "FHIR Adapters"
+            F1["Mock Adapter"]
+            F2["HAPI Adapter"]
+            F3["SMART-on-FHIR"]
+            F4["De-identification"]
+            F5["Terminology"]
+            F6["Bundle Handler"]
+        end
+        subgraph "DICOM Adapters"
+            D1["Mock Adapter"]
+            D2["Orthanc"]
+            D3["dcm4chee"]
+            D4["DICOMweb"]
+            D5["RECIST 1.1"]
+            D6["Safety Filter"]
+        end
+        subgraph "Identity Adapters"
+            I1["OIDC/JWT"]
+            I2["mTLS"]
+            I3["OPA Policy"]
+            I4["KMS/HSM"]
+        end
+        subgraph "Privacy + Federation"
+            P1["Access Control"]
+            P2["De-ID Pipeline"]
+            P3["Privacy Budget"]
+            P4["Data Residency"]
+            FD1["Coordinator"]
+            FD2["Secure Aggregation"]
+        end
+    end
+    subgraph "Clinical Systems"
+        EHR["EHR (Epic, Cerner)"]
+        PACS["PACS (Orthanc, dcm4chee)"]
+        IDP["Identity Provider"]
+    end
+    B --> F2 --> EHR
+    B --> F3 --> EHR
+    C --> D2 --> PACS
+    C --> D3 --> PACS
+    A --> I1 --> IDP
+```
+
+### FHIR Integration (`integrations/fhir/`)
+
+| Module | Purpose |
+|--------|---------|
+| `base_adapter.py` | Abstract FHIR adapter interface |
+| `mock_adapter.py` | Mock adapter with synthetic oncology data |
+| `hapi_adapter.py` | HAPI FHIR server REST adapter |
+| `smart_adapter.py` | SMART-on-FHIR / OAuth2 adapter |
+| `deidentification.py` | HIPAA Safe Harbor 18-identifier removal |
+| `capability.py` | CapabilityStatement R4 generation |
+| `terminology.py` | ICD-10, SNOMED CT, LOINC, RxNorm hooks |
+| `bundle_handler.py` | Transaction, batch, search bundles |
+| `patient_filter.py` | Consent-based resource access filters |
+
+### DICOM Integration (`integrations/dicom/`)
+
+| Module | Purpose |
+|--------|---------|
+| `base_adapter.py` | Abstract DICOM adapter interface |
+| `mock_adapter.py` | Mock adapter with 4 synthetic studies |
+| `orthanc_adapter.py` | Orthanc DICOM server adapter |
+| `dcm4chee_adapter.py` | dcm4chee archive adapter |
+| `dicomweb.py` | DICOMweb (QIDO-RS, WADO-RS, STOW-RS) |
+| `metadata_normalizer.py` | Tag harmonization, encoding normalization |
+| `modality_filter.py` | Role-based modality restrictions |
+| `recist.py` | RECIST 1.1 measurement validators |
+| `safety.py` | Metadata-only safety enforcement |
+
+### Identity, Privacy, and Federation
+
+| Package | Module | Purpose |
+|---------|--------|---------|
+| `identity/` | `oidc_adapter.py` | OIDC/JWT token validation |
+| `identity/` | `mtls.py` | mTLS certificate validation |
+| `identity/` | `policy_engine.py` | OPA-compatible policy engine |
+| `identity/` | `kms.py` | KMS/HSM signing key hooks |
+| `clinical/` | `econsent_adapter.py` | eConsent/IRB metadata |
+| `clinical/` | `scheduling_adapter.py` | Procedure scheduling |
+| `clinical/` | `provenance_export.py` | W3C PROV-N export |
+| `privacy/` | `access_control.py` | RBAC + ABAC access control |
+| `privacy/` | `deidentification_pipeline.py` | Unified de-ID pipeline |
+| `privacy/` | `privacy_budget.py` | Differential privacy budgets |
+| `privacy/` | `data_residency.py` | Data residency enforcement |
+| `federation/` | `coordinator.py` | Federated coordination |
+| `federation/` | `secure_aggregation.py` | Secure aggregation |
+| `federation/` | `site_harmonization.py` | Cross-site data harmonization |
+| `federation/` | `policy_enforcement.py` | Federation policy enforcement |
+
+---
+
+## Robot Safety and Execution Boundaries
+
+v0.9.0 implements a comprehensive safety framework for Physical AI robot-assisted procedures.
+
+### Safety Architecture
+
+```mermaid
+graph TB
+    subgraph "safety/"
+        GS["Gate Service<br/>(5-Gate Safety Matrix)"]
+        RR["Robot Registry<br/>(USL Scoring)"]
+        TV["Task Validator<br/>(Pre/Post Conditions)"]
+        AC["Approval Checkpoint<br/>(Human-in-the-Loop)"]
+        ES["E-Stop Controller<br/>(Emergency Halt)"]
+        PS["Procedure State<br/>(8-State Machine)"]
+        SV["Site Verifier<br/>(Capability Check)"]
+    end
+    subgraph "Procedure Flow"
+        S["SCHEDULED"]
+        PC["PRE_CHECK"]
+        AP["APPROVED"]
+        IP["IN_PROGRESS"]
+        PO["POST_CHECK"]
+        CO["COMPLETED"]
+        AB["ABORTED"]
+    end
+    GS --> PC
+    RR --> PC
+    TV --> PC
+    AC --> AP
+    ES --> AB
+    PS --> S
+    PS --> PC
+    PS --> AP
+    PS --> IP
+    PS --> PO
+    PS --> CO
+    SV --> PC
+```
+
+### Safety Modules (`safety/`)
+
+| Module | Purpose |
+|--------|---------|
+| `gate_service.py` | Pre-procedure 5-gate safety matrix (consent, site, robot, protocol, human approval) |
+| `robot_registry.py` | Robot capability registry with USL scoring and certification tracking |
+| `task_validator.py` | Task-order validation with precondition/postcondition contracts |
+| `approval_checkpoint.py` | Human-in-the-loop approval gates with timeout (300s) and escalation |
+| `estop.py` | Emergency stop with signal propagation, state preservation, recovery |
+| `procedure_state.py` | 8-state machine: SCHEDULED → PRE_CHECK → APPROVED → IN_PROGRESS → POST_CHECK → COMPLETED / ABORTED / FAILED |
+| `site_verifier.py` | Site capability verification against site-capability-profile schema |
+
+### Procedure State Machine
+
+```
+SCHEDULED ──> PRE_CHECK ──> APPROVED ──> IN_PROGRESS ──> POST_CHECK ──> COMPLETED
+    |             |                          |
+    v             v                          v
+ ABORTED       FAILED                     ABORTED
+```
+
+---
+
+## MCP Process Diagrams
+
+Comprehensive process diagrams documenting all MCP communication patterns are in [`docs/mcp-process-diagrams/`](docs/mcp-process-diagrams/).
+
+| Diagram | Description |
+|---------|-------------|
+| [01 - Robot Procedure Lifecycle](docs/mcp-process-diagrams/01-robot-procedure-lifecycle.md) | End-to-end state machine with MCP server interactions per state |
+| [02 - Cross-Site MCP Communication](docs/mcp-process-diagrams/02-cross-site-mcp-communication.md) | Multi-site topology, audit chain sync, token exchange protocol |
+| [03 - Clinical System Integration](docs/mcp-process-diagrams/03-clinical-system-integration.md) | FHIR/DICOM/identity adapter architecture and data flows |
+| [04 - Safety Gate Evaluation](docs/mcp-process-diagrams/04-safety-gate-evaluation.md) | Safety gate matrix, evaluation flow, e-stop propagation |
+| [05 - Federated Learning Coordination](docs/mcp-process-diagrams/05-federated-learning-coordination.md) | Federated round lifecycle, secure aggregation, privacy budgets |
+| [06 - Audit and Provenance Chain](docs/mcp-process-diagrams/06-audit-provenance-chain.md) | Hash-chained ledger construction and DAG provenance tracking |
+| [07 - Privacy and De-identification](docs/mcp-process-diagrams/07-privacy-deidentification.md) | HIPAA Safe Harbor pipeline and data residency enforcement |
 
 ---
 
@@ -479,16 +685,33 @@ v0.8.0 introduces a black-box conformance harness under `conformance/harness/` t
 ### Harness Architecture
 
 ```mermaid
-graph LR
-    subgraph "conformance/harness/"
-        CL[MCPConformanceClient] --> SA[stdin_adapter.py<br/>Local Process]
-        CL --> HA[http_adapter.py<br/>HTTP/HTTPS]
-        CL --> DA[docker_adapter.py<br/>Docker Container]
-        CL --> AA[auth_adapter.py<br/>Auth Sessions]
-        CF[config.py<br/>HarnessConfig] --> CL
-        DS[data_seeder.py<br/>Synthetic Data] --> CL
-        RN[runner.py<br/>CLI + Reports] --> CL
+graph TB
+    subgraph HARNESS["Black-Box Conformance Harness (conformance/harness/)"]
+        direction TB
+        subgraph CONFIG["Configuration"]
+            direction LR
+            CF["config.py<br/>HarnessConfig"]
+            DS["data_seeder.py<br/>Synthetic Data"]
+            RN["runner.py<br/>CLI + Reports"]
+        end
+        subgraph CLIENT["Client Layer"]
+            CL["MCPConformanceClient<br/>call_tool, list_tools,<br/>initialize, health_check"]
+        end
+        subgraph TRANSPORTS["Transport Adapters"]
+            direction LR
+            SA["stdin_adapter.py<br/>Local Process"]
+            HA["http_adapter.py<br/>HTTP/HTTPS"]
+            DA["docker_adapter.py<br/>Docker Container"]
+            AA["auth_adapter.py<br/>Auth Sessions"]
+        end
     end
+    CF --> CL
+    DS --> CL
+    RN --> CL
+    CL --> SA
+    CL --> HA
+    CL --> DA
+    CL --> AA
 ```
 
 | Component | Path | Purpose |
@@ -947,23 +1170,21 @@ graph TB
 The standard defines five conformance levels. Each level builds on the previous, adding MUST/SHOULD/MAY requirements per [RFC 2119](https://www.rfc-editor.org/rfc/rfc2119).
 
 ```mermaid
-graph LR
-  L1[Level 1<br/>Core]
-  L2[Level 2<br/>Clinical<br/>Read]
-  L3[Level 3<br/>Imaging]
-  L4[Level 4<br/>Federated<br/>Site]
-  L5[Level 5<br/>Robot<br/>Procedure]
-
-  L1 --> L2
-  L2 --> L3
-  L3 --> L4
-  L4 --> L5
-
-  style L1 fill:#4A90D9,color:#fff
-  style L2 fill:#50C878,color:#fff
-  style L3 fill:#F5A623,color:#fff
-  style L4 fill:#D0021B,color:#fff
-  style L5 fill:#7B2D8E,color:#fff
+graph TB
+    subgraph LEVELS["Conformance Level Progression"]
+        direction LR
+        L1["Level 1: Core<br/>AuthZ + Ledger<br/>RBAC, Audit Chain"]
+        L2["Level 2: Clinical Read<br/>+ FHIR Server<br/>De-ID, Patient Lookup"]
+        L3["Level 3: Imaging<br/>+ DICOM Server<br/>Modality, RECIST"]
+        L4["Level 4: Federated<br/>+ Provenance<br/>Multi-Site DAG"]
+        L5["Level 5: Robot<br/>All 5 Servers<br/>Safety + Task Orders"]
+    end
+    L1 --> L2 --> L3 --> L4 --> L5
+    style L1 fill:#4A90D9,color:#fff
+    style L2 fill:#50C878,color:#fff
+    style L3 fill:#F5A623,color:#fff
+    style L4 fill:#D0021B,color:#fff
+    style L5 fill:#7B2D8E,color:#fff
 ```
 
 | Level | Name | Required Servers | Key Capabilities |
@@ -1219,6 +1440,21 @@ national-mcp-pai-oncology-trials/
 │   ├── chain_benchmark.py        # Chain verification scaling
 │   ├── concurrent_benchmark.py   # Concurrent access testing
 │   └── report.py                 # Report generation + regression detection
+├── integrations/                 # Production-grade integration adapters (v0.9.0)
+│   ├── fhir/                    # FHIR R4 adapters (mock, HAPI, SMART, de-ID, terminology)
+│   ├── dicom/                   # DICOM adapters (mock, Orthanc, dcm4chee, DICOMweb, RECIST)
+│   ├── identity/                # Identity adapters (OIDC/JWT, mTLS, OPA, KMS)
+│   ├── clinical/                # Clinical ops (eConsent, scheduling, provenance export)
+│   ├── privacy/                 # Privacy modules (access control, de-ID, budgets, residency)
+│   └── federation/              # Federated coordination (coordinator, aggregation, policy)
+├── safety/                      # Robot safety and execution boundaries (v0.9.0)
+│   ├── gate_service.py          # 5-gate pre-procedure safety matrix
+│   ├── robot_registry.py        # Robot capability registry with USL scoring
+│   ├── task_validator.py        # Task-order validator with safety constraints
+│   ├── approval_checkpoint.py   # Human-in-the-loop approval gates
+│   ├── estop.py                 # Emergency stop controller
+│   ├── procedure_state.py       # 8-state procedure state machine
+│   └── site_verifier.py         # Site capability verification
 ├── deploy/                       # Deployment infrastructure (v0.7.0)
 │   ├── docker/                   # Dockerfiles for each server + all-in-one
 │   ├── docker-compose.yml        # Single-site deployment (5 servers)
@@ -1241,6 +1477,7 @@ national-mcp-pai-oncology-trials/
 ├── scripts/                      # Build and generation scripts
 ├── tests/                        # Unit tests (44 tests)
 ├── docs/                         # Extended documentation
+│   └── mcp-process-diagrams/    # 7 detailed MCP process diagrams (v0.9.0)
 ├── peer-review/                  # External peer review responses and prompts
 ├── pyproject.toml                # Python project config (entry points, ruff, pytest)
 ├── changelog.md                  # Version history

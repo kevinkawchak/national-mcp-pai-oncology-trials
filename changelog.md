@@ -6,6 +6,101 @@ This project follows [Semantic Versioning](https://semver.org/) as described in 
 
 ---
 
+## [0.9.0] — 2026-03-07
+
+### Added
+
+#### FHIR Integration Adapters
+- `integrations/fhir/__init__.py` — Package initialization
+- `integrations/fhir/base_adapter.py` — Abstract FHIR adapter interface (read, search, patient_lookup, study_status, capability_statement)
+- `integrations/fhir/mock_adapter.py` — Mock FHIR adapter with synthetic oncology patient data
+- `integrations/fhir/hapi_adapter.py` — HAPI FHIR server adapter with REST client
+- `integrations/fhir/smart_adapter.py` — SMART-on-FHIR / OAuth2 adapter with token management
+- `integrations/fhir/deidentification.py` — Complete HIPAA Safe Harbor de-identification pipeline (18-identifier removal, HMAC-SHA256 pseudonymization, year-only dates, verification suite)
+- `integrations/fhir/capability.py` — FHIR CapabilityStatement R4 generation and ingestion
+- `integrations/fhir/terminology.py` — Terminology mapping hooks (ICD-10, SNOMED CT, LOINC, RxNorm)
+- `integrations/fhir/bundle_handler.py` — FHIR Bundle handling (transaction, batch, search result bundles)
+- `integrations/fhir/patient_filter.py` — Patient/resource access filters based on consent status
+
+#### DICOM Integration Adapters
+- `integrations/dicom/__init__.py` — Package initialization
+- `integrations/dicom/base_adapter.py` — Abstract DICOM adapter interface (query, retrieve_metadata, modality_validation)
+- `integrations/dicom/mock_adapter.py` — Mock DICOM adapter with 4 synthetic oncology imaging studies
+- `integrations/dicom/orthanc_adapter.py` — Orthanc DICOM server adapter
+- `integrations/dicom/dcm4chee_adapter.py` — dcm4chee DICOM archive adapter
+- `integrations/dicom/dicomweb.py` — DICOMweb support (QIDO-RS, WADO-RS, STOW-RS)
+- `integrations/dicom/metadata_normalizer.py` — DICOM metadata normalization
+- `integrations/dicom/modality_filter.py` — Role-based modality restriction enforcement
+- `integrations/dicom/recist.py` — RECIST 1.1 measurement validators (target/non-target lesions, overall response)
+- `integrations/dicom/safety.py` — Image reference safety constraints (no pixel data transfer)
+
+#### Identity and Security Adapters
+- `integrations/identity/__init__.py` — Package initialization
+- `integrations/identity/base_adapter.py` — Abstract identity adapter interface
+- `integrations/identity/oidc_adapter.py` — OIDC/JWT token validation adapter
+- `integrations/identity/mtls.py` — mTLS support utilities and certificate validation
+- `integrations/identity/policy_engine.py` — External policy engine integration (OPA-compatible)
+- `integrations/identity/kms.py` — KMS/HSM-backed signing key hooks
+
+#### Clinical Operations Adapters
+- `integrations/clinical/__init__.py` — Package initialization
+- `integrations/clinical/econsent_adapter.py` — eConsent/IRB metadata adapter
+- `integrations/clinical/scheduling_adapter.py` — Scheduling/task-order adapter
+- `integrations/clinical/provenance_export.py` — Provenance export adapter (W3C PROV-N)
+
+#### Robot Safety and Execution Boundaries
+- `safety/__init__.py` — Package initialization
+- `safety/gate_service.py` — Safety gate service with 5-gate pre-procedure safety matrix
+- `safety/robot_registry.py` — Robot capability registry with USL scoring
+- `safety/task_validator.py` — Task-order validator with precondition/postcondition contracts
+- `safety/approval_checkpoint.py` — Human-in-the-loop approval gates with timeout and escalation
+- `safety/estop.py` — Emergency stop controller with signal propagation and recovery
+- `safety/procedure_state.py` — Procedure state machine (8 states with validated transitions)
+- `safety/site_verifier.py` — Site capability verification
+
+#### Privacy and Regulatory Modules
+- `integrations/privacy/__init__.py` — Package initialization
+- `integrations/privacy/access_control.py` — RBAC + ABAC access control with data classification
+- `integrations/privacy/deidentification_pipeline.py` — Unified de-identification pipeline (FHIR + DICOM + free-text)
+- `integrations/privacy/privacy_budget.py` — Differential privacy budget accounting
+- `integrations/privacy/data_residency.py` — Data residency enforcement with jurisdiction-specific rules
+
+#### Federated Coordination
+- `integrations/federation/__init__.py` — Package initialization
+- `integrations/federation/coordinator.py` — Federated coordinator (site enrollment, round management)
+- `integrations/federation/secure_aggregation.py` — Secure aggregation hooks
+- `integrations/federation/site_harmonization.py` — Site data harmonization interfaces
+- `integrations/federation/policy_enforcement.py` — Site-level federation policy enforcement
+
+#### MCP Process Diagrams
+- `docs/mcp-process-diagrams/README.md` — Diagram index and descriptions
+- `docs/mcp-process-diagrams/01-robot-procedure-lifecycle.md` — Procedure state machine with MCP interactions
+- `docs/mcp-process-diagrams/02-cross-site-mcp-communication.md` — Multi-site topology and synchronization
+- `docs/mcp-process-diagrams/03-clinical-system-integration.md` — FHIR/DICOM/identity integration flows
+- `docs/mcp-process-diagrams/04-safety-gate-evaluation.md` — Safety gate matrix and e-stop propagation
+- `docs/mcp-process-diagrams/05-federated-learning-coordination.md` — Federated round lifecycle and aggregation
+- `docs/mcp-process-diagrams/06-audit-provenance-chain.md` — Hash-chained ledger and DAG provenance
+- `docs/mcp-process-diagrams/07-privacy-deidentification.md` — HIPAA Safe Harbor pipeline and data residency
+
+#### Unit Tests
+- `tests/test_integrations.py` — Unit tests for all integration adapter modules
+- `tests/test_safety.py` — Unit tests for safety gate, robot registry, procedure state machine
+
+### Changed
+- `pyproject.toml` — Version 0.9.0, added `integrations` and `safety` to known-first-party imports, updated description
+- `README.md` — v0.9.0 badges, new Integration Adapters section, Safety Boundaries section, MCP Process Diagrams section, updated repository structure and Mermaid diagrams
+- `prompts.md` — v0.9.0 prompt archived
+- `releases.md` — v0.9.0 release notes added
+- `changelog.md` — This entry
+
+### Verified
+- `ruff check .` and `ruff format --check .` pass cleanly across all Python files
+- All existing tests continue to pass
+- New integration and safety tests pass
+- All 7 MCP process diagrams render correctly with consistent formatting
+
+---
+
 ## [0.8.0] — 2026-03-07
 
 ### Added
