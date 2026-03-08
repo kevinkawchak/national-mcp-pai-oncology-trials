@@ -38,7 +38,7 @@ The **National MCP-PAI Oncology Trials Standard** is a proposed reference standa
 - [MCP Server Implementations](#mcp-server-implementations)
 - [Integration Adapters](#integration-adapters)
 - [Robot Safety and Execution Boundaries](#robot-safety-and-execution-boundaries)
-- [MCP Process Diagrams](#mcp-process-diagrams)
+- [MCP Process Diagrams](#mcp-process)
 - [Deployment Infrastructure](#deployment-infrastructure)
 - [Quickstart Demo](#quickstart-demo)
 - [Reference Implementations](#reference-implementations)
@@ -449,17 +449,17 @@ SCHEDULED ──> PRE_CHECK ──> APPROVED ──> IN_PROGRESS ──> POST_CH
 
 ## MCP Process Diagrams
 
-Comprehensive process diagrams documenting all MCP communication patterns are in [`docs/mcp-process-diagrams/`](docs/mcp-process-diagrams/).
+Comprehensive process diagrams documenting all MCP communication patterns are in [`docs/mcp-process/`](docs/mcp-process/).
 
 | Diagram | Description |
 |---------|-------------|
-| [01 - Robot Procedure Lifecycle](docs/mcp-process-diagrams/01-robot-procedure-lifecycle.md) | End-to-end state machine with MCP server interactions per state |
-| [02 - Cross-Site MCP Communication](docs/mcp-process-diagrams/02-cross-site-mcp-communication.md) | Multi-site topology, audit chain sync, token exchange protocol |
-| [03 - Clinical System Integration](docs/mcp-process-diagrams/03-clinical-system-integration.md) | FHIR/DICOM/identity adapter architecture and data flows |
-| [04 - Safety Gate Evaluation](docs/mcp-process-diagrams/04-safety-gate-evaluation.md) | Safety gate matrix, evaluation flow, e-stop propagation |
-| [05 - Federated Learning Coordination](docs/mcp-process-diagrams/05-federated-learning-coordination.md) | Federated round lifecycle, secure aggregation, privacy budgets |
-| [06 - Audit and Provenance Chain](docs/mcp-process-diagrams/06-audit-provenance-chain.md) | Hash-chained ledger construction and DAG provenance tracking |
-| [07 - Privacy and De-identification](docs/mcp-process-diagrams/07-privacy-deidentification.md) | HIPAA Safe Harbor pipeline and data residency enforcement |
+| [01 - Robot Procedure Lifecycle](docs/mcp-process/01-robot-procedure-lifecycle.md) | End-to-end state machine with MCP server interactions per state |
+| [02 - Cross-Site MCP Communication](docs/mcp-process/02-cross-site-mcp-communication.md) | Multi-site topology, audit chain sync, token exchange protocol |
+| [03 - Clinical System Integration](docs/mcp-process/03-clinical-system-integration.md) | FHIR/DICOM/identity adapter architecture and data flows |
+| [04 - Safety Gate Evaluation](docs/mcp-process/04-safety-gate-evaluation.md) | Safety gate matrix, evaluation flow, e-stop propagation |
+| [05 - Federated Learning Coordination](docs/mcp-process/05-federated-learning-coordination.md) | Federated round lifecycle, secure aggregation, privacy budgets |
+| [06 - Audit and Provenance Chain](docs/mcp-process/06-audit-provenance-chain.md) | Hash-chained ledger construction and DAG provenance tracking |
+| [07 - Privacy and De-identification](docs/mcp-process/07-privacy-deidentification.md) | HIPAA Safe Harbor pipeline and data residency enforcement |
 
 ---
 
@@ -1477,7 +1477,7 @@ national-mcp-pai-oncology-trials/
 ├── scripts/                      # Build and generation scripts
 ├── tests/                        # Unit tests (44 tests)
 ├── docs/                         # Extended documentation
-│   └── mcp-process-diagrams/    # 7 detailed MCP process diagrams (v0.9.0)
+│   └── mcp-process/    # 7 detailed MCP process diagrams (v0.9.0)
 ├── peer-review/                  # External peer review responses and prompts
 ├── pyproject.toml                # Python project config (entry points, ruff, pytest)
 ├── changelog.md                  # Version history

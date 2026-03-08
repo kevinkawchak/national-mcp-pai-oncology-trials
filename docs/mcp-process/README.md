@@ -1,6 +1,6 @@
 # MCP Process Diagrams
 
-**Version 0.9.0** | National MCP-PAI Oncology Trials Standard
+**Version 1.0.0** | National MCP-PAI Oncology Trials Standard
 
 This directory contains detailed process diagrams illustrating the comprehensive MCP
 communication patterns, safety workflows, integration pathways, and federated coordination
@@ -17,3 +17,20 @@ mechanisms across the national Physical AI oncology clinical trials network.
 | [05 - Federated Learning Coordination](05-federated-learning-coordination.md) | Multi-site federated model training and aggregation |
 | [06 - Audit and Provenance Chain](06-audit-provenance-chain.md) | Hash-chained audit ledger and DAG-based provenance tracking |
 | [07 - Privacy and De-identification](07-privacy-deidentification.md) | HIPAA Safe Harbor pipeline and privacy budget management |
+
+## Directory Structure
+
+Each diagram is a standalone Markdown file containing:
+
+- **Overview** — Purpose and scope of the process
+- **Text Diagrams** — Detailed ASCII/box diagrams showing system interactions
+- **Mermaid Diagrams** — Rendered sequence and flow diagrams
+- **Component Descriptions** — Roles of each MCP server in the process
+- **Error Handling** — Failure modes and recovery paths
+
+## Related Documentation
+
+- [Architecture Overview](../architecture.md) — Five-server topology and design principles
+- [Stakeholder Guides](../guides/) — Role-specific implementation guidance
+- [Profile Walkthroughs](../walkthroughs/) — End-to-end scenario walkthroughs
+- [Operations Runbook](../operations/runbook.md) — Production operations procedures

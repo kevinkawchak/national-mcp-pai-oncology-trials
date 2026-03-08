@@ -4,6 +4,128 @@ Release notes for the National MCP-PAI Oncology Trials Standard.
 
 ---
 
+v1.0.0 - Phase 5: SDKs, Stakeholder Guides, Governance, and Operational Readiness
+
+## Summary
+
+Transforms the national MCP-PAI oncology trials standard from a technical specification into a fully adoption-ready platform. Adds versioned Python and TypeScript client SDKs with middleware pipelines (auth, audit, retry, circuit breaker), a comprehensive CLI toolchain (`trialmcp init/scaffold/validate/certify`), and schema-driven code generation for Python, TypeScript, and OpenAPI. Provides stakeholder-specific implementation guides for hospital IT, robot vendors, sponsors/CROs, regulators/IRBs, and standards community participants. Establishes complete operational documentation including production runbooks, incident response playbooks, key management procedures, backup/recovery plans, and SLO/SLA guidance. Documents all major architectural decisions through 7 ADRs, creates a governance framework with decision logs, implementation status tracking, and contribution policies. Adds security documentation (threat model, SBOM guidance, tamper-evident storage design, signed release policy), deployment guides for local development through multi-site federated configurations, and end-to-end profile walkthroughs for all 5 conformance profiles. Renames `docs/mcp-process-diagrams/` to `docs/mcp-process/`. Updates CI pipeline with SDK build/test, CLI smoke tests, code generation consistency, and security scanning jobs. All code passes ruff lint and format checks across Python 3.10, 3.11, 3.12.
+
+## Features
+
+- **Python SDK** (`sdk/python/trialmcp_client/`) — Complete MCP client library:
+  - `client.py` — Unified client with connection management, retry logic, circuit breaker
+  - `authz.py` — AuthZ client (evaluate, issue_token, validate_token, revoke_token)
+  - `fhir.py` — FHIR client (read, search, patient_lookup, study_status)
+  - `dicom.py` — DICOM client (query, retrieve)
+  - `ledger.py` — Ledger client (append, verify, query, export)
+  - `provenance.py` — Provenance client (record, query_forward, query_backward, verify)
+  - `models.py` — Re-exported typed models
+  - `exceptions.py` — 9-code error taxonomy exception hierarchy
+  - `config.py` — Client configuration with server addresses, auth, timeouts
+  - `middleware/` — Auth, audit, retry, circuit breaker middleware pipeline
+  - `examples/` — 6 actor-role example scripts (robot agent, trial coordinator, data monitor, auditor, sponsor, CRO)
+  - `pyproject.toml` — Installable package
+
+- **TypeScript SDK** (`sdk/typescript/`) — Complete MCP client library:
+  - `src/client.ts` — Unified client with connection management
+  - `src/authz.ts`, `fhir.ts`, `dicom.ts`, `ledger.ts`, `provenance.ts` — Domain clients
+  - `src/models/` — TypeScript interfaces for all domain models
+  - `src/errors.ts` — 9-code error taxonomy
+  - `src/config.ts` — Client configuration
+  - `src/middleware/` — Auth, audit, retry, circuit breaker middleware
+  - `examples/` — 6 actor-role example scripts
+  - `tests/` — SDK test suite
+
+- **CLI tools** (`tools/cli/trialmcp_cli.py`) — Developer toolchain:
+  - `trialmcp init` — Initialize implementation project with profile selection
+  - `trialmcp scaffold` — Generate server scaffolding from profile
+  - `trialmcp validate` — Validate server against conformance criteria
+  - `trialmcp certify` — Run certification suite and generate evidence
+  - `trialmcp schema diff` — Compare schema versions
+  - `trialmcp config generate` — Generate configuration templates
+
+- **Code generation** (`tools/codegen/`) — Schema-driven generation:
+  - `generate_python.py` — Python dataclasses from JSON schemas
+  - `generate_typescript.py` — TypeScript interfaces from JSON schemas
+  - `generate_openapi.py` — OpenAPI 3.0 specs from tool contracts
+
+- **Stakeholder guides** (`docs/guides/`) — Role-specific adoption paths:
+  - `hospital-it.md` — Hospital IT / Cancer Center deployment guide
+  - `robot-vendor.md` — Robot vendor integration guide
+  - `sponsor-cro.md` — Sponsor/CRO oversight guide
+  - `regulator-irb.md` — Regulator/IRB evidence review guide
+  - `standards-community.md` — Standards community contribution guide
+
+- **Operational documentation** (`docs/operations/`) — Production readiness:
+  - `runbook.md` — Production operations runbook
+  - `incident-response.md` — Incident response playbook (P1-P4)
+  - `key-management.md` — Key management and rotation procedures
+  - `backup-recovery.md` — Backup, recovery, RTO/RPO guidance
+  - `slo-guidance.md` — SLO/SLA targets and monitoring thresholds
+  - `production-concerns.md` — Retries, circuit breakers, idempotency, observability
+
+- **Deployment guides** (`docs/deployment/`) — Environment-specific setup:
+  - `local-dev.md` — Local development environment
+  - `hospital-site.md` — Hospital site deployment
+  - `multi-site-federated.md` — Multi-site federated deployment
+
+- **Architecture Decision Records** (`docs/adr/`) — 7 key decisions:
+  - ADR-001: MCP protocol boundary
+  - ADR-002: Five-server architecture
+  - ADR-003: Twenty-three tools as minimal surface
+  - ADR-004: Profile conformance levels
+  - ADR-005: Hash-chained audit for 21 CFR Part 11
+  - ADR-006: DAG-based provenance
+  - ADR-007: Deny-by-default RBAC
+
+- **Governance artifacts** (`docs/governance/`) — Adoption evidence:
+  - `decision-log.md` — Accepted/declined change log
+  - `implementation-status.md` — Implementation status matrix
+  - `roadmap.md` — Adoption milestones and timelines
+  - `compatibility-matrix.md` — Version/profile/level matrix
+  - `known-gaps.md` — Known gaps and future work
+  - `contribution-policy.md` — Multi-stakeholder contribution policy
+
+- **Security documentation** (`docs/security/`) — Security posture:
+  - `threat-model.md` — STRIDE threat model
+  - `sbom.md` — SBOM generation guidance
+  - `tamper-evident-storage.md` — Tamper-evident audit/provenance storage
+  - `signed-releases.md` — Signed release policy
+
+- **Repository strategy** (`docs/repository-strategy.md`) — Cross-repo governance
+
+- **Profile walkthroughs** (`docs/walkthroughs/`) — End-to-end scenarios:
+  - `base-profile.md` — Core AuthZ + Audit walkthrough
+  - `clinical-read.md` — FHIR read/search with de-identification
+  - `imaging-guided.md` — DICOM query with modality restrictions
+  - `multi-site-federated.md` — Cross-site provenance and audit
+  - `robot-procedure.md` — Complete robot-assisted procedure
+
+- **CI pipeline updates** — 5 new jobs:
+  - `sdk-python` — Python SDK install and import verification
+  - `sdk-typescript` — TypeScript SDK compile check
+  - `cli-smoke` — CLI tool subcommand smoke tests
+  - `codegen-consistency` — Code generation consistency check
+  - `security-scan` — Dependency audit and secret scanning
+
+- **Directory rename** — `docs/mcp-process-diagrams/` → `docs/mcp-process/`
+
+## Contributors
+@kevinkawchak
+@claude
+@openai
+
+## Notes
+- Version 1.0.0 marks the transition from specification development to adoption readiness
+- The Python SDK is located under `sdk/python/` with its own `pyproject.toml` for independent installation
+- The TypeScript SDK is located under `sdk/typescript/` with its own `package.json`
+- All new Python code passes `ruff check .` and `ruff format --check .`
+- The `docs/mcp-process-diagrams/` directory has been renamed to `docs/mcp-process/` for brevity
+- CI pipeline expanded from 9 to 14 jobs covering SDKs, CLI, code generation, and security scanning
+- All existing 501 tests continue to pass
+
+---
+
 v0.9.0 - Phase 4: Integration Adapters, Clinical Safety Guardrails, and Robot Execution Boundaries
 
 ## Summary
@@ -60,7 +182,7 @@ Adds production-grade integration adapters for FHIR R4 (HAPI, SMART-on-FHIR, de-
   - `secure_aggregation.py` — Secure aggregation hooks (additive masking, share generation, result reconstruction)
   - `site_harmonization.py` — Site data harmonization (schema mapping, value set alignment, temporal alignment, quality scoring)
   - `policy_enforcement.py` — Site-level federation policy enforcement (data participation, computation policies, result release authorization)
-- **MCP process diagrams** (`docs/mcp-process-diagrams/`) — 7 detailed text diagrams:
+- **MCP process diagrams** (`docs/mcp-process/`) — 7 detailed text diagrams:
   - `01-robot-procedure-lifecycle.md` — End-to-end procedure state machine with MCP server interactions
   - `02-cross-site-mcp-communication.md` — Multi-site topology, audit chain synchronization, token exchange
   - `03-clinical-system-integration.md` — FHIR/DICOM/identity adapter architecture and data flows

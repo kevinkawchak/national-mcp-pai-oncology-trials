@@ -1,0 +1,52 @@
+## Template: Python Model Class
+##
+## This is a string.Template-compatible template for generating Python
+## dataclass or Pydantic model classes from JSON Schema definitions.
+##
+## Variables:
+##   ${module_docstring}   — Module-level docstring text
+##   ${schema_file}        — Source schema filename
+##   ${spec_version}       — Standard version string
+##   ${style}              — "dataclass" or "pydantic"
+##   ${imports}            — Import block
+##   ${class_name}         — PascalCase class name
+##   ${class_docstring}    — Class-level docstring text
+##   ${fields}             — Rendered field definitions
+##
+## Usage from Python:
+##
+##   from string import Template
+##   from pathlib import Path
+##
+##   tpl = Template(Path("python_model.py.j2").read_text())
+##   output = tpl.safe_substitute(
+##       module_docstring="Auto-generated model.",
+##       schema_file="authz-decision.schema.json",
+##       spec_version="0.1.0",
+##       style="dataclass",
+##       imports="from dataclasses import dataclass, field\nfrom typing import Any",
+##       class_name="AuthzDecision",
+##       class_docstring="Authorization decision result.",
+##       fields="    allowed: bool\n    effect: str\n",
+##   )
+
+"""${module_docstring}
+
+Schema source : ${schema_file}
+Standard ver. : ${spec_version}
+Generator     : tools.codegen.generate_python (${style})
+
+DO NOT EDIT — regenerate with:
+    python -m tools.codegen.generate_python --schemas-dir schemas/
+"""
+
+from __future__ import annotations
+
+${imports}
+
+
+@dataclass
+class ${class_name}:
+    """${class_docstring}"""
+
+${fields}

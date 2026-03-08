@@ -1,0 +1,47 @@
+// Template: TypeScript Interface
+//
+// This is a string.Template-compatible template for generating TypeScript
+// interface definitions from JSON Schema definitions.
+//
+// Variables:
+//   ${schema_file}        — Source schema filename
+//   ${spec_version}       — Standard version string
+//   ${interface_name}     — PascalCase interface name
+//   ${interface_doc}      — JSDoc description text
+//   ${fields}             — Rendered field definitions (TypeScript property lines)
+//   ${nested_interfaces}  — Any nested interface definitions (rendered before main)
+//
+// Usage from Python:
+//
+//   from string import Template
+//   from pathlib import Path
+//
+//   tpl = Template(Path("typescript_interface.ts.j2").read_text())
+//   output = tpl.safe_substitute(
+//       schema_file="authz-decision.schema.json",
+//       spec_version="0.1.0",
+//       interface_name="AuthzDecision",
+//       interface_doc="Authorization decision result.",
+//       fields="  allowed: boolean;\n  effect: 'ALLOW' | 'DENY';\n",
+//       nested_interfaces="",
+//   )
+
+/**
+ * Auto-generated TypeScript interface from National MCP-PAI Oncology Trials Standard.
+ *
+ * Schema source : ${schema_file}
+ * Standard ver. : ${spec_version}
+ * Generator     : tools.codegen.generate_typescript
+ *
+ * DO NOT EDIT — regenerate with:
+ *     python -m tools.codegen.generate_typescript --schemas-dir schemas/
+ */
+
+${nested_interfaces}
+
+/**
+ * ${interface_doc}
+ */
+export interface ${interface_name} {
+${fields}
+}

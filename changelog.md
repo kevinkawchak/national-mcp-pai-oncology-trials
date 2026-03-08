@@ -6,6 +6,115 @@ This project follows [Semantic Versioning](https://semver.org/) as described in 
 
 ---
 
+## [1.0.0] — 2026-03-08
+
+### Added
+
+#### Python SDK
+- `sdk/python/trialmcp_client/__init__.py` — Package initialization with key exports
+- `sdk/python/trialmcp_client/client.py` — Unified MCP client with connection management, retry logic, circuit breaker
+- `sdk/python/trialmcp_client/authz.py` — AuthZ client (evaluate, issue_token, validate_token, revoke_token)
+- `sdk/python/trialmcp_client/fhir.py` — FHIR client (read, search, patient_lookup, study_status)
+- `sdk/python/trialmcp_client/dicom.py` — DICOM client (query, retrieve)
+- `sdk/python/trialmcp_client/ledger.py` — Ledger client (append, verify, query, export)
+- `sdk/python/trialmcp_client/provenance.py` — Provenance client (record, query_forward, query_backward, verify)
+- `sdk/python/trialmcp_client/models.py` — Re-exported typed models
+- `sdk/python/trialmcp_client/exceptions.py` — 9-code error taxonomy exception hierarchy
+- `sdk/python/trialmcp_client/config.py` — Client configuration
+- `sdk/python/trialmcp_client/middleware/auth_middleware.py` — Automatic token management and refresh
+- `sdk/python/trialmcp_client/middleware/audit_middleware.py` — Client-side audit logging
+- `sdk/python/trialmcp_client/middleware/retry_middleware.py` — Configurable retry with exponential backoff
+- `sdk/python/trialmcp_client/middleware/circuit_breaker.py` — Circuit breaker for clinical dependency resilience
+- `sdk/python/examples/` — 6 actor-role example scripts
+
+#### TypeScript SDK
+- `sdk/typescript/src/client.ts` — Unified MCP client with connection management
+- `sdk/typescript/src/authz.ts`, `fhir.ts`, `dicom.ts`, `ledger.ts`, `provenance.ts` — Domain clients
+- `sdk/typescript/src/models/index.ts` — TypeScript interfaces for all domain models
+- `sdk/typescript/src/errors.ts` — 9-code error taxonomy
+- `sdk/typescript/src/config.ts` — Client configuration
+- `sdk/typescript/src/middleware/` — Auth, audit, retry, circuit breaker middleware
+- `sdk/typescript/examples/` — 6 actor-role example scripts
+- `sdk/typescript/tests/` — SDK test suite
+
+#### CLI and Code Generation Tools
+- `tools/cli/trialmcp_cli.py` — CLI with init, scaffold, validate, certify, schema diff, config generate subcommands
+- `tools/codegen/generate_python.py` — Python model generation from JSON schemas
+- `tools/codegen/generate_typescript.py` — TypeScript interface generation from JSON schemas
+- `tools/codegen/generate_openapi.py` — OpenAPI spec generation from tool contracts
+- `tools/codegen/templates/` — Code generation templates
+
+#### Stakeholder Implementation Guides
+- `docs/guides/hospital-it.md` — Hospital IT / Cancer Center deployment guide
+- `docs/guides/robot-vendor.md` — Robot vendor integration guide
+- `docs/guides/sponsor-cro.md` — Sponsor/CRO oversight guide
+- `docs/guides/regulator-irb.md` — Regulator/IRB evidence review guide
+- `docs/guides/standards-community.md` — Standards community contribution guide
+
+#### Operational Documentation
+- `docs/operations/runbook.md` — Production operations runbook
+- `docs/operations/incident-response.md` — Incident response playbook (P1-P4)
+- `docs/operations/key-management.md` — Key management and rotation procedures
+- `docs/operations/backup-recovery.md` — Backup, recovery, RTO/RPO guidance
+- `docs/operations/slo-guidance.md` — SLO/SLA targets and monitoring thresholds
+- `docs/operations/production-concerns.md` — Retries, circuit breakers, idempotency, observability
+
+#### Deployment Guides
+- `docs/deployment/local-dev.md` — Local development setup guide
+- `docs/deployment/hospital-site.md` — Hospital site deployment guide
+- `docs/deployment/multi-site-federated.md` — Multi-site federated deployment guide
+
+#### Architecture Decision Records
+- `docs/adr/001-mcp-protocol-boundary.md` — Why MCP is the right protocol boundary
+- `docs/adr/002-five-server-architecture.md` — Why these 5 servers were chosen
+- `docs/adr/003-twenty-three-tools.md` — Why 23 tools are the minimal stable surface
+- `docs/adr/004-profile-conformance-levels.md` — Why profiles map to clinical deployment tiers
+- `docs/adr/005-hash-chained-audit.md` — Why hash-chained audit for 21 CFR Part 11
+- `docs/adr/006-dag-provenance.md` — Why DAG-based provenance over linear lineage
+- `docs/adr/007-deny-by-default-rbac.md` — Why deny-by-default RBAC for clinical safety
+
+#### Governance Artifacts
+- `docs/governance/decision-log.md` — Decision log of accepted/declined changes
+- `docs/governance/implementation-status.md` — Implementation status matrix
+- `docs/governance/roadmap.md` — Adoption milestones and timelines
+- `docs/governance/compatibility-matrix.md` — Version/profile/level compatibility matrix
+- `docs/governance/known-gaps.md` — Known gaps, non-goals, and future work
+- `docs/governance/contribution-policy.md` — Multi-stakeholder contribution policy
+
+#### Security Documentation
+- `docs/security/threat-model.md` — STRIDE threat model
+- `docs/security/sbom.md` — SBOM generation guidance
+- `docs/security/tamper-evident-storage.md` — Tamper-evident storage design
+- `docs/security/signed-releases.md` — Signed release policy
+
+#### Repository Strategy
+- `docs/repository-strategy.md` — Cross-repo governance and migration strategy
+
+#### Profile Walkthroughs
+- `docs/walkthroughs/base-profile.md` — Core AuthZ + Audit walkthrough
+- `docs/walkthroughs/clinical-read.md` — FHIR read/search with de-identification
+- `docs/walkthroughs/imaging-guided.md` — DICOM query with modality restrictions
+- `docs/walkthroughs/multi-site-federated.md` — Cross-site provenance and audit
+- `docs/walkthroughs/robot-procedure.md` — Complete robot-assisted procedure
+
+### Changed
+- `docs/mcp-process-diagrams/` → `docs/mcp-process/` — Directory renamed for brevity
+- `docs/mcp-process/README.md` — Updated version to 1.0.0, added links to new documentation
+- `pyproject.toml` — Version 1.0.0, added `trialmcp` CLI entry point, added `sdk/python/` to ruff exclude, added `trialmcp_client` to known-first-party
+- `.github/workflows/ci.yml` — Added 5 new CI jobs: `sdk-python`, `sdk-typescript`, `cli-smoke`, `codegen-consistency`, `security-scan`
+- `README.md` — v1.0.0 badges, new SDK section, stakeholder guides section, operational docs section, updated repository structure
+- `prompts.md` — v1.0.0 prompt archived
+- `releases.md` — v1.0.0 release notes added
+- `changelog.md` — This entry
+
+### Verified
+- `ruff check .` and `ruff format --check .` pass cleanly across all Python files
+- All existing tests continue to pass
+- Python SDK installs and imports verified
+- CI pipeline expanded from 9 to 14 jobs
+
+---
+
 ## [0.9.0] — 2026-03-07
 
 ### Added
@@ -73,14 +182,14 @@ This project follows [Semantic Versioning](https://semver.org/) as described in 
 - `integrations/federation/policy_enforcement.py` — Site-level federation policy enforcement
 
 #### MCP Process Diagrams
-- `docs/mcp-process-diagrams/README.md` — Diagram index and descriptions
-- `docs/mcp-process-diagrams/01-robot-procedure-lifecycle.md` — Procedure state machine with MCP interactions
-- `docs/mcp-process-diagrams/02-cross-site-mcp-communication.md` — Multi-site topology and synchronization
-- `docs/mcp-process-diagrams/03-clinical-system-integration.md` — FHIR/DICOM/identity integration flows
-- `docs/mcp-process-diagrams/04-safety-gate-evaluation.md` — Safety gate matrix and e-stop propagation
-- `docs/mcp-process-diagrams/05-federated-learning-coordination.md` — Federated round lifecycle and aggregation
-- `docs/mcp-process-diagrams/06-audit-provenance-chain.md` — Hash-chained ledger and DAG provenance
-- `docs/mcp-process-diagrams/07-privacy-deidentification.md` — HIPAA Safe Harbor pipeline and data residency
+- `docs/mcp-process/README.md` — Diagram index and descriptions
+- `docs/mcp-process/01-robot-procedure-lifecycle.md` — Procedure state machine with MCP interactions
+- `docs/mcp-process/02-cross-site-mcp-communication.md` — Multi-site topology and synchronization
+- `docs/mcp-process/03-clinical-system-integration.md` — FHIR/DICOM/identity integration flows
+- `docs/mcp-process/04-safety-gate-evaluation.md` — Safety gate matrix and e-stop propagation
+- `docs/mcp-process/05-federated-learning-coordination.md` — Federated round lifecycle and aggregation
+- `docs/mcp-process/06-audit-provenance-chain.md` — Hash-chained ledger and DAG provenance
+- `docs/mcp-process/07-privacy-deidentification.md` — HIPAA Safe Harbor pipeline and data residency
 
 #### Unit Tests
 - `tests/test_integrations.py` — Unit tests for all integration adapter modules
