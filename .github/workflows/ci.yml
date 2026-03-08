@@ -412,31 +412,31 @@ jobs:
         run: pip-audit --desc || true
 
       - name: Check for hardcoded secrets
+        shell: bash
         run: |
-          python -c "
+          python3 << 'SECRETSCAN'
           import re, sys
           from pathlib import Path
 
           patterns = [
-              r'(?i)(api[_-]?key|secret[_-]?key|password|token)\s*=\s*[\"'\'']\w{20,}[\"'\'']',
-              r'(?i)bearer\s+[a-zA-Z0-9_\-\.]{20,}',
+              re.compile(r"(?i)(api[_-]?key|secret[_-]?key|password|token)\s*=\s*[\"']\w{20,}[\"']"),
+              re.compile(r"(?i)bearer\s+[a-zA-Z0-9_\-\.]{20,}"),
           ]
 
-          errors = 0
-          for ext in ['py', 'ts', 'js', 'yaml', 'yml', 'json']:
-              for f in Path('.').rglob(f'*.{ext}'):
-                  if '.git' in str(f) or 'node_modules' in str(f):
+          for ext in ["py", "ts", "js", "yaml", "yml", "json"]:
+              for f in Path(".").rglob(f"*.{ext}"):
+                  if ".git" in str(f) or "node_modules" in str(f):
                       continue
                   try:
-                      text = f.read_text(encoding='utf-8', errors='replace')
+                      text = f.read_text(encoding="utf-8", errors="replace")
                       for pattern in patterns:
-                          matches = re.findall(pattern, text)
+                          matches = pattern.findall(text)
                           if matches:
-                              print(f'WARN: potential secret in {f}')
+                              print(f"WARN: potential secret in {f}")
                   except Exception:
                       pass
-          print('Secret scan complete.')
-          "
+          print("Secret scan complete.")
+          SECRETSCAN
 
   typescript-build:
     name: typescript-build

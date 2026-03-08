@@ -64,6 +64,7 @@ export class McpError extends Error {
   public readonly timestamp: string;
   public readonly details?: McpErrorDetails;
   public readonly isRetryable: boolean;
+  public readonly originalCause?: Error;
 
   constructor(code: McpErrorCode, message: string, options: McpErrorOptions = {}) {
     super(message);
@@ -77,7 +78,7 @@ export class McpError extends Error {
     this.isRetryable = McpError.isRetryableCode(code);
 
     if (options.cause) {
-      this.cause = options.cause;
+      this.originalCause = options.cause;
     }
     Object.setPrototypeOf(this, new.target.prototype);
   }

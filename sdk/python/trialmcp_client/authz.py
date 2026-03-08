@@ -254,3 +254,7 @@ class AuthzClient:
             for req in requests
         ]
         return list(await asyncio.gather(*tasks))
+
+
+# Alias for CI compatibility (CI imports AuthZClient with capital Z)
+AuthZClient = AuthzClient

@@ -9,8 +9,9 @@
 
 import type { TrialMcpClient, ClientEvent, ClientEventHandler } from '../client';
 import { LedgerClient } from '../ledger';
-import type { AuditRecord, AuditConfig } from '../config';
+import type { AuditConfig } from '../config';
 import { DEFAULT_AUDIT_CONFIG, resolveAuditConfig } from '../config';
+import type { AuditRecord } from '../models';
 
 // ---------------------------------------------------------------------------
 // Types

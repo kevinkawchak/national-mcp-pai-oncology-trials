@@ -73,17 +73,17 @@ export class HttpTransport implements McpTransport {
         signal: controller.signal,
       });
 
-      const body = await response.json();
+      const body = (await response.json()) as Record<string, unknown>;
 
       if (!response.ok || body.error) {
         throw createMcpError(
-          body.code ?? 'INTERNAL_ERROR',
-          body.message ?? `HTTP ${response.status}`,
+          (body.code as string) ?? 'INTERNAL_ERROR',
+          (body.message as string) ?? `HTTP ${response.status}`,
           {
-            server: body.server,
-            tool: body.tool ?? tool,
-            requestId: body.request_id,
-            details: body.details,
+            server: body.server as McpServerName | undefined,
+            tool: (body.tool as string) ?? tool,
+            requestId: body.request_id as string | undefined,
+            details: body.details as Record<string, unknown> | undefined,
           },
         );
       }

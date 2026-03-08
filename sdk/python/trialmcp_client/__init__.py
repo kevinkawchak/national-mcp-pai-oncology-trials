@@ -29,6 +29,7 @@ Quick start::
 from __future__ import annotations
 
 from .authz import AuthzClient
+from .authz import AuthzClient as AuthZClient  # CI-expected alias
 from .client import TrialMCPClient
 from .config import (
     ActorRole,
