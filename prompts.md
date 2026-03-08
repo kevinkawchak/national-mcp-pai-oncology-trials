@@ -1,3 +1,160 @@
+## Prompt v0.9.0
+
+Your goal for national-mcp-pai-oncology-trials is to implement the main prompt below  comprehensively for the physical ai oncology trials industry. It is imperative that all types of information utilized for the repository be accurate and appropriate for the national scale. Update relevant readme files and documentation throughout the repo based on all changes made (diagrams, mermaid diagrams, badges, text, repository structure, etc.) Make sure all text diagrams are professional and line up throughout diagrams properly, with no jagged edges. Similarly, transform all the simple cartoon like mermaid diagrams into publication-quality conceptual schematics with clear hierarchies and explicit labels, resulting in diagrams that are more square like.
+
+A new (if no suitable directory) or existing directory under main that contains several (>5) professional detailed text diagrams (that are properly formatted with no jagged edges) of all of the comprehensive mcp processes throughout the entire repo is required. This could be detailed diagrams indicating mcps used between robots, between servers, between clinical trial sites, between different clinical trials (These are simply examples, choose the best diagrams based on the repo contents).
+
+Provide a copy of this exact prompt under main prompts.md. Be sure to fix and address errors that would cause failed checks for the single pull request (such as Python environment issues to avoid the following error during final checks): "3 failing checks
+x Cl / lint-and-format (3.10) (pull...
+x Cl / lint-and-format (3.11) (pull...
+x Cl / lint-and-format (3.12) (pull... " Place the new release notes in releases.md under main using the format below (which is the same format of the last published version). Update changelog.md using v0.9.0. When you are finished, auto-push the update to GitHub on your own for my review. The user will then review your updates in GitHub prior to finalization.
+
+"FORMAT"
+Release title
+v0.9.0 -
+
+\## Summary
+
+\## Features
+
+\## Contributors
+@kevinkawchak
+@claude
+@openai
+
+\## Notes
+
+
+"START MAIN PROMPT"
+v0.9.0 - Phase 4: Integration Adapters, Clinical Safety Guardrails, and Robot Execution Boundaries
+
+Your goal is to add real integration adapters for clinical systems (FHIR, DICOM, identity), implement clinical safety guardrails and robot execution boundaries with runnable policy layers, and consolidate the strongest privacy, regulatory, and federated coordination patterns from the companion repositories into the national standard. This phase makes the repository practically connectable to real hospital infrastructure and enforceably safe for Physical AI operations. It is imperative that all code now be accurate, end-to-end, and appropriate for a national scale.
+
+**1. FHIR Integration Adapters**
+
+Create `integrations/fhir/` with production-grade FHIR connectivity:
+
+- `integrations/fhir/base_adapter.py` — Abstract FHIR adapter interface (read, search, patient_lookup, study_status, capability_statement)
+- `integrations/fhir/mock_adapter.py` — Mock FHIR adapter with synthetic patient data for local testing
+- `integrations/fhir/hapi_adapter.py` — HAPI FHIR server adapter with REST client
+- `integrations/fhir/smart_adapter.py` — SMART-on-FHIR / OAuth2 adapter with token management
+- `integrations/fhir/deidentification.py` — Complete HIPAA Safe Harbor de-identification pipeline:
+  - All 18 HIPAA identifiers removal with test corpus
+  - HMAC-SHA256 pseudonymization with configurable keys
+  - Year-only date generalization
+  - Name/address redaction
+  - Verification suite that tests de-identification completeness
+- `integrations/fhir/capability.py` — FHIR capability statement generation and ingestion
+- `integrations/fhir/terminology.py` — Terminology mapping hooks (ICD-10, SNOMED CT, LOINC, RxNorm)
+- `integrations/fhir/bundle_handler.py` — Realistic FHIR Bundle handling (transaction, batch, search result bundles)
+- `integrations/fhir/patient_filter.py` — Patient/resource access filters based on consent status and authorization
+
+**2. DICOM Integration Adapters**
+
+Create `integrations/dicom/` with imaging system connectivity:
+
+- `integrations/dicom/base_adapter.py` — Abstract DICOM adapter interface (query, retrieve metadata, modality validation)
+- `integrations/dicom/mock_adapter.py` — Mock DICOM adapter with synthetic imaging metadata
+- `integrations/dicom/orthanc_adapter.py` — Orthanc DICOM server adapter
+- `integrations/dicom/dcm4chee_adapter.py` — dcm4chee DICOM archive adapter
+- `integrations/dicom/dicomweb.py` — DICOMweb support (QIDO-RS query, WADO-RS retrieve, STOW-RS store)
+- `integrations/dicom/metadata_normalizer.py` — DICOM metadata normalization (tag harmonization, encoding normalization)
+- `integrations/dicom/modality_filter.py` — Role-based modality restriction enforcement
+- `integrations/dicom/recist.py` — RECIST 1.1 measurement payload examples and validators:
+  - Target lesion measurement validation
+  - Non-target lesion assessment
+  - New lesion detection
+  - Overall response calculation (CR, PR, SD, PD)
+  - Timepoint comparison
+- `integrations/dicom/safety.py` — Image reference safety constraints (no pixel data transfer, metadata-only pointers, retrieval authorization)
+
+**3. Identity and Security Adapters**
+
+Create `integrations/identity/` with enterprise identity connectivity:
+
+- `integrations/identity/base_adapter.py` — Abstract identity adapter interface
+- `integrations/identity/oidc_adapter.py` — OIDC/JWT token validation adapter
+- `integrations/identity/mtls.py` — mTLS support utilities and certificate validation
+- `integrations/identity/policy_engine.py` — External policy engine integration (OPA-compatible interface)
+- `integrations/identity/kms.py` — KMS/HSM-backed signing key hooks for audit record signing and token signing
+
+**4. Clinical Operations Adapters**
+
+Create `integrations/clinical/` with trial operations connectivity:
+
+- `integrations/clinical/econsent_adapter.py` — eConsent/IRB metadata adapter (consent status tracking, IRB approval verification)
+- `integrations/clinical/scheduling_adapter.py` — Scheduling/task-order adapter (procedure scheduling, robot assignment, time window management)
+- `integrations/clinical/provenance_export.py` — Provenance export adapter (W3C PROV-N export, graph visualization data, lineage report generation)
+
+**5. Robot Safety and Execution Boundaries**
+
+Create `servers/trialmcp_safety/` (or extend existing servers) with Physical AI safety enforcement:
+
+- `safety/gate_service.py` — Safety gate service / policy layer:
+  - Pre-procedure safety matrix evaluation
+  - Multi-condition gate checking (patient consent, site capability, robot capability, trial protocol compliance, human approval)
+  - Gate decision audit trail
+- `safety/robot_registry.py` — Robot capability registry:
+  - Robot platform registration with USL scoring
+  - Capability descriptor validation against `robot-capability-profile.schema.json`
+  - Robot-to-procedure eligibility matching
+  - Simulation vs clinical certification status tracking
+- `safety/task_validator.py` — Task-order validator with safety constraints:
+  - Task-order validation against `task-order.schema.json`
+  - Precondition verification contracts (patient identity confirmed, consent valid, site cleared, robot calibrated)
+  - Post-procedure evidence capture contracts (completion status, measurements, adverse events)
+  - Trial protocol constraint enforcement
+- `safety/approval_checkpoint.py` — Human-approval checkpoint patterns:
+  - Mandatory human-in-the-loop approval gates for specified procedure types
+  - Approval request/response protocol
+  - Approval timeout handling
+  - Escalation paths for denied or timed-out approvals
+- `safety/estop.py` — Emergency stop / override semantics:
+  - E-stop signal propagation to all active servers
+  - Abort procedure workflow with state preservation
+  - Post-abort evidence capture
+  - Recovery and re-authorization procedures
+- `safety/procedure_state.py` — Procedure state machine:
+  - States: SCHEDULED → PRE_CHECK → APPROVED → IN_PROGRESS → POST_CHECK → COMPLETED / ABORTED / FAILED
+  - State transition validation
+  - State persistence and recovery
+  - Simulation-only vs clinical-mode flags with enforcement
+- `safety/site_verifier.py` — Site capability verification:
+  - Site capability profile validation against `site-capability-profile.schema.json`
+  - Required infrastructure verification (servers, storage, network, regulatory overlay compliance)
+  - Procedure eligibility determination based on site capabilities
+
+**6. Privacy and Regulatory Modules**
+
+Create `integrations/privacy/` consolidating patterns from companion repositories:
+
+- `integrations/privacy/access_control.py` — Reusable access control manager (role-based + attribute-based access control, data classification enforcement)
+- `integrations/privacy/deidentification_pipeline.py` — Unified de-identification pipeline (FHIR + DICOM + free-text de-identification, configurable per data type)
+- `integrations/privacy/privacy_budget.py` — Privacy budget accounting (epsilon tracking for differential privacy, budget allocation per query/site)
+- `integrations/privacy/data_residency.py` — Data residency enforcement (site-level data boundary policies, cross-site transfer authorization, jurisdiction-specific retention rules)
+
+**7. Federated Coordination**
+
+Create `integrations/federation/` consolidating patterns from pai-oncology-trial-fl:
+
+- `integrations/federation/coordinator.py` — Federated coordinator abstractions (site enrollment, round management, aggregation coordination)
+- `integrations/federation/secure_aggregation.py` — Secure aggregation hooks (aggregation protocol interface, privacy-preserving result combination)
+- `integrations/federation/site_harmonization.py` — Site data harmonization interfaces (schema mapping, value set alignment, temporal alignment)
+- `integrations/federation/policy_enforcement.py` — Site-level federation policy enforcement (what data participates, what computations are allowed, result release authorization)
+
+**8. Verify Repository-Wide Quality**
+
+After all changes:
+1. All existing tests still pass
+2. Each integration adapter has unit tests with mock backends
+3. Safety gate service passes all safety scenarios
+4. Robot registry validates against schema correctly
+5. Procedure state machine handles all transitions correctly
+6. De-identification pipeline removes all 18 HIPAA identifiers
+7. `ruff check .` and `ruff format --check .` pass cleanly
+
+---
+
 ## Prompt v0.8.0
 
 Your goal for national-mcp-pai-oncology-trials is to implement the main prompt below  comprehensively for the physical ai oncology trials industry. It is imperative that all types of information utilized for the repository be accurate and appropriate for the national scale. Update relevant readme files and documentation throughout the repo based on all changes made (diagrams, mermaid diagrams, badges, text, repository structure, etc.)

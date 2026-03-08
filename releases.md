@@ -4,6 +4,95 @@ Release notes for the National MCP-PAI Oncology Trials Standard.
 
 ---
 
+v0.9.0 - Phase 4: Integration Adapters, Clinical Safety Guardrails, and Robot Execution Boundaries
+
+## Summary
+
+Adds production-grade integration adapters for FHIR R4 (HAPI, SMART-on-FHIR, de-identification, terminology mapping, Bundle handling), DICOM (Orthanc, dcm4chee, DICOMweb, RECIST 1.1 validators, metadata-only safety), identity providers (OIDC/JWT, mTLS, OPA-compatible policy engine, KMS/HSM), and clinical operations (eConsent, scheduling, provenance export). Implements a complete robot safety and execution boundaries framework with safety gate service, robot capability registry, task-order validator, human approval checkpoints, emergency stop semantics, and a procedure state machine. Consolidates privacy and regulatory modules (RBAC/ABAC access control, unified de-identification pipeline, differential privacy budget accounting, data residency enforcement) and federated coordination patterns (site enrollment, secure aggregation, data harmonization, federation policy enforcement). Adds 7 comprehensive MCP process diagrams documenting all integration pathways. All new code passes ruff lint and format checks across Python 3.10, 3.11, 3.12.
+
+## Features
+
+- **FHIR integration adapters** (`integrations/fhir/`) — 9 production-grade modules:
+  - `base_adapter.py` — Abstract FHIR adapter interface (read, search, patient_lookup, study_status, capability_statement)
+  - `mock_adapter.py` — Mock FHIR adapter with synthetic oncology patient data (3+ patients, ResearchStudy, Observations)
+  - `hapi_adapter.py` — HAPI FHIR server adapter with REST client (urllib-based, no external dependencies)
+  - `smart_adapter.py` — SMART-on-FHIR / OAuth2 adapter with token management and refresh logic
+  - `deidentification.py` — Complete HIPAA Safe Harbor de-identification pipeline (18-identifier removal, HMAC-SHA256 pseudonymization, year-only dates, verification suite)
+  - `capability.py` — FHIR CapabilityStatement R4 generation and ingestion
+  - `terminology.py` — Terminology mapping hooks (ICD-10, SNOMED CT, LOINC, RxNorm) with oncology-relevant code samples
+  - `bundle_handler.py` — FHIR Bundle handling (transaction, batch, search result bundles) with entry validation
+  - `patient_filter.py` — Patient/resource access filters based on consent status and authorization (6 consent categories)
+- **DICOM integration adapters** (`integrations/dicom/`) — 9 production-grade modules:
+  - `base_adapter.py` — Abstract DICOM adapter interface (query, retrieve_metadata, modality_validation)
+  - `mock_adapter.py` — Mock DICOM adapter with 4 synthetic oncology imaging studies (CT, MR, PT, RTSTRUCT, RTPLAN)
+  - `orthanc_adapter.py` — Orthanc DICOM server adapter with REST API client
+  - `dcm4chee_adapter.py` — dcm4chee DICOM archive adapter with DICOMweb endpoints
+  - `dicomweb.py` — DICOMweb support (QIDO-RS query, WADO-RS retrieve, STOW-RS store, multipart response parsing)
+  - `metadata_normalizer.py` — DICOM metadata normalization (tag harmonization, encoding normalization)
+  - `modality_filter.py` — Role-based modality restriction enforcement (MUST: CT, MR, PT; SHOULD: RTSTRUCT, RTPLAN)
+  - `recist.py` — RECIST 1.1 measurement validators (target lesion limits, non-target assessment, new lesion detection, overall response calculation)
+  - `safety.py` — Image reference safety constraints (no pixel data transfer, metadata-only pointers, retrieval authorization)
+- **Identity and security adapters** (`integrations/identity/`) — 5 modules:
+  - `base_adapter.py` — Abstract identity adapter interface
+  - `oidc_adapter.py` — OIDC/JWT token validation adapter with claims extraction and expiry checking
+  - `mtls.py` — mTLS support utilities and certificate validation helpers
+  - `policy_engine.py` — External policy engine integration (OPA-compatible interface, deny-by-default)
+  - `kms.py` — KMS/HSM-backed signing key hooks for audit record and token signing
+- **Clinical operations adapters** (`integrations/clinical/`) — 3 modules:
+  - `econsent_adapter.py` — eConsent/IRB metadata adapter (consent status tracking, IRB approval verification, 6 consent categories)
+  - `scheduling_adapter.py` — Scheduling/task-order adapter (procedure scheduling, robot assignment, conflict detection)
+  - `provenance_export.py` — Provenance export adapter (W3C PROV-N export, graph visualization data, lineage reports)
+- **Robot safety and execution boundaries** (`safety/`) — 7 modules:
+  - `gate_service.py` — Safety gate service with pre-procedure safety matrix (5 gates: consent, site, robot, protocol, human approval)
+  - `robot_registry.py` — Robot capability registry with USL scoring, certification tracking, procedure eligibility matching
+  - `task_validator.py` — Task-order validator with precondition/postcondition verification contracts
+  - `approval_checkpoint.py` — Human-in-the-loop approval gates with configurable timeout and escalation paths
+  - `estop.py` — Emergency stop controller with signal propagation, state preservation, and recovery procedures
+  - `procedure_state.py` — Procedure state machine (SCHEDULED → PRE_CHECK → APPROVED → IN_PROGRESS → POST_CHECK → COMPLETED / ABORTED / FAILED)
+  - `site_verifier.py` — Site capability verification against site-capability-profile schema
+- **Privacy and regulatory modules** (`integrations/privacy/`) — 4 modules:
+  - `access_control.py` — RBAC + ABAC access control with data classification enforcement (public, internal, confidential, restricted)
+  - `deidentification_pipeline.py` — Unified de-identification pipeline (FHIR + DICOM + free-text, configurable per data type)
+  - `privacy_budget.py` — Differential privacy budget accounting (epsilon tracking per site/query, exhaustion detection)
+  - `data_residency.py` — Data residency enforcement (jurisdiction-specific retention, cross-site transfer authorization)
+- **Federated coordination** (`integrations/federation/`) — 4 modules:
+  - `coordinator.py` — Federated coordinator (site enrollment, round management, aggregation coordination)
+  - `secure_aggregation.py` — Secure aggregation hooks (additive masking, share generation, result reconstruction)
+  - `site_harmonization.py` — Site data harmonization (schema mapping, value set alignment, temporal alignment, quality scoring)
+  - `policy_enforcement.py` — Site-level federation policy enforcement (data participation, computation policies, result release authorization)
+- **MCP process diagrams** (`docs/mcp-process-diagrams/`) — 7 detailed text diagrams:
+  - `01-robot-procedure-lifecycle.md` — End-to-end procedure state machine with MCP server interactions
+  - `02-cross-site-mcp-communication.md` — Multi-site topology, audit chain synchronization, token exchange
+  - `03-clinical-system-integration.md` — FHIR/DICOM/identity adapter architecture and data flows
+  - `04-safety-gate-evaluation.md` — Safety gate matrix, evaluation flow, e-stop propagation, approval protocol
+  - `05-federated-learning-coordination.md` — Federated round lifecycle, secure aggregation, privacy budgets
+  - `06-audit-provenance-chain.md` — Hash-chained ledger construction, DAG provenance, cross-site merge
+  - `07-privacy-deidentification.md` — 18-identifier removal pipeline, unified de-ID, data residency
+- **Updated `pyproject.toml`** — Version 0.9.0, added `integrations` and `safety` to known-first-party imports
+- **Updated `README.md`** — v0.9.0 badges, new Integration Adapters section, Safety Boundaries section, MCP Process Diagrams section, updated repository structure and Mermaid diagrams
+- **Updated `changelog.md`** — v0.9.0 changelog entry
+- **Updated `releases.md`** — v0.9.0 release notes (this entry)
+- **Updated `prompts.md`** — v0.9.0 prompt archived
+
+## Contributors
+@kevinkawchak
+@claude
+@openai
+
+## Notes
+- All new modules use only Python standard library (no external dependencies required beyond test/dev)
+- FHIR adapters implement the same abstract interface as the existing `servers/trialmcp_fhir/fhir_adapter.py`, enabling drop-in replacement
+- DICOM safety module enforces metadata-only responses — no pixel data may transit through MCP servers
+- RECIST 1.1 validators enforce clinical measurement standards: 5 max target lesions, 2 per organ, CR/PR/SD/PD calculation
+- Safety gate service implements deny-by-default: ALL 5 gates must pass before any procedure can proceed
+- Procedure state machine enforces valid transitions and prevents invalid state changes (e.g., cannot go from SCHEDULED to COMPLETED)
+- Privacy budget accounting tracks per-site differential privacy epsilon consumption with exhaustion detection
+- Federation policy enforcement implements minimum site count thresholds for result release
+- MCP process diagrams provide publication-quality text schematics covering all integration pathways
+- References: [TrialMCP](https://doi.org/10.5281/zenodo.18869776), [Physical AI Oncology Trials](https://doi.org/10.5281/zenodo.18445179), [PAI Oncology Trial FL](https://doi.org/10.5281/zenodo.18840880)
+
+---
+
 v0.8.0 - Phase 3: Black-Box Conformance, National Interoperability Testbed, and Evidence Generation
 
 ## Summary

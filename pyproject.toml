@@ -1,7 +1,7 @@
 [project]
 name = "national-mcp-pai-oncology-trials"
-version = "0.8.0"
-description = "National MCP Standard for Physical AI Oncology Clinical Trials — Phase 3: Black-Box Conformance, National Interoperability Testbed, and Evidence Generation"
+version = "0.9.0"
+description = "National MCP Standard for Physical AI Oncology Clinical Trials — Phase 4: Integration Adapters, Clinical Safety Guardrails, and Robot Execution Boundaries"
 requires-python = ">=3.10"
 license = {text = "MIT"}
 
@@ -45,7 +45,7 @@ select = [
 ]
 
 [tool.ruff.lint.isort]
-known-first-party = ["benchmarks", "conformance", "examples", "interop_testbed", "models", "reference", "scripts", "servers", "tests", "tools"]
+known-first-party = ["benchmarks", "conformance", "examples", "integrations", "interop_testbed", "models", "reference", "safety", "scripts", "servers", "tests", "tools"]
 
 [tool.pytest.ini_options]
 testpaths = ["conformance", "tests"]
