@@ -1575,10 +1575,10 @@ This specification is governed by an open process described in [governance/CHART
 
 ### Contributors
 
-[/kevinkawchak](https://github.com/kevinkawchak)
-[/claude](https://claude.ai)
-[/openai](https://github.com/openai)
-
+- [Kevin Kawchak](https://github.com/kevinkawchak)
+- [Claude](https://claude.ai)
+- [OpenAI](https://github.com/openai)
+  
 ---
 
 *This specification is released under the [MIT License](LICENSE). All modules are intended for standards development. Independent clinical validation, IRB approval, and regulatory clearance are required before any conforming implementation is used in a clinical setting.*
