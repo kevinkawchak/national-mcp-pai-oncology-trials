@@ -1874,3 +1874,37 @@ v0.1.0 -
 @claude
 
 ## Notes
+
+---
+
+## Prompt v0.1.0 — Part 2
+
+Also add the following two files to main branch:
+main/next-steps.md
+main/stats.md
+
+A) Create a comprehensive next-steps.md that explains, in practical and nationally relevant terms, what all stakeholder groups are expected to do now that the repository is publicly available and usable as a proposed national reference standard.
+
+The document should be written for a nationwide audience and should use a balanced distribution of short paragraphs, numbered lists, and concise bullet points.
+
+The content should be action-oriented, specific, and organized for real-world adoption. It should clearly describe immediate, near-term, and medium-term actions for major stakeholder groups, including sponsors, CROs, academic medical centers, community oncology sites, hospital IT and security teams, robotics vendors, EHR and FHIR integration teams, imaging and PACS and DICOM teams, privacy and compliance and legal and regulatory teams, principal investigators, trial coordinators, auditors, data monitors, and standards contributors or open-source maintainers.
+
+The document should include, where appropriate, what each stakeholder should review first in the repository, what each stakeholder should deploy, validate, or evaluate next, which profiles, schemas, tools, safety modules, governance materials, and test assets are most relevant to them, recommended sequencing of adoption activities, dependencies between technical, operational, clinical, and regulatory workstreams, expected readiness checkpoints for pilot adoption, expectations for documentation, conformance validation, and evidence generation, what should happen at single-site, multi-site, and national coordination levels, and a clear distinction between actions to take now, actions to plan next, and actions that require formal validation before production or clinical use.
+
+The document should read like an adoption and execution guide rather than a vague summary. It should be comprehensive but concise, and it should reflect the repository's positioning as a national MCP and Physical AI oncology trials standard.
+
+B) Create a comprehensive stats.md that presents repository statistics and quantitative summary data in a way that is useful to technical, clinical, compliance, standards, and interoperability audiences.
+
+The document should use a balanced distribution of short paragraphs, numbered lists, and concise bullet points.
+
+It should be metrics-heavy and use quantitative data throughout wherever the repository supports it. The document should be written for readers interested in MCP ecosystems, interoperability maturity, and Physical AI oncology trials.
+
+At minimum, include clearly labeled sections covering repository scale and scope, number and categories of tests, test types and what they validate, number of tools and their distribution by MCP server, MCP server count and server types, schema count and schema categories, profile count and profile types, integration adapter count and categories, safety module count and categories, benchmark and certification tooling count, deployment targets and infrastructure options, languages used across the repository, approximate lines of code if determinable from the repository contents, directory and artifact counts where meaningful, key takeaways, concise executive summary, notable strengths, differentiators, and maturity signals, and any other metrics likely to interest people working in MCPs, healthcare AI infrastructure, interoperability, federated systems, clinical robotics, and oncology trial operations.
+
+Where possible, quantify and break down items such as total tests passed by suite and subtype, unit versus conformance versus integration versus adversarial versus black-box coverage, counts by server, tool family, schema family, and profile level, number of deployment modes, number of interoperability scenarios, number of actor types, number of regulatory overlays, number of benchmark categories, and number of certification or evidence-generation utilities.
+
+Where exact runtime verification is not available from the current environment, use repository-documented counts and label them clearly as repository-reported or documented metrics rather than claiming fresh CI execution.
+
+The document should also include concise summaries of what the metrics imply about technical maturity, why the statistics matter for national interoperability and oncology trial readiness, why these metrics are meaningful to MCP practitioners, and why the quantitative profile is notable for Physical AI clinical trial infrastructure.
+
+For both files, keep the writing professional, concrete, and repository-specific. Avoid filler language. Use headings and subheadings for readability. Use numbered lists when describing sequences, phases, or responsibilities. Use concise bullets for checklists, role-based actions, and metric breakdowns. Prefer precise wording over promotional wording. Keep the tone suitable for a standards-oriented public GitHub repository. Make the documents readable both by technical implementers and non-engineering stakeholders. Ensure the content is comprehensive enough to be useful immediately after publication.
