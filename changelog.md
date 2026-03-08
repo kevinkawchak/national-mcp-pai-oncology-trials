@@ -38,6 +38,10 @@ This project follows [Semantic Versioning](https://semver.org/) as described in 
 
 ---
 
+@kevinkawchak v1.0.0 (2nd Prompt) and v1.0.1 prompts.md additions 2026-03-08
+
+---
+
 ## [1.0.0] — 2026-03-08
 
 ### Added
