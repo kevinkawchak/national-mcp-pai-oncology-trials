@@ -4,6 +4,44 @@ Release notes for the National MCP-PAI Oncology Trials Standard.
 
 ---
 
+v1.0.1 - Documentation Accuracy, Badge Corrections, and Comprehensive Updates
+
+## Summary
+
+Corrects documentation accuracy issues introduced in v1.0.0 where stats.md and next-steps.md incorrectly displayed version 0.1.0 instead of the correct version, README badges showed outdated counts (Unit Tests 44 instead of 337, Conformance Tests 457 instead of 331, Integration Adapters 42 instead of 34, Safety Modules 7 instead of 8), and the README header displayed version 0.9.0 instead of the current version. Updates all documentation repo-wide to reflect accurate test counts (668 total: 337 unit + 331 conformance), correct integration adapter count (34), correct safety module count (8), accurate CI pipeline job count (14 jobs), and version 1.0.1 throughout. Ensures all repository documentation is internally consistent, comprehensive, and accurately reflects the current state of the national standard.
+
+## Features
+
+- **Version corrections** — Updated stats.md and next-steps.md from v0.1.0 to v1.0.1
+- **README badge updates** — Corrected all shield badges to reflect accurate counts:
+  - Version: 0.9.0 → 1.0.1
+  - Unit Tests: 44 → 337
+  - Conformance Tests: 457 → 331
+  - Integration Adapters: 42 → 34
+  - Safety Modules: 7 → 8
+  - Updated date: 2026-03-07 → 2026-03-08
+- **README content updates** — Updated inline test counts, CI pipeline documentation (9 jobs → 14 jobs), repository structure (added SDK, tools/cli, tools/codegen, docs subdirectories), unit test summary table (added test_integrations.py with 205 tests and test_safety.py with 88 tests), and conformance test suite description
+- **CI pipeline documentation** — Accurately documents all 14 CI jobs including sdk-python, sdk-typescript, cli-smoke, codegen-consistency, and security-scan
+- **Total test count corrections** — All references updated from 501 to 668 (337 unit + 331 conformance)
+- **pyproject.toml** — Version updated to 1.0.1
+- **prompts.md** — Archived v1.0.1 prompt with both Original Prompt and Follow-up Prompt
+- **changelog.md** — Added v1.0.1 changelog entry
+- **releases.md** — Added v1.0.1 release notes (this entry)
+
+## Contributors
+@kevinkawchak
+@claude
+@openai
+
+## Notes
+- No code changes — this release is documentation-only corrections and accuracy improvements
+- All existing 668 tests continue to pass
+- `ruff check .` and `ruff format --check .` pass cleanly across Python 3.10, 3.11, 3.12
+- This release ensures all documentation is internally consistent and accurately reflects the repository contents as of v1.0.1
+- Badge counts now match the actual repository-reported metrics documented in stats.md
+
+---
+
 v1.0.0 - Phase 5: SDKs, Stakeholder Guides, Governance, and Operational Readiness
 
 ## Summary

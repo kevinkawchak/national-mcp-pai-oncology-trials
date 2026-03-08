@@ -1,7 +1,7 @@
 # Next Steps: National Adoption and Execution Guide
 
 **National MCP-PAI Oncology Trials Standard**
-**Version**: 0.1.0 | **Status**: Published for Review
+**Version**: 1.0.1 | **Status**: Published for Review
 
 ---
 

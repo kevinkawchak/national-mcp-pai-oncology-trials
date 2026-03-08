@@ -1,8 +1,8 @@
 # Repository Statistics and Quantitative Summary
 
 **National MCP-PAI Oncology Trials Standard**
-**Version**: 0.1.0 | **Status**: Published for Review
-**Data Source**: Repository-reported metrics derived from repository contents as of v0.1.0.
+**Version**: 1.0.1 | **Status**: Published for Review
+**Data Source**: Repository-reported metrics derived from repository contents as of v1.0.1.
 
 ---
 

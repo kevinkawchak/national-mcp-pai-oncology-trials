@@ -6,6 +6,38 @@ This project follows [Semantic Versioning](https://semver.org/) as described in 
 
 ---
 
+## [1.0.1] — 2026-03-08
+
+### Fixed
+- `stats.md` — Corrected version from 0.1.0 to 1.0.1 throughout the document
+- `next-steps.md` — Corrected version from 0.1.0 to 1.0.1 throughout the document
+- `README.md` — Corrected header version from 0.9.0 to 1.0.1
+- `README.md` — Corrected Version badge from 0.9.0 to 1.0.1
+- `README.md` — Corrected Unit Tests badge from 44 to 337
+- `README.md` — Corrected Conformance Tests badge from 457 to 331
+- `README.md` — Corrected Integration Adapters badge from 42 to 34
+- `README.md` — Corrected Safety Modules badge from 7 to 8
+- `README.md` — Corrected Updated date badge from 2026-03-07 to 2026-03-08
+- `README.md` — Corrected all inline test count references (44 → 337 unit, 457 → 331 conformance, 501 → 668 total)
+- `README.md` — Updated CI pipeline documentation from 9 jobs to 14 jobs with all job names
+- `README.md` — Updated unit test summary table to include test_integrations.py (205 tests) and test_safety.py (88 tests)
+- `README.md` — Updated repository structure to include sdk/, tools/cli/, tools/codegen/, and docs/ subdirectories
+- `README.md` — Updated conformance test suite description with accurate test count
+
+### Changed
+- `pyproject.toml` — Version 1.0.1, updated description
+- `prompts.md` — Archived v1.0.1 prompt (Original Prompt + Follow-up Prompt)
+- `releases.md` — Added v1.0.1 release notes
+- `changelog.md` — This entry
+
+### Verified
+- `ruff check .` and `ruff format --check .` pass cleanly across all Python files
+- All existing 668 tests continue to pass
+- All badge counts match repository-reported metrics in stats.md
+- All documentation versions are internally consistent at v1.0.1
+
+---
+
 ## [1.0.0] — 2026-03-08
 
 ### Added
@@ -112,10 +144,6 @@ This project follows [Semantic Versioning](https://semver.org/) as described in 
 - All existing tests continue to pass
 - Python SDK installs and imports verified
 - CI pipeline expanded from 9 to 14 jobs
-
----
-
-- @kevinkawchak moved next-steps.md and specs.md to main 2026-03-08
 
 ---
 

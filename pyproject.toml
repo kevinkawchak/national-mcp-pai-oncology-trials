@@ -1,7 +1,7 @@
 [project]
 name = "national-mcp-pai-oncology-trials"
-version = "1.0.0"
-description = "National MCP Standard for Physical AI Oncology Clinical Trials — Phase 5: SDKs, Stakeholder Guides, Governance, and Operational Readiness"
+version = "1.0.1"
+description = "National MCP Standard for Physical AI Oncology Clinical Trials — v1.0.1: Documentation Accuracy and Comprehensive Updates"
 requires-python = ">=3.10"
 license = {text = "MIT"}
 
