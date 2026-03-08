@@ -115,6 +115,10 @@ This project follows [Semantic Versioning](https://semver.org/) as described in 
 
 ---
 
+- @kevinkawchak moved next-steps.md and specs.md to main 2026-03-08
+
+---
+
 ## [0.9.0] — 2026-03-07
 
 ### Added
