@@ -1,10 +1,10 @@
 # National MCP Standard for Physical AI Oncology Clinical Trials
 
-**Version 0.9.0** | **Proposed Reference Standard** | **United States**
+**Version 1.0.1** | **Proposed Reference Standard** | **United States**
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 [![DOI](https://img.shields.io/badge/DOI-10.5281%2Fzenodo.18894758-blue)](https://doi.org/10.5281/zenodo.18894758)
-[![Version](https://img.shields.io/badge/Version-0.9.0-green.svg)](releases.md)
+[![Version](https://img.shields.io/badge/Version-1.0.1-green.svg)](releases.md)
 [![CI](https://github.com/kevinkawchak/national-mcp-pai-oncology-trials/actions/workflows/ci.yml/badge.svg)](.github/workflows/ci.yml)
 [![JSON Schema](https://img.shields.io/badge/JSON_Schema-Draft_2020--12-orange.svg)](schemas/)
 [![Python](https://img.shields.io/badge/Python-3.10%20|%203.11%20|%203.12-blue.svg)](https://www.python.org/)
@@ -13,14 +13,14 @@
 [![Docker](https://img.shields.io/badge/Docker-Compose-blue.svg)](deploy/docker-compose.yml)
 [![Testbed](https://img.shields.io/badge/Testbed-Multi--Site-blue.svg)](interop-testbed/)
 [![Servers](https://img.shields.io/badge/MCP_Servers-5-blue.svg)](servers/)
-[![Integration Adapters](https://img.shields.io/badge/Integration_Adapters-42-blue.svg)](integrations/)
-[![Safety Modules](https://img.shields.io/badge/Safety_Modules-7-blue.svg)](safety/)
+[![Integration Adapters](https://img.shields.io/badge/Integration_Adapters-34-blue.svg)](integrations/)
+[![Safety Modules](https://img.shields.io/badge/Safety_Modules-8-blue.svg)](safety/)
 [![Profiles](https://img.shields.io/badge/Profiles-8-blue.svg)](profiles/)
 [![Schemas](https://img.shields.io/badge/Schemas-13-blue.svg)](schemas/)
 [![Tools](https://img.shields.io/badge/Tools-23-blue.svg)](spec/tool-contracts.md)
-[![Conformance Tests](https://img.shields.io/badge/Conformance_Tests-457-blue.svg)](conformance/)
-[![Unit Tests](https://img.shields.io/badge/Unit_Tests-44-blue.svg)](tests/)
-[![Updated](https://img.shields.io/badge/Updated-2026--03--07-lightgrey.svg)](changelog.md)
+[![Conformance Tests](https://img.shields.io/badge/Conformance_Tests-331-blue.svg)](conformance/)
+[![Unit Tests](https://img.shields.io/badge/Unit_Tests-337-blue.svg)](tests/)
+[![Updated](https://img.shields.io/badge/Updated-2026--03--08-lightgrey.svg)](changelog.md)
 [![Contributors](https://img.shields.io/badge/Contributors-3-blue.svg)](releases.md)
 
 The **National MCP-PAI Oncology Trials Standard** is a proposed reference standard for deploying Model Context Protocol (MCP) servers across federated Physical AI oncology clinical trial systems in the United States. This standard defines protocol contracts, actor models, security baselines, regulatory overlays, machine-readable JSON schemas, and governance processes intended to enable industry-wide interoperability of autonomous robotic systems in regulated clinical environments.
@@ -535,17 +535,17 @@ graph TB
     TCS[core-server.ts<br/>Core L1 Server + ajv]
   end
 
-  subgraph "Unit Tests (44 tests)"
-    TCS_T[test_core_server.py<br/>33 tests]
+  subgraph "Unit Tests (337 tests)"
+    TCS_T[test_core_server.py<br/>32 tests]
     TSV_T[test_schema_validator.py<br/>6 tests]
-    TCR_T[test_conformance_runner.py<br/>5 tests]
+    TCR_T[test_conformance_runner.py<br/>6 tests]
   end
 
   subgraph "Normative Artifacts"
     SPEC["/spec/ (9 modules)"]
     SCH["/schemas/ (13 schemas)"]
     PRO["/profiles/ (8 profiles)"]
-    CON["/conformance/ (457 tests)"]
+    CON["/conformance/ (331 tests)"]
   end
 
   PCS --> SPEC
@@ -587,16 +587,18 @@ Both reference implementations demonstrate:
 
 ## Unit Test Suite
 
-The `/tests/` directory contains 44 unit tests that validate the reference Python implementation's public API. These tests complement the 269 conformance tests by verifying the correctness of the NON-NORMATIVE Level 1 illustrative implementation code itself.
+The `/tests/` directory contains 337 unit tests that validate the reference Python implementation's public API, integration adapters, and safety modules. These tests complement the 331 conformance tests by verifying the correctness of server implementations, adapter modules, and safety infrastructure.
 
 ### Unit Test Architecture
 
 ```mermaid
 graph TB
-  subgraph "tests/"
-    TCS[test_core_server.py<br/>33 tests]
+  subgraph "tests/ (337 tests)"
+    TCS[test_core_server.py<br/>32 tests]
     TSV[test_schema_validator.py<br/>6 tests]
-    TCR[test_conformance_runner.py<br/>5 tests]
+    TCR[test_conformance_runner.py<br/>6 tests]
+    TI[test_integrations.py<br/>205 tests]
+    TS[test_safety.py<br/>88 tests]
   end
 
   subgraph "reference/python/"
@@ -621,9 +623,11 @@ graph TB
 
 | Test File | Tests | Coverage |
 |-----------|-------|----------|
-| `test_core_server.py` | 33 | AuthZ evaluate (9), token lifecycle (7), ledger operations (8), health/error helpers (7), policy matrix (1), genesis hash (1) |
-| `test_schema_validator.py` | 6 | Schema loading (2), schema listing (2), validation (2) |
-| `test_conformance_runner.py` | 5 | Pytest argument building (5), level directory mapping (1) |
+| `test_core_server.py` | 32 | AuthZ evaluate, token lifecycle, ledger operations, health/error helpers, policy matrix, genesis hash |
+| `test_schema_validator.py` | 6 | Schema loading, schema listing, validation |
+| `test_conformance_runner.py` | 6 | Pytest argument building, level directory mapping |
+| `test_integrations.py` | 205 | All 34 integration adapters (FHIR, DICOM, clinical, federation, identity, privacy) |
+| `test_safety.py` | 88 | All 8 safety modules (e-stop, procedure state, robot registry, task validator, gates, approvals, site verifier) |
 
 ### Running Unit Tests
 
@@ -639,18 +643,23 @@ pytest -v
 
 ## CI/CD Pipeline
 
-The CI/CD pipeline (`.github/workflows/ci.yml`) runs on every push and pull request. The pipeline includes nine jobs:
+The CI/CD pipeline (`.github/workflows/ci.yml`) runs on every push and pull request. The pipeline includes fourteen jobs:
 
 | Job | Matrix | Checks |
 |-----|--------|--------|
-| **lint-and-format** | Python 3.10, 3.11, 3.12 | Ruff lint, Ruff format, pytest unit tests (44), pytest conformance suite (457) |
+| **lint-and-format** | Python 3.10, 3.11, 3.12 | Ruff lint, Ruff format, pytest unit tests (337), pytest conformance suite (331) |
 | **integration-tests** | Python 3.12 | Integration tests against in-process server packages |
 | **adversarial-tests** | Python 3.12 | Adversarial test packs (authz bypass, PHI leakage, replay, tampering, rate limiting) |
 | **schema-compatibility** | Python 3.12 | Schema compatibility diffing (breaking/non-breaking change detection) |
 | **benchmark-smoke** | Python 3.12 | Benchmark smoke tests (latency, throughput, chain, concurrent) |
 | **schema-validation** | Python 3.12 | All 13 schemas validated (structure + example self-validation) |
 | **contract-consistency** | Python 3.12 | Generated models match committed models, core_server outputs validate against schemas |
-| **typescript-build** | Node.js 20 | TypeScript compile check |
+| **sdk-python** | Python 3.12 | Python SDK install and import verification |
+| **sdk-typescript** | Node.js 20 | TypeScript SDK compile check |
+| **cli-smoke** | Python 3.12 | CLI tool subcommand smoke tests |
+| **codegen-consistency** | Python 3.12 | Code generation consistency check |
+| **security-scan** | Python 3.12 | Dependency audit and secret scanning |
+| **typescript-build** | Node.js 20 | TypeScript reference compile check |
 | **docs-lint** | — | Required documentation files exist, internal markdown links checked (fails on errors) |
 
 ```
@@ -660,19 +669,24 @@ The CI/CD pipeline (`.github/workflows/ci.yml`) runs on every push and pull requ
 │                                                                              │
 │  Push / PR to main                                                          │
 │       │                                                                      │
-│       ├──▶ lint-and-format (3.10) ──▶ ruff + 44 unit + 457 conformance      │
-│       ├──▶ lint-and-format (3.11) ──▶ ruff + 44 unit + 457 conformance      │
-│       ├──▶ lint-and-format (3.12) ──▶ ruff + 44 unit + 457 conformance      │
+│       ├──▶ lint-and-format (3.10) ──▶ ruff + 337 unit + 331 conformance     │
+│       ├──▶ lint-and-format (3.11) ──▶ ruff + 337 unit + 331 conformance     │
+│       ├──▶ lint-and-format (3.12) ──▶ ruff + 337 unit + 331 conformance     │
 │       ├──▶ integration-tests ──────▶ in-process server integration tests    │
 │       ├──▶ adversarial-tests ──────▶ authz bypass + PHI + replay + tamper   │
 │       ├──▶ schema-compatibility ───▶ schema diff + breaking change detect   │
 │       ├──▶ benchmark-smoke ────────▶ latency + throughput + chain + concur  │
 │       ├──▶ schema-validation ──────▶ 13 schemas + examples                  │
 │       ├──▶ contract-consistency ───▶ model gen + runtime schema validation   │
-│       ├──▶ typescript-build ───────▶ tsc --noEmit                           │
+│       ├──▶ sdk-python ─────────────▶ SDK install + import verification      │
+│       ├──▶ sdk-typescript ─────────▶ tsc --noEmit (SDK)                     │
+│       ├──▶ cli-smoke ──────────────▶ CLI subcommand smoke tests             │
+│       ├──▶ codegen-consistency ────▶ code generation check                  │
+│       ├──▶ security-scan ──────────▶ dependency audit + secret scan         │
+│       ├──▶ typescript-build ───────▶ tsc --noEmit (reference)               │
 │       └──▶ docs-lint ──────────────▶ file check + link check (fail errors)  │
 │                                                                              │
-│  All jobs run in parallel · 501 total tests per Python version              │
+│  All jobs run in parallel · 668 total tests per Python version              │
 └──────────────────────────────────────────────────────────────────────────────┘
 ```
 
@@ -742,7 +756,7 @@ trialmcp-conformance --target docker --address trialmcp-authz --profile base --l
 
 ## Conformance Test Suite
 
-The conformance test suite under `/conformance/` contains 457 automated tests across seven tiers — unit, positive, negative, security, interoperability, blackbox, and adversarial — covering all five conformance levels and thirteen schemas. v0.8.0 adds black-box conformance tests, adversarial security tests, and integration tests.
+The conformance test suite under `/conformance/` contains 331 automated tests across eight tiers — unit, positive, negative, security, interoperability, blackbox, adversarial, and integration — covering all five conformance levels and thirteen schemas.
 
 ### Conformance Test Architecture
 
@@ -891,8 +905,8 @@ graph TB
 │                               ┌──────────▼───────────┐           │
 │                               │  Conformance Report  │           │
 │                               │  Level 1–5 Certified │           │
-│                               │  501 Tests Validated │           │
-│                               │  (44 unit + 457 conf)│           │
+│                               │  668 Tests Validated │           │
+│                               │  (337 unit + 331 conf│           │
 │                               └──────────────────────┘           │
 └──────────────────────────────────────────────────────────────────┘
 ```
@@ -1406,7 +1420,7 @@ national-mcp-pai-oncology-trials/
 │   ├── trialmcp_dicom/           # DICOM imaging server
 │   ├── trialmcp_ledger/          # Audit ledger server
 │   └── trialmcp_provenance/      # Provenance server
-├── conformance/                  # NORMATIVE conformance test suite (457 tests)
+├── conformance/                  # NORMATIVE conformance test suite (331 tests)
 │   ├── conftest.py               # Shared fixtures, schema validation helpers
 │   ├── fixtures/                 # Test fixture data (extracted from schemas)
 │   ├── unit/                     # Unit-level fixture construction tests (v0.8.0)
@@ -1428,8 +1442,10 @@ national-mcp-pai-oncology-trials/
 │   ├── personas/                 # 6 actor persona configurations
 │   ├── scenarios/                # 8 interop test scenarios
 │   └── mock_services/            # Mock EHR, PACS, Identity Provider
-├── tools/                        # Certification and evidence tools (v0.8.0)
-│   └── certification/
+├── tools/                        # Developer tools and certification (v1.0.0)
+│   ├── cli/                     # CLI toolchain (trialmcp init/scaffold/validate/certify)
+│   ├── codegen/                 # Schema-driven code generation (Python, TypeScript, OpenAPI)
+│   └── certification/           # Certification and evidence tools
 │       ├── report_generator.py   # JSON/JUnit/HTML/Markdown reports
 │       ├── evidence_pack.py      # SHA-256 evidence bundles
 │       ├── site_certification.py # Profile-based site validation
@@ -1475,9 +1491,19 @@ national-mcp-pai-oncology-trials/
 ├── regulatory/                   # NORMATIVE regulatory overlays
 ├── models/                       # Auto-generated typed models from schemas
 ├── scripts/                      # Build and generation scripts
-├── tests/                        # Unit tests (44 tests)
+├── tests/                        # Unit tests (337 tests)
+├── sdk/                          # Client SDKs (v1.0.0)
+│   ├── python/                  # Python SDK (trialmcp_client)
+│   └── typescript/              # TypeScript SDK
 ├── docs/                         # Extended documentation
-│   └── mcp-process/    # 7 detailed MCP process diagrams (v0.9.0)
+│   ├── mcp-process/             # 7 detailed MCP process diagrams
+│   ├── guides/                  # Stakeholder implementation guides (5 guides)
+│   ├── operations/              # Operational docs (runbook, incident response, etc.)
+│   ├── deployment/              # Deployment guides (local, hospital, multi-site)
+│   ├── adr/                     # Architecture Decision Records (7 ADRs)
+│   ├── governance/              # Governance artifacts (decision log, roadmap, etc.)
+│   ├── security/                # Security documentation (threat model, SBOM, etc.)
+│   └── walkthroughs/            # Profile walkthroughs (5 end-to-end scenarios)
 ├── peer-review/                  # External peer review responses and prompts
 ├── pyproject.toml                # Python project config (entry points, ruff, pytest)
 ├── changelog.md                  # Version history
