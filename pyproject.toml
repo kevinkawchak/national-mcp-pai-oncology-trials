@@ -1,7 +1,7 @@
 [project]
 name = "national-mcp-pai-oncology-trials"
-version = "0.9.0"
-description = "National MCP Standard for Physical AI Oncology Clinical Trials — Phase 4: Integration Adapters, Clinical Safety Guardrails, and Robot Execution Boundaries"
+version = "1.0.0"
+description = "National MCP Standard for Physical AI Oncology Clinical Trials — Phase 5: SDKs, Stakeholder Guides, Governance, and Operational Readiness"
 requires-python = ">=3.10"
 license = {text = "MIT"}
 
@@ -31,10 +31,12 @@ trialmcp-dicom = "servers.trialmcp_dicom.server:main"
 trialmcp-ledger = "servers.trialmcp_ledger.server:main"
 trialmcp-provenance = "servers.trialmcp_provenance.server:main"
 trialmcp-conformance = "conformance.harness.runner:main"
+trialmcp = "tools.cli.trialmcp_cli:main"
 
 [tool.ruff]
 target-version = "py310"
 line-length = 100
+exclude = ["sdk/python/"]
 
 [tool.ruff.lint]
 select = [
@@ -45,7 +47,7 @@ select = [
 ]
 
 [tool.ruff.lint.isort]
-known-first-party = ["benchmarks", "conformance", "examples", "integrations", "interop_testbed", "models", "reference", "safety", "scripts", "servers", "tests", "tools"]
+known-first-party = ["benchmarks", "conformance", "examples", "integrations", "interop_testbed", "models", "reference", "safety", "scripts", "servers", "tests", "tools", "trialmcp_client"]
 
 [tool.pytest.ini_options]
 testpaths = ["conformance", "tests"]

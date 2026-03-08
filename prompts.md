@@ -1,3 +1,281 @@
+## Prompt v1.0.0
+
+Your goal for national-mcp-pai-oncology-trials is to implement the main prompt below  comprehensively for the physical ai oncology trials industry. It is imperative that all types of information utilized for the repository be accurate and appropriate for the national scale. Change the last version's /mcp-process-diagrams to /mcp-process and move the directory with readme to main. Update relevant readme files and documentation throughout the repo (including /mcp-process) based on all changes made (diagrams, mermaid diagrams, badges, text, repository structure, etc.)
+
+Provide a copy of this exact prompt under main prompts.md. Be sure to fix and address errors that would cause failed checks for the single pull request (such as Python environment issues to avoid the following error during final checks): "3 failing checks
+x Cl / lint-and-format (3.10) (pull...
+x Cl / lint-and-format (3.11) (pull...
+x Cl / lint-and-format (3.12) (pull... " Place the new release notes in releases.md under main using the format below (which is the same format of the last published version). Update changelog.md using v1.0.0. When you are finished, auto-push the update to GitHub on your own for my review. The user will then review your updates in GitHub prior to finalization.
+
+"FORMAT"
+Release title
+v1.0.0 -
+
+\## Summary
+
+\## Features
+
+\## Contributors
+@kevinkawchak
+@claude
+@openai
+
+\## Notes
+
+
+"START MAIN PROMPT"
+v1.0.0 - Phase 5: SDKs, Stakeholder Guides, Governance, and Operational Readiness
+
+Your goal is to make national-mcp-pai-oncology-trials fully adoptable by institutions, vendors, and regulators by adding versioned SDKs, stakeholder-specific implementation guides, operational runbooks, governance evidence, and production-readiness documentation. This is the stakeholder-readiness phase that transforms the repository from a technical resource into a national adoption-ready platform. It is imperative that all code now be accurate, end-to-end, and appropriate for a national scale.
+
+**1. Python SDK**
+
+Create `sdk/python/` with a complete client SDK:
+
+- `sdk/python/trialmcp_client/` — Python client package:
+  - `client.py` — Unified MCP client with connection management, retry logic, circuit breaker
+  - `authz.py` — AuthZ client (evaluate, issue_token, validate_token, revoke_token)
+  - `fhir.py` — FHIR client (read, search, patient_lookup, study_status)
+  - `dicom.py` — DICOM client (query, retrieve)
+  - `ledger.py` — Ledger client (append, verify, query, export)
+  - `provenance.py` — Provenance client (record, query_forward, query_backward, verify)
+  - `models.py` — Re-exported generated typed models from `models/python/`
+  - `exceptions.py` — Typed exception hierarchy matching 9-code error taxonomy
+  - `config.py` — Client configuration (server addresses, auth credentials, timeouts, retry policy)
+  - `middleware/` — Pluggable middleware:
+    - `auth_middleware.py` — Automatic token management and refresh
+    - `audit_middleware.py` — Client-side audit logging
+    - `retry_middleware.py` — Configurable retry with exponential backoff
+    - `circuit_breaker.py` — Circuit breaker for clinical dependency resilience
+- `sdk/python/examples/` — Example scripts for each actor role:
+  - `robot_agent_example.py` — Complete robot agent workflow
+  - `trial_coordinator_example.py` — Trial coordinator study management
+  - `data_monitor_example.py` — Data monitor review workflow
+  - `auditor_example.py` — Auditor chain verification and replay
+  - `sponsor_example.py` — Sponsor cross-site oversight
+  - `cro_example.py` — CRO multi-site validation
+- `sdk/python/setup.py` / `pyproject.toml` — Installable package with versioned releases
+
+**2. TypeScript SDK**
+
+Create `sdk/typescript/` with a complete client SDK:
+
+- `sdk/typescript/src/` — TypeScript client package:
+  - `client.ts` — Unified MCP client with connection management
+  - `authz.ts`, `fhir.ts`, `dicom.ts`, `ledger.ts`, `provenance.ts` — Domain clients
+  - `models/` — Re-exported generated TypeScript interfaces
+  - `errors.ts` — Typed error classes matching 9-code error taxonomy
+  - `config.ts` — Client configuration
+  - `middleware/` — Auth, audit, retry, circuit breaker middleware
+- `sdk/typescript/examples/` — Example scripts for each actor role
+- `sdk/typescript/package.json` — npm package with versioned releases
+- `sdk/typescript/tsconfig.json` — TypeScript configuration
+- `sdk/typescript/jest.config.js` — Test configuration
+- `sdk/typescript/tests/` — SDK tests
+
+**3. CLI and Code Generation Tools**
+
+Create `tools/cli/` with developer tooling:
+
+- `tools/cli/trialmcp_cli.py` — Main CLI entry point:
+  - `trialmcp init` — Initialize a new implementation project with profile selection
+  - `trialmcp scaffold` — Generate server scaffolding from profile requirements
+  - `trialmcp validate` — Validate a server implementation against conformance criteria
+  - `trialmcp certify` — Run certification suite and generate evidence pack
+  - `trialmcp schema diff` — Compare schema versions for compatibility
+  - `trialmcp config generate` — Generate configuration templates for site/server
+- `tools/codegen/` — Schema code generation:
+  - `tools/codegen/generate_python.py` — Generate Python dataclasses/Pydantic models from schemas
+  - `tools/codegen/generate_typescript.py` — Generate TypeScript interfaces from schemas
+  - `tools/codegen/generate_openapi.py` — Generate OpenAPI specs from tool contracts
+  - `tools/codegen/templates/` — Jinja2 templates for code generation
+
+**4. Stakeholder-Specific Implementation Guides**
+
+Create `docs/guides/` with role-specific adoption paths:
+
+- `docs/guides/hospital-it.md` — Hospital IT / Cancer Center guide:
+  - Site deployment checklist (prerequisites, infrastructure, network, identity)
+  - PACS/EHR integration path (FHIR R4 + DICOMweb connectivity)
+  - PHI boundary and retention controls
+  - Network segmentation requirements
+  - Identity provider integration (OIDC, AD/LDAP)
+  - Monitoring and alerting setup
+  - Data backup and recovery procedures
+  - Staff training requirements
+
+- `docs/guides/robot-vendor.md` — Robot vendor guide:
+  - Capability descriptor requirements and examples
+  - Task-order semantics and lifecycle
+  - Safety gate expectations and certification
+  - Simulator-to-clinical promotion path (USL scoring progression)
+  - Integration testing requirements
+  - Firmware/software update procedures
+  - Incident reporting obligations
+
+- `docs/guides/sponsor-cro.md` — Sponsor/CRO guide:
+  - Cross-site reporting interfaces
+  - Provenance and audit review procedures
+  - State/federal regulatory overlay implications by jurisdiction
+  - Multi-site deployment coordination
+  - Data quality monitoring
+  - Study close-out procedures
+
+- `docs/guides/regulator-irb.md` — Regulator/IRB guide:
+  - Evidence package structure and contents
+  - Conformance artifact interpretation
+  - Audit replay package format
+  - Change control and validation package
+  - Inspection readiness checklist
+  - Regulatory submission guidance
+
+- `docs/guides/standards-community.md` — Standards community guide:
+  - Extension proposal process (x-{vendor} namespace)
+  - Compatibility policy and versioning rules
+  - Schema evolution rules (additive changes, deprecation lifecycle)
+  - Contribution workflow for specification changes
+  - Review and approval process
+
+**5. Operational Documentation**
+
+Create comprehensive operational docs:
+
+- `docs/operations/runbook.md` — Production operations runbook:
+  - Server startup/shutdown procedures
+  - Health check monitoring
+  - Log analysis and troubleshooting
+  - Common failure scenarios and resolutions
+  - Performance tuning guidance
+  - Capacity planning
+
+- `docs/operations/incident-response.md` — Incident response playbook:
+  - Severity classification (P1-P4)
+  - Escalation paths
+  - Communication templates
+  - Post-incident review process
+  - Evidence preservation procedures
+
+- `docs/operations/key-management.md` — Key management guide:
+  - Key generation and storage requirements
+  - Token signing key lifecycle
+  - Audit record signing key management
+  - mTLS certificate management
+  - Key rotation procedures and schedules
+  - KMS/HSM integration guidance
+  - Secrets rotation automation
+
+- `docs/operations/backup-recovery.md` — Backup and recovery procedures:
+  - Audit chain backup and integrity verification
+  - Provenance graph backup
+  - Configuration backup
+  - Disaster recovery procedures
+  - Recovery time objectives (RTO) and recovery point objectives (RPO)
+
+- `docs/deployment/local-dev.md` — Local development setup guide
+- `docs/deployment/hospital-site.md` — Hospital site deployment guide
+- `docs/deployment/multi-site-federated.md` — Multi-site federated deployment guide
+
+**6. SLO/SLA Guidance**
+
+Create `docs/operations/slo-guidance.md`:
+
+- Uptime targets per server and per conformance level
+- Latency budgets (P50, P95, P99) for each tool
+- Fail-safe modes and degraded operation rules
+- Data recovery procedures and timelines
+- Availability requirements during active procedures
+- Monitoring and alerting thresholds
+
+**7. Governance and Adoption Evidence**
+
+Create governance artifacts:
+
+- `docs/governance/decision-log.md` — Decision log of accepted/declined changes with rationale
+- `docs/governance/implementation-status.md` — Implementation status matrix (normative section → implementation status → test coverage)
+- `docs/governance/roadmap.md` — Roadmap with target adopters, milestones, and timelines
+- `docs/governance/compatibility-matrix.md` — Compatibility matrix by version, profile, and conformance level
+- `docs/governance/known-gaps.md` — Known gaps, non-goals, and future work
+- `docs/governance/contribution-policy.md` — Contribution policy for regulators, vendors, providers, CROs, and standards bodies
+
+**8. Architecture Decision Records**
+
+Create `docs/adr/` with key architectural decisions:
+
+- `docs/adr/001-mcp-protocol-boundary.md` — Why MCP is the right protocol boundary for national oncology trial interoperability
+- `docs/adr/002-five-server-architecture.md` — Why these 5 servers were chosen (authz, fhir, dicom, ledger, provenance)
+- `docs/adr/003-twenty-three-tools.md` — Why 23 tools are the minimal stable surface area
+- `docs/adr/004-profile-conformance-levels.md` — Why profiles map to clinical deployment tiers
+- `docs/adr/005-hash-chained-audit.md` — Why hash-chained audit ledger for 21 CFR Part 11 compliance
+- `docs/adr/006-dag-provenance.md` — Why DAG-based provenance over linear lineage
+- `docs/adr/007-deny-by-default-rbac.md` — Why deny-by-default RBAC for clinical safety
+
+**9. Repository Strategy**
+
+Create `docs/repository-strategy.md`:
+
+- What stays in each repository across the four repos
+- What graduates into the national repo
+- What is mirrored vs imported vs referenced
+- What becomes deprecated
+- What becomes the canonical implementation source
+- Migration timeline and criteria
+
+**10. Security Documentation**
+
+Create security-focused documentation:
+
+- `docs/security/threat-model.md` — Threat model document covering all attack surfaces
+- `docs/security/sbom.md` — SBOM generation guidance and dependency scanning policy
+- `docs/security/tamper-evident-storage.md` — Tamper-evident storage design for audit and provenance
+- `docs/security/signed-releases.md` — Signed release and release provenance policy
+
+**11. Production Concerns Documentation**
+
+Create `docs/operations/production-concerns.md`:
+
+- Retries and circuit breakers for clinical dependencies
+- Idempotency behavior for write-like actions
+- Concurrency and locking strategy for ledger writes
+- Backpressure and queueing patterns
+- Observability standards (metrics, traces, logs)
+- Audit export and archival flows
+- Log redaction defaults for PHI protection
+
+**12. Profile Walkthroughs**
+
+Create one complete end-to-end walkthrough per profile:
+
+- `docs/walkthroughs/base-profile.md` — Core AuthZ + Audit walkthrough
+- `docs/walkthroughs/clinical-read.md` — FHIR read/search with de-identification walkthrough
+- `docs/walkthroughs/imaging-guided.md` — DICOM query with modality restrictions walkthrough
+- `docs/walkthroughs/multi-site-federated.md` — Cross-site provenance and audit walkthrough
+- `docs/walkthroughs/robot-procedure.md` — Complete robot-assisted procedure walkthrough
+
+**13. Update CI Pipeline**
+
+Add CI jobs for:
+
+- SDK build and test (Python + TypeScript)
+- CLI tool smoke tests
+- Code generation consistency check
+- Security scanning (dependency audit)
+- SBOM generation
+- Documentation build and link validation
+
+**14. Verify Repository-Wide Quality**
+
+After all changes:
+1. Python SDK installs and all example scripts run
+2. TypeScript SDK builds and all tests pass
+3. CLI tool executes all subcommands
+4. All stakeholder guides are complete and internally consistent
+5. All operational docs reference actual code and configuration
+6. All ADRs are well-structured and reference the relevant specification sections
+7. All existing tests still pass
+8. `ruff check .` and `ruff format --check .` pass cleanly
+
+---
+
 ## Prompt v0.9.0
 
 Your goal for national-mcp-pai-oncology-trials is to implement the main prompt below  comprehensively for the physical ai oncology trials industry. It is imperative that all types of information utilized for the repository be accurate and appropriate for the national scale. Update relevant readme files and documentation throughout the repo based on all changes made (diagrams, mermaid diagrams, badges, text, repository structure, etc.) Make sure all text diagrams are professional and line up throughout diagrams properly, with no jagged edges. Similarly, transform all the simple cartoon like mermaid diagrams into publication-quality conceptual schematics with clear hierarchies and explicit labels, resulting in diagrams that are more square like.
@@ -1596,3 +1874,37 @@ v0.1.0 -
 @claude
 
 ## Notes
+
+---
+
+## Prompt v0.1.0 — Part 2
+
+Also add the following two files to main branch:
+main/next-steps.md
+main/stats.md
+
+A) Create a comprehensive next-steps.md that explains, in practical and nationally relevant terms, what all stakeholder groups are expected to do now that the repository is publicly available and usable as a proposed national reference standard.
+
+The document should be written for a nationwide audience and should use a balanced distribution of short paragraphs, numbered lists, and concise bullet points.
+
+The content should be action-oriented, specific, and organized for real-world adoption. It should clearly describe immediate, near-term, and medium-term actions for major stakeholder groups, including sponsors, CROs, academic medical centers, community oncology sites, hospital IT and security teams, robotics vendors, EHR and FHIR integration teams, imaging and PACS and DICOM teams, privacy and compliance and legal and regulatory teams, principal investigators, trial coordinators, auditors, data monitors, and standards contributors or open-source maintainers.
+
+The document should include, where appropriate, what each stakeholder should review first in the repository, what each stakeholder should deploy, validate, or evaluate next, which profiles, schemas, tools, safety modules, governance materials, and test assets are most relevant to them, recommended sequencing of adoption activities, dependencies between technical, operational, clinical, and regulatory workstreams, expected readiness checkpoints for pilot adoption, expectations for documentation, conformance validation, and evidence generation, what should happen at single-site, multi-site, and national coordination levels, and a clear distinction between actions to take now, actions to plan next, and actions that require formal validation before production or clinical use.
+
+The document should read like an adoption and execution guide rather than a vague summary. It should be comprehensive but concise, and it should reflect the repository's positioning as a national MCP and Physical AI oncology trials standard.
+
+B) Create a comprehensive stats.md that presents repository statistics and quantitative summary data in a way that is useful to technical, clinical, compliance, standards, and interoperability audiences.
+
+The document should use a balanced distribution of short paragraphs, numbered lists, and concise bullet points.
+
+It should be metrics-heavy and use quantitative data throughout wherever the repository supports it. The document should be written for readers interested in MCP ecosystems, interoperability maturity, and Physical AI oncology trials.
+
+At minimum, include clearly labeled sections covering repository scale and scope, number and categories of tests, test types and what they validate, number of tools and their distribution by MCP server, MCP server count and server types, schema count and schema categories, profile count and profile types, integration adapter count and categories, safety module count and categories, benchmark and certification tooling count, deployment targets and infrastructure options, languages used across the repository, approximate lines of code if determinable from the repository contents, directory and artifact counts where meaningful, key takeaways, concise executive summary, notable strengths, differentiators, and maturity signals, and any other metrics likely to interest people working in MCPs, healthcare AI infrastructure, interoperability, federated systems, clinical robotics, and oncology trial operations.
+
+Where possible, quantify and break down items such as total tests passed by suite and subtype, unit versus conformance versus integration versus adversarial versus black-box coverage, counts by server, tool family, schema family, and profile level, number of deployment modes, number of interoperability scenarios, number of actor types, number of regulatory overlays, number of benchmark categories, and number of certification or evidence-generation utilities.
+
+Where exact runtime verification is not available from the current environment, use repository-documented counts and label them clearly as repository-reported or documented metrics rather than claiming fresh CI execution.
+
+The document should also include concise summaries of what the metrics imply about technical maturity, why the statistics matter for national interoperability and oncology trial readiness, why these metrics are meaningful to MCP practitioners, and why the quantitative profile is notable for Physical AI clinical trial infrastructure.
+
+For both files, keep the writing professional, concrete, and repository-specific. Avoid filler language. Use headings and subheadings for readability. Use numbered lists when describing sequences, phases, or responsibilities. Use concise bullets for checklists, role-based actions, and metric breakdowns. Prefer precise wording over promotional wording. Keep the tone suitable for a standards-oriented public GitHub repository. Make the documents readable both by technical implementers and non-engineering stakeholders. Ensure the content is comprehensive enough to be useful immediately after publication.

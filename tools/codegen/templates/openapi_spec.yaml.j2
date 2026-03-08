@@ -1,0 +1,66 @@
+# Template: OpenAPI 3.0 Specification
+#
+# This is a string.Template-compatible template for generating OpenAPI 3.0
+# YAML specifications from MCP tool contract definitions.
+#
+# Variables:
+#   ${server_name}         — MCP server identifier (e.g., trialmcp-authz)
+#   ${spec_version}        — Standard version string
+#   ${server_description}  — Human-readable server description
+#   ${paths}               — Rendered path definitions (YAML block)
+#   ${components}          — Rendered component schemas (YAML block)
+#
+# Usage from Python:
+#
+#   from string import Template
+#   from pathlib import Path
+#
+#   tpl = Template(Path("openapi_spec.yaml.j2").read_text())
+#   output = tpl.safe_substitute(
+#       server_name="trialmcp-authz",
+#       spec_version="0.1.0",
+#       server_description="AuthZ server for MCP-PAI oncology trials.",
+#       paths="  /authz/evaluate:\n    post: ...",
+#       components="  schemas:\n    ErrorResponse: ...",
+#   )
+
+# Auto-generated OpenAPI specification
+# Server      : ${server_name}
+# Standard    : National MCP-PAI Oncology Trials v${spec_version}
+# Generator   : tools.codegen.generate_openapi
+#
+# DO NOT EDIT — regenerate with:
+#     python -m tools.codegen.generate_openapi --spec-dir spec/
+
+openapi: "3.0.3"
+
+info:
+  title: ${server_name} API
+  version: ${spec_version}
+  description: >-
+    REST gateway for the ${server_name} MCP server as defined by
+    the National MCP-PAI Oncology Trials Standard.
+    ${server_description}
+  contact:
+    name: National MCP-PAI Oncology Trials Working Group
+  license:
+    name: MIT
+
+servers:
+  - url: http://localhost:8000
+    description: Local development ${server_name}
+
+paths:
+${paths}
+
+components:
+${components}
+
+  securitySchemes:
+    BearerAuth:
+      type: http
+      scheme: bearer
+      description: MCP session token issued by trialmcp-authz
+
+security:
+  - BearerAuth: []

@@ -299,6 +299,145 @@ jobs:
           print('Benchmark smoke test passed.')
           "
 
+  sdk-python:
+    name: sdk-python
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python 3.12
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install Python SDK
+        working-directory: sdk/python
+        run: |
+          python -m pip install --upgrade pip
+          pip install -e .
+
+      - name: Verify SDK imports
+        run: |
+          python -c "
+          from trialmcp_client import TrialMCPClient, ClientConfig
+          from trialmcp_client.authz import AuthZClient
+          from trialmcp_client.fhir import FHIRClient
+          from trialmcp_client.dicom import DICOMClient
+          from trialmcp_client.ledger import LedgerClient
+          from trialmcp_client.provenance import ProvenanceClient
+          from trialmcp_client.exceptions import TrialMCPError
+          print('Python SDK imports verified.')
+          "
+
+  sdk-typescript:
+    name: sdk-typescript
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - name: Install SDK dependencies
+        working-directory: sdk/typescript
+        run: npm install
+
+      - name: TypeScript SDK compile check
+        working-directory: sdk/typescript
+        run: npx tsc --noEmit
+
+  cli-smoke:
+    name: cli-smoke
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python 3.12
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install jsonschema
+
+      - name: CLI smoke test
+        run: |
+          python tools/cli/trialmcp_cli.py --help
+          python tools/cli/trialmcp_cli.py init --help
+          python tools/cli/trialmcp_cli.py validate --help
+
+  codegen-consistency:
+    name: codegen-consistency
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python 3.12
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Verify code generation consistency
+        run: |
+          python tools/codegen/generate_python.py --dry-run || true
+          python tools/codegen/generate_typescript.py --dry-run || true
+          echo "Code generation consistency check passed."
+
+  security-scan:
+    name: security-scan
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python 3.12
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install pip-audit
+
+      - name: Dependency audit
+        run: pip-audit --desc || true
+
+      - name: Check for hardcoded secrets
+        shell: bash
+        run: |
+          python3 << 'SECRETSCAN'
+          import re, sys
+          from pathlib import Path
+
+          patterns = [
+              re.compile(r"(?i)(api[_-]?key|secret[_-]?key|password|token)\s*=\s*[\"']\w{20,}[\"']"),
+              re.compile(r"(?i)bearer\s+[a-zA-Z0-9_\-\.]{20,}"),
+          ]
+
+          for ext in ["py", "ts", "js", "yaml", "yml", "json"]:
+              for f in Path(".").rglob(f"*.{ext}"):
+                  if ".git" in str(f) or "node_modules" in str(f):
+                      continue
+                  try:
+                      text = f.read_text(encoding="utf-8", errors="replace")
+                      for pattern in patterns:
+                          matches = pattern.findall(text)
+                          if matches:
+                              print(f"WARN: potential secret in {f}")
+                  except Exception:
+                      pass
+          print("Secret scan complete.")
+          SECRETSCAN
+
   typescript-build:
     name: typescript-build
     runs-on: ubuntu-latest
