@@ -176,9 +176,9 @@ The national standard defines a three-tier architecture connecting Physical AI p
 │  │ Invocation │    │  Against Schema  │     │  Tool Logic  │  │
 │  └────────────┘    └──────────────────┘     └──────┬───────┘  │
 │                                                    │          │
-│                    ┌──────────────────┐     ┌───────▼───────┐ │
-│                    │ Validate Output  │◀───│  Raw Result   │ │
-│                    │  Against Schema  │     └───────────────┘ │
+│                    ┌──────────────────┐     ┌──────▼───────┐  │
+│                    │ Validate Output  │◀───│  Raw Result  │  │
+│                    │  Against Schema  │     └──────────────┘  │
 │                    └────────┬─────────┘                       │
 │                             │                                 │
 │                    ┌────────▼─────────┐                       │
@@ -201,27 +201,27 @@ The national standard defines a three-tier architecture connecting Physical AI p
 │  Standards Body · Conformance Registry             │
 │  Extension Namespace · Version Compatibility       │
 │  Schema Registry · Validation Services             │
-└────────────────────┬───────────────────────────────┘
-                     │
-        ┌────────────┼────────────┐
-        ▼            ▼            ▼
-  ┌───────────┐ ┌───────────┐ ┌───────────┐
-  │ REGION 1  │ │ REGION 2  │ │ REGION N  │
-  │ (East)    │ │ (Central) │ │ (West)    │
-  │           │ │           │ │           │
-  │ 200+ Sites│ │ 300+ Sites│ │ 250+ Sites│
-  │ 5 Servers │ │ 5 Servers │ │ 5 Servers │
-  │ per Site  │ │ per Site  │ │ per Site  │
-  └─────┬─────┘ └─────┬─────┘ └─────┬─────┘
-        │              │              │
-        └──────────────┼──────────────┘
-                       ▼
-            ┌────────────────────┐
-            │  FEDERATED LAYER   │
-            │  Model Aggregation │
-            │  Audit Merge       │
-            │  Privacy Budgets   │
-            └────────────────────┘
+└────────────────────────┬───────────────────────────┘
+                         │
+            ┌────────────┼──────────────┐
+            ▼            ▼              ▼
+      ┌───────────┐ ┌───────────┐ ┌───────────┐
+      │ REGION 1  │ │ REGION 2  │ │ REGION N  │
+      │ (East)    │ │ (Central) │ │ (West)    │
+      │           │ │           │ │           │
+      │ 200+ Sites│ │ 300+ Sites│ │ 250+ Sites│
+      │ 5 Servers │ │ 5 Servers │ │ 5 Servers │
+      │ per Site  │ │ per Site  │ │ per Site  │
+      └─────┬─────┘ └─────┬─────┘ └─────┬─────┘
+            │             │             │
+            └─────────────┼─────────────┘
+                          ▼
+                ┌────────────────────┐
+                │  FEDERATED LAYER   │
+                │  Model Aggregation │
+                │  Audit Merge       │
+                │  Privacy Budgets   │
+                └────────────────────┘
 ```
 
 ---
