@@ -132,7 +132,7 @@ The national standard defines a three-tier architecture connecting Physical AI p
 │  └───────────────────────────────────────────────────────────────────┘  │
 └─────────────────────────────────────────────────────────────────────────┘
 ```
-
+─
 ### Protocol Flow Diagram
 
 ```
@@ -350,17 +350,17 @@ graph TB
 
 ### FHIR Integration (`integrations/fhir/`)
 
-| Module | Purpose |
-|--------|---------|
-| `base_adapter.py` | Abstract FHIR adapter interface |
-| `mock_adapter.py` | Mock adapter with synthetic oncology data |
-| `hapi_adapter.py` | HAPI FHIR server REST adapter |
-| `smart_adapter.py` | SMART-on-FHIR / OAuth2 adapter |
+| Module                | Purpose |
+|-----------------------|-------------------------------------------|
+| `base_adapter.py`     | Abstract FHIR adapter interface |
+| `mock_adapter.py`     | Mock adapter with synthetic oncology data |
+| `hapi_adapter.py`     | HAPI FHIR server REST adapter |
+| `smart_adapter.py     | SMART-on-FHIR / OAuth2 adapter |
 | `deidentification.py` | HIPAA Safe Harbor 18-identifier removal |
-| `capability.py` | CapabilityStatement R4 generation |
-| `terminology.py` | ICD-10, SNOMED CT, LOINC, RxNorm hooks |
-| `bundle_handler.py` | Transaction, batch, search bundles |
-| `patient_filter.py` | Consent-based resource access filters |
+| `capability.py`       | CapabilityStatement R4 generation |
+| `terminology.py`      | ICD-10, SNOMED CT, LOINC, RxNorm hooks |
+| `bundle_handler.py`   | Transaction, batch, search bundles |
+| `patient_filter.py`   | Consent-based resource access filters |
 
 ### DICOM Integration (`integrations/dicom/`)
 
@@ -887,41 +887,41 @@ graph TB
 
 ```
 ┌──────────────────────────────────────────────────────────────────┐
-│              NATIONAL CONFORMANCE VALIDATION                      │
+│                  NATIONAL CONFORMANCE VALIDATION                 │
 ├──────────────────────────────────────────────────────────────────┤
-│                                                                   │
-│  IMPLEMENTER                  CONFORMANCE SUITE                   │
-│  ┌──────────────┐             ┌──────────────────────┐           │
-│  │ MCP Server   │────────────▶│ 1. Unit Tests        │           │
-│  │ Deployment   │             │    Fixture Validation │           │
-│  │ (5 Servers)  │             ├──────────────────────┤           │
-│  └──────────────┘             │ 2. Positive Tests    │           │
-│                               │    Core + Clinical    │           │
-│        ┌──────────┐           │    + Imaging          │           │
-│        │ BlackBox │           ├──────────────────────┤           │
-│        │ Harness  │──────────▶│ 3. BlackBox Tests    │           │
-│        │ (stdin/  │           │    All 5 Servers +   │           │
-│        │  HTTP/   │           │    Cross-Server      │           │
-│        │  Docker) │           ├──────────────────────┤           │
-│        └──────────┘           │ 4. Adversarial Tests │           │
-│                               │    Bypass + Tamper + │           │
-│                               │    Replay + Inject   │           │
-│                               ├──────────────────────┤           │
-│                               │ 5. Security Tests    │           │
-│                               │    SSRF + Token +    │           │
-│                               │    Chain Integrity   │           │
-│                               ├──────────────────────┤           │
-│                               │ 6. Interop Tests     │           │
-│                               │    Cross-Server +    │           │
-│                               │    Schema Validation │           │
-│                               └──────────┬───────────┘           │
-│                                          │                        │
-│                               ┌──────────▼───────────┐           │
-│                               │  Conformance Report  │           │
-│                               │  Level 1–5 Certified │           │
-│                               │  668 Tests Validated │           │
-│                               │  (337 unit + 331 conf│           │
-│                               └──────────────────────┘           │
+│                                                                  │
+│          IMPLEMENTER                  CONFORMANCE SUITE          │
+│       ┌──────────────┐             ┌──────────────────────┐      │
+│       │ MCP Server   │────────────>│ 1. Unit Tests        │      │
+│       │ Deployment   │             │    Fixture Validation│      │
+│       │ (5 Servers)  │             ├──────────────────────┤      │
+│       └──────────────┘             │ 2. Positive Tests    │      │
+│                                    │    Core + Clinical   │      │
+│           ┌──────────┐             │    + Imaging         │      │
+│           │ BlackBox │             ├──────────────────────┤      │
+│           │ Harness  │────────────>│ 3. BlackBox Tests    │      │
+│           │ (stdin/  │             │    All 5 Servers +   │      │
+│           │  HTTP/   │             │    Cross-Server      │      │
+│           │  Docker) │             ├──────────────────────┤      │
+│           └──────────┘             │ 4. Adversarial Tests │      │
+│                                    │    Bypass + Tamper + │      │
+│                                    │    Replay + Inject   │      │
+│                                    ├──────────────────────┤      │
+│                                    │ 5. Security Tests    │      │
+│                                    │    SSRF + Token +    │      │
+│                                    │    Chain Integrity   │      │
+│                                    ├──────────────────────┤      │
+│                                    │ 6. Interop Tests     │      │
+│                                    │    Cross-Server +    │      │
+│                                    │    Schema Validation │      │
+│                                    └──────────┬───────────┘      │
+│                                               │                  │
+│                                    ┌──────────▼───────────┐      │
+│                                    │  Conformance Report  │      │
+│                                    │  Level 1–5 Certified │      │
+│                                    │  668 Tests Validated │      │
+│                                    │  (337 unit + 331 conf│      │
+│                                    └──────────────────────┘      │
 └──────────────────────────────────────────────────────────────────┘
 ```
 
