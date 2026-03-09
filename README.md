@@ -683,22 +683,22 @@ The CI/CD pipeline (`.github/workflows/ci.yml`) runs on every push and pull requ
 │                                                                              │
 │  Push / PR to main                                                           │
 │       │                                                                      │
-│       ├──▶ lint-and-format (3.10) ─▶ ruff + 337 unit + 331 conformance      │
-│       ├──▶ lint-and-format (3.11) ─▶ ruff + 337 unit + 331 conformance      │
-│       ├──▶ lint-and-format (3.12) ─▶ ruff + 337 unit + 331 conformance      │
-│       ├──▶ integration-tests ──────▶ in-process server integration tests    │
-│       ├──▶ adversarial-tests ──────▶ authz bypass + PHI + replay + tamper   │
-│       ├──▶ schema-compatibility ───▶ schema diff + breaking change detect   │
-│       ├──▶ benchmark-smoke ────────▶ latency + throughput + chain + concur  │
-│       ├──▶ schema-validation ──────▶ 13 schemas + examples                  │
-│       ├──▶ contract-consistency ───▶ model gen + runtime schema validation  │
-│       ├──▶ sdk-python ─────────────▶ SDK install + import verification      │
-│       ├──▶ sdk-typescript ─────────▶ tsc --noEmit (SDK)                     │
-│       ├──▶ cli-smoke ──────────────▶ CLI subcommand smoke tests             │
-│       ├──▶ codegen-consistency ────▶ code generation check                  │
-│       ├──▶ security-scan ──────────▶ dependency audit + secret scan         │
-│       ├──▶ typescript-build ───────▶ tsc --noEmit (reference)               │
-│       └──▶ docs-lint ──────────────▶ file check + link check (fail errors)  │
+│       ├──> lint-and-format (3.10) ─> ruff + 337 unit + 331 conformance       │
+│       ├──> lint-and-format (3.11) ─> ruff + 337 unit + 331 conformance       │
+│       ├──> lint-and-format (3.12) ─> ruff + 337 unit + 331 conformance       │
+│       ├──> integration-tests ──────> in-process server integration tests     │
+│       ├──> adversarial-tests ──────> authz bypass + PHI + replay + tamper    │
+│       ├──> schema-compatibility ───> schema diff + breaking change detect    │
+│       ├──> benchmark-smoke ────────> latency + throughput + chain + concur   │
+│       ├──> schema-validation ──────> 13 schemas + examples                   │
+│       ├──> contract-consistency ───> model gen + runtime schema validation   │
+│       ├──> sdk-python ─────────────> SDK install + import verification       │
+│       ├──> sdk-typescript ─────────> tsc --noEmit (SDK)                      │
+│       ├──> cli-smoke ──────────────> CLI subcommand smoke tests              │
+│       ├──> codegen-consistency ────> code generation check                   │
+│       ├──> security-scan ──────────> dependency audit + secret scan          │
+│       ├──> typescript-build ───────> tsc --noEmit (reference)                │
+│       └──> docs-lint ──────────────> file check + link check (fail errors)   │
 │                                                                              │
 │  All jobs run in parallel · 668 total tests per Python version               │
 └──────────────────────────────────────────────────────────────────────────────┘
