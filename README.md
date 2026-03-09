@@ -172,12 +172,12 @@ The national standard defines a three-tier architecture connecting Physical AI p
 │                                                               │
 │  Incoming Request         JSON Schema              Output     │
 │  ┌────────────┐    ┌──────────────────┐     ┌──────────────┐  │
-│  │ MCP Tool   │───▶│  Validate Input  │───▶│  Execute     │  │
+│  │ MCP Tool   │───>│  Validate Input  │────>│  Execute     │  │
 │  │ Invocation │    │  Against Schema  │     │  Tool Logic  │  │
 │  └────────────┘    └──────────────────┘     └──────┬───────┘  │
 │                                                    │          │
 │                    ┌──────────────────┐     ┌──────▼───────┐  │
-│                    │ Validate Output  │◀───│  Raw Result  │  │
+│                    │ Validate Output  │<────│  Raw Result  │  │
 │                    │  Against Schema  │     └──────────────┘  │
 │                    └────────┬─────────┘                       │
 │                             │                                 │
@@ -683,9 +683,9 @@ The CI/CD pipeline (`.github/workflows/ci.yml`) runs on every push and pull requ
 │                                                                              │
 │  Push / PR to main                                                          │
 │       │                                                                      │
-│       ├──▶ lint-and-format (3.10) ──▶ ruff + 337 unit + 331 conformance     │
-│       ├──▶ lint-and-format (3.11) ──▶ ruff + 337 unit + 331 conformance     │
-│       ├──▶ lint-and-format (3.12) ──▶ ruff + 337 unit + 331 conformance     │
+│       ├──▶ lint-and-format (3.10) ─▶ ruff + 337 unit + 331 conformance     │
+│       ├──▶ lint-and-format (3.11) ─▶ ruff + 337 unit + 331 conformance     │
+│       ├──▶ lint-and-format (3.12) ─▶ ruff + 337 unit + 331 conformance     │
 │       ├──▶ integration-tests ──────▶ in-process server integration tests    │
 │       ├──▶ adversarial-tests ──────▶ authz bypass + PHI + replay + tamper   │
 │       ├──▶ schema-compatibility ───▶ schema diff + breaking change detect   │
@@ -1094,27 +1094,27 @@ graph TB
 
 ```
 ┌─────────────────────────────────────────────────────────────────────┐
-│                  NATIONAL PROFILE DEPLOYMENT                         │
+│                  NATIONAL PROFILE DEPLOYMENT                        │
 ├─────────────────────────────────────────────────────────────────────┤
-│                                                                      │
-│  ┌──────────────────┐  ┌──────────────────┐  ┌──────────────────┐   │
-│  │  CALIFORNIA SITE  │  │  NEW YORK SITE   │  │  OTHER US SITES  │   │
-│  │                   │  │                   │  │                   │  │
-│  │  Profile: L5      │  │  Profile: L4      │  │  Profile: L1–L5  │  │
-│  │  + CCPA Overlay   │  │  + NY Overlay     │  │  + FDA Overlay   │  │
-│  │  + FDA Overlay    │  │  + FDA Overlay    │  │                   │  │
-│  │                   │  │                   │  │                   │  │
-│  │  Extra: CPRA      │  │  Extra: PHL 27-F  │  │  State overlays  │  │
-│  │  sensitive PI,    │  │  HIV protections, │  │  applied per     │  │
-│  │  data minimization│  │  SHIELD Act,      │  │  jurisdiction    │  │
-│  │                   │  │  MHL Article 33   │  │                   │  │
-│  └──────────────────┘  └──────────────────┘  └──────────────────┘   │
-│                                                                      │
-│  ┌───────────────────────────────────────────────────────────────┐   │
-│  │              FDA 21 CFR PART 11 — ALL SITES                   │   │
-│  │  Audit trails · Electronic signatures · System validation     │   │
-│  │  Record integrity · Authority checks · Change control         │   │
-│  └───────────────────────────────────────────────────────────────┘   │
+│                                                                     │
+│  ┌───────────────────┐  ┌──────────────────┐  ┌──────────────────┐  │
+│  │  CALIFORNIA SITE  │  │  NEW YORK SITE   │  │  OTHER US SITES  │  │
+│  │                   │  │                  │  │                  │  │
+│  │  Profile: L5      │  │  Profile: L4     │  │  Profile: L1–L5  │  │
+│  │  + CCPA Overlay   │  │  + NY Overlay    │  │  + FDA Overlay   │  │
+│  │  + FDA Overlay    │  │  + FDA Overlay   │  │                  │  │
+│  │                   │  │                  │  │                  │  │
+│  │  Extra: CPRA      │  │  Extra: PHL 27-F │  │  State overlays  │  │
+│  │  sensitive PI,    │  │  HIV protections,│  │  applied per     │  │
+│  │  data minimization│  │  SHIELD Act,     │  │  jurisdiction    │  │
+│  │                   │  │  MHL Article 33  │  │                  │  │
+│  └───────────────────┘  └──────────────────┘  └──────────────────┘  │
+│                                                                     │
+│  ┌───────────────────────────────────────────────────────────────┐  │
+│  │              FDA 21 CFR PART 11 — ALL SITES                   │  │
+│  │  Audit trails · Electronic signatures · System validation     │  │
+│  │  Record integrity · Authority checks · Change control         │  │
+│  └───────────────────────────────────────────────────────────────┘  │
 └─────────────────────────────────────────────────────────────────────┘
 ```
 
