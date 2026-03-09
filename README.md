@@ -1406,6 +1406,54 @@ See [spec/security.md](spec/security.md) and [spec/privacy.md](spec/privacy.md) 
 
 ---
 
+## Getting Started
+
+### For Implementers
+
+1. Review [spec/core.md](spec/core.md) for protocol scope and design principles
+2. Review the [adoption roadmap](docs/adoption-roadmap.md) for a phased implementation plan
+3. Choose a [conformance profile](profiles/) appropriate for your deployment
+4. Review the [glossary](docs/glossary.md) for standard terminology
+5. Review the profile's mandatory tools, forbidden operations, and required schemas
+6. Study the [reference implementations](reference/) (NON-NORMATIVE) for implementation guidance
+7. Implement the required tool contracts from [spec/tool-contracts.md](spec/tool-contracts.md)
+8. Validate server inputs/outputs against the [JSON schemas](schemas/) for your profile level
+9. Apply security requirements from [spec/security.md](spec/security.md) and [spec/privacy.md](spec/privacy.md)
+10. Apply applicable state overlays ([California](profiles/state-us-ca.md), [New York](profiles/state-us-ny.md)) and the [FDA overlay](profiles/country-us-fda.md)
+11. Run the [unit tests](tests/) against the reference implementation: `pytest tests/ -v`
+12. Run the [conformance test suite](conformance/) against your implementation: `pytest conformance/ -v`
+13. Validate against the conformance test subset for your target profile
+
+### For Regulators and Compliance Officers
+
+1. Review [regulatory/US_FDA.md](regulatory/US_FDA.md) for FDA alignment
+2. Review [regulatory/HIPAA.md](regulatory/HIPAA.md) for privacy compliance
+3. Review [regulatory/CFR_PART_11.md](regulatory/CFR_PART_11.md) for electronic records compliance
+4. Use [regulatory/IRB_SITE_POLICY_TEMPLATE.md](regulatory/IRB_SITE_POLICY_TEMPLATE.md) for site-level policy
+
+### For Contributors
+
+1. Read [CODE_OF_CONDUCT.md](CODE_OF_CONDUCT.md)
+2. Review [governance/CHARTER.md](governance/CHARTER.md)
+3. Follow the [governance/DECISION_PROCESS.md](governance/DECISION_PROCESS.md) for proposing changes
+4. Use the appropriate [issue template](.github/ISSUE_TEMPLATE/) for proposals
+
+---
+
+## Governance
+
+This specification is governed by an open process described in [governance/CHARTER.md](governance/CHARTER.md). Key principles:
+
+- **Consensus-driven**: Major specification changes require community review
+- **Extension-friendly**: Vendor extensions use `x-{vendor}` namespaces per [governance/EXTENSIONS.md](governance/EXTENSIONS.md)
+- **Version-stable**: SemVer with explicit compatibility guarantees per [governance/VERSION_COMPATIBILITY.md](governance/VERSION_COMPATIBILITY.md)
+
+---
+
+> **Maturity**: This repository provides normative specifications (`/spec/`), machine-readable schemas (`/schemas/`), conformance profiles (`/profiles/`), Level 1 illustrative implementations (`/reference/`), production-shaped MCP server packages (`/servers/`) with persistence abstractions and Docker/Kubernetes deployment infrastructure (`/deploy/`), production-grade integration adapters for FHIR, DICOM, identity, clinical operations, privacy, and federation (`/integrations/`), robot safety and execution boundaries (`/safety/`), a black-box conformance harness (`/conformance/harness/`), a national interoperability testbed (`/interop-testbed/`), certification and evidence generation tools (`/tools/certification/`), and performance benchmarks (`/benchmarks/`). See the [adoption roadmap](docs/adoption-roadmap.md) for the path from specification to validated deployment.
+
+---
+
 ## Repository Structure
 
 > Directories marked **NORMATIVE** define requirements. Directories marked **NON-NORMATIVE** are informative examples.
@@ -1533,54 +1581,6 @@ national-mcp-pai-oncology-trials/
 ├── releases.md                   # Release notes
 └── prompts.md                    # Prompt archive
 ```
-
----
-
-## Getting Started
-
-### For Implementers
-
-1. Review [spec/core.md](spec/core.md) for protocol scope and design principles
-2. Review the [adoption roadmap](docs/adoption-roadmap.md) for a phased implementation plan
-3. Choose a [conformance profile](profiles/) appropriate for your deployment
-4. Review the [glossary](docs/glossary.md) for standard terminology
-5. Review the profile's mandatory tools, forbidden operations, and required schemas
-6. Study the [reference implementations](reference/) (NON-NORMATIVE) for implementation guidance
-7. Implement the required tool contracts from [spec/tool-contracts.md](spec/tool-contracts.md)
-8. Validate server inputs/outputs against the [JSON schemas](schemas/) for your profile level
-9. Apply security requirements from [spec/security.md](spec/security.md) and [spec/privacy.md](spec/privacy.md)
-10. Apply applicable state overlays ([California](profiles/state-us-ca.md), [New York](profiles/state-us-ny.md)) and the [FDA overlay](profiles/country-us-fda.md)
-11. Run the [unit tests](tests/) against the reference implementation: `pytest tests/ -v`
-12. Run the [conformance test suite](conformance/) against your implementation: `pytest conformance/ -v`
-13. Validate against the conformance test subset for your target profile
-
-### For Regulators and Compliance Officers
-
-1. Review [regulatory/US_FDA.md](regulatory/US_FDA.md) for FDA alignment
-2. Review [regulatory/HIPAA.md](regulatory/HIPAA.md) for privacy compliance
-3. Review [regulatory/CFR_PART_11.md](regulatory/CFR_PART_11.md) for electronic records compliance
-4. Use [regulatory/IRB_SITE_POLICY_TEMPLATE.md](regulatory/IRB_SITE_POLICY_TEMPLATE.md) for site-level policy
-
-### For Contributors
-
-1. Read [CODE_OF_CONDUCT.md](CODE_OF_CONDUCT.md)
-2. Review [governance/CHARTER.md](governance/CHARTER.md)
-3. Follow the [governance/DECISION_PROCESS.md](governance/DECISION_PROCESS.md) for proposing changes
-4. Use the appropriate [issue template](.github/ISSUE_TEMPLATE/) for proposals
-
----
-
-## Governance
-
-This specification is governed by an open process described in [governance/CHARTER.md](governance/CHARTER.md). Key principles:
-
-- **Consensus-driven**: Major specification changes require community review
-- **Extension-friendly**: Vendor extensions use `x-{vendor}` namespaces per [governance/EXTENSIONS.md](governance/EXTENSIONS.md)
-- **Version-stable**: SemVer with explicit compatibility guarantees per [governance/VERSION_COMPATIBILITY.md](governance/VERSION_COMPATIBILITY.md)
-
----
-
-> **Maturity**: This repository provides normative specifications (`/spec/`), machine-readable schemas (`/schemas/`), conformance profiles (`/profiles/`), Level 1 illustrative implementations (`/reference/`), production-shaped MCP server packages (`/servers/`) with persistence abstractions and Docker/Kubernetes deployment infrastructure (`/deploy/`), production-grade integration adapters for FHIR, DICOM, identity, clinical operations, privacy, and federation (`/integrations/`), robot safety and execution boundaries (`/safety/`), a black-box conformance harness (`/conformance/harness/`), a national interoperability testbed (`/interop-testbed/`), certification and evidence generation tools (`/tools/certification/`), and performance benchmarks (`/benchmarks/`). See the [adoption roadmap](docs/adoption-roadmap.md) for the path from specification to validated deployment.
 
 ---
 
