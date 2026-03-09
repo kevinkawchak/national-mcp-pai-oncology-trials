@@ -27,8 +27,6 @@
 The **National MCP-PAI Oncology Trials Standard** is a proposed reference standard for deploying Model Context Protocol (MCP) servers across federated Physical AI oncology clinical trial systems in the United States. This standard defines protocol contracts, actor models, security baselines, regulatory overlays, machine-readable JSON schemas, and governance processes intended to enable industry-wide interoperability of autonomous robotic systems in regulated clinical environments.
 
 > **Scope**: This specification targets U.S. clinical sites, sponsors, CROs, and technology vendors operating Physical AI systems — surgical robots, therapeutic positioning systems, diagnostic needle-placement platforms, and rehabilitative exoskeletons — within FDA-regulated oncology trials.
->
-> **Maturity**: This repository provides normative specifications (`/spec/`), machine-readable schemas (`/schemas/`), conformance profiles (`/profiles/`), Level 1 illustrative implementations (`/reference/`), production-shaped MCP server packages (`/servers/`) with persistence abstractions and Docker/Kubernetes deployment infrastructure (`/deploy/`), production-grade integration adapters for FHIR, DICOM, identity, clinical operations, privacy, and federation (`/integrations/`), robot safety and execution boundaries (`/safety/`), a black-box conformance harness (`/conformance/harness/`), a national interoperability testbed (`/interop-testbed/`), certification and evidence generation tools (`/tools/certification/`), and performance benchmarks (`/benchmarks/`). See the [adoption roadmap](docs/adoption-roadmap.md) for the path from specification to validated deployment.
 
 ---
 
@@ -105,31 +103,31 @@ The national standard defines a three-tier architecture connecting Physical AI p
 │                    NATIONAL MCP-PAI ONCOLOGY NETWORK                    │
 ├─────────────────────────────────────────────────────────────────────────┤
 │                                                                         │
-│  ┌─────────────┐  ┌─────────────┐  ┌─────────────┐  ┌─────────────┐   │
-│  │  SITE A      │  │  SITE B      │  │  SITE C      │  │  SITE N      │  │
-│  │  (Hospital)  │  │  (Cancer Ctr)│  │  (Research)  │  │  (Any Site)  │  │
-│  │             │  │             │  │             │  │             │   │
-│  │ ┌─────────┐ │  │ ┌─────────┐ │  │ ┌─────────┐ │  │ ┌─────────┐ │   │
-│  │ │  Robot   │ │  │ │  Robot   │ │  │ │  Robot   │ │  │ │  Robot   │ │   │
-│  │ │  Agent   │ │  │ │  Agent   │ │  │ │  Agent   │ │  │ │  Agent   │ │   │
-│  │ └────┬────┘ │  │ └────┬────┘ │  │ └────┬────┘ │  │ └────┬────┘ │   │
-│  │      │       │  │      │       │  │      │       │  │      │       │   │
-│  │ ┌────▼────┐ │  │ ┌────▼────┐ │  │ ┌────▼────┐ │  │ ┌────▼────┐ │   │
-│  │ │   MCP   │ │  │ │   MCP   │ │  │ │   MCP   │ │  │ │   MCP   │ │   │
-│  │ │ Servers │ │  │ │ Servers │ │  │ │ Servers │ │  │ │ Servers │ │   │
-│  │ │ (5 Svcs)│ │  │ │ (5 Svcs)│ │  │ │ (5 Svcs)│ │  │ │ (5 Svcs)│ │   │
-│  │ └────┬────┘ │  │ └────┬────┘ │  │ └────┬────┘ │  │ └────┬────┘ │   │
-│  │      │       │  │      │       │  │      │       │  │      │       │   │
-│  │ ┌────▼────┐ │  │ ┌────▼────┐ │  │ ┌────▼────┐ │  │ ┌────▼────┐ │   │
-│  │ │Clinical │ │  │ │Clinical │ │  │ │Clinical │ │  │ │Clinical │ │   │
-│  │ │Systems  │ │  │ │Systems  │ │  │ │Systems  │ │  │ │Systems  │ │   │
-│  │ │EHR/PACS │ │  │ │EHR/PACS │ │  │ │EHR/PACS │ │  │ │EHR/PACS │ │   │
-│  │ └─────────┘ │  │ └─────────┘ │  │ └─────────┘ │  │ └─────────┘ │   │
-│  └─────────────┘  └─────────────┘  └─────────────┘  └─────────────┘   │
+│    ┌─────────────┐  ┌─────────────┐  ┌─────────────┐  ┌─────────────┐   │
+│    │  SITE A     │  │  SITE B     │  │  SITE C     │  │  SITE N     │   │
+│    │  (Hospital) │  │ (Cancer Ctr)│  │  (Research) │  │  (Any Site) │   │
+│    │             │  │             │  │             │  │             │   │
+│    │ ┌─────────┐ │  │ ┌─────────┐ │  │ ┌─────────┐ │  │ ┌─────────┐ │   │
+│    │ │  Robot  │ │  │ │  Robot  │ │  │ │  Robot  │ │  │ │  Robot  │ │   │
+│    │ │  Agent  │ │  │ │  Agent  │ │  │ │  Agent  │ │  │ │  Agent  │ │   │
+│    │ └────┬────┘ │  │ └────┬────┘ │  │ └────┬────┘ │  │ └────┬────┘ │   │
+│    │      │      │  │      │      │  │      │      │  │      │      │   │
+│    │ ┌────▼────┐ │  │ ┌────▼────┐ │  │ ┌────▼────┐ │  │ ┌────▼────┐ │   │
+│    │ │   MCP   │ │  │ │   MCP   │ │  │ │   MCP   │ │  │ │   MCP   │ │   │
+│    │ │ Servers │ │  │ │ Servers │ │  │ │ Servers │ │  │ │ Servers │ │   │
+│    │ │ (5 Svcs)│ │  │ │ (5 Svcs)│ │  │ │ (5 Svcs)│ │  │ │ (5 Svcs)│ │   │
+│    │ └────┬────┘ │  │ └────┬────┘ │  │ └────┬────┘ │  │ └────┬────┘ │   │
+│    │      │      │  │      │      │  │      │      │  │      │      │   │
+│    │ ┌────▼────┐ │  │ ┌────▼────┐ │  │ ┌────▼────┐ │  │ ┌────▼────┐ │   │
+│    │ │Clinical │ │  │ │Clinical │ │  │ │Clinical │ │  │ │Clinical │ │   │
+│    │ │Systems  │ │  │ │Systems  │ │  │ │Systems  │ │  │ │Systems  │ │   │
+│    │ │EHR/PACS │ │  │ │EHR/PACS │ │  │ │EHR/PACS │ │  │ │EHR/PACS │ │   │
+│    │ └─────────┘ │  │ └─────────┘ │  │ └─────────┘ │  │ └─────────┘ │   │
+│    └─────────────┘  └─────────────┘  └─────────────┘  └─────────────┘   │
 │                                                                         │
 │  ┌───────────────────────────────────────────────────────────────────┐  │
-│  │               FEDERATED COORDINATION LAYER                        │  │
-│  │  Aggregation (FedAvg/FedProx/SCAFFOLD) · Differential Privacy    │  │
+│  │                   FEDERATED COORDINATION LAYER                    │  │
+│  │  Aggregation (FedAvg/FedProx/SCAFFOLD) · Differential Privacy     │  │
 │  │  Cross-Site Audit Verification · Regulatory Reporting             │  │
 │  └───────────────────────────────────────────────────────────────────┘  │
 └─────────────────────────────────────────────────────────────────────────┘
@@ -1579,6 +1577,10 @@ This specification is governed by an open process described in [governance/CHART
 - **Consensus-driven**: Major specification changes require community review
 - **Extension-friendly**: Vendor extensions use `x-{vendor}` namespaces per [governance/EXTENSIONS.md](governance/EXTENSIONS.md)
 - **Version-stable**: SemVer with explicit compatibility guarantees per [governance/VERSION_COMPATIBILITY.md](governance/VERSION_COMPATIBILITY.md)
+
+---
+
+> **Maturity**: This repository provides normative specifications (`/spec/`), machine-readable schemas (`/schemas/`), conformance profiles (`/profiles/`), Level 1 illustrative implementations (`/reference/`), production-shaped MCP server packages (`/servers/`) with persistence abstractions and Docker/Kubernetes deployment infrastructure (`/deploy/`), production-grade integration adapters for FHIR, DICOM, identity, clinical operations, privacy, and federation (`/integrations/`), robot safety and execution boundaries (`/safety/`), a black-box conformance harness (`/conformance/harness/`), a national interoperability testbed (`/interop-testbed/`), certification and evidence generation tools (`/tools/certification/`), and performance benchmarks (`/benchmarks/`). See the [adoption roadmap](docs/adoption-roadmap.md) for the path from specification to validated deployment.
 
 ---
 
