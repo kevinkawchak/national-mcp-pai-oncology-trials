@@ -73,8 +73,8 @@ Kawchak K. National MCP Servers for Physical AI Oncology Clinical Trial Systems.
 
 
 
-- **PDF**: [`paper/National MCP Servers for Physical AI Oncology Clinical Trial Systems.pdf`](paper/National MCP Servers for Physical AI Oncology Clinical Trial Systems.pdf)
-- **LaTeX Source**: [`paper/Latex Source Files.zip`](paper/Latex Source Files.zip)
+- **PDF**: [National MCP Servers for Physical AI Oncology Clinical Trial Systems.pdf](https://github.com/kevinkawchak/national-mcp-pai-oncology-trials/blob/main/paper/National%20MCP%20Servers%20for%20Physical%20AI%20Oncology%20Clinical%20Trial%20Systems.pdf)
+- **LaTeX Source**: [Latex Source Files.zip](https://github.com/kevinkawchak/national-mcp-pai-oncology-trials/blob/main/paper/Latex%20Source%20Files.zip)
 - **Template**: [kourgeorge/arxiv-style](https://github.com/kourgeorge/arxiv-style)
 
 The 20-page paper covers the five-server MCP architecture, safety modules, conformance levels, federated learning integration, AI-assisted development methodology, and the path from prior fragmented trial infrastructure to the proposed national standard.
