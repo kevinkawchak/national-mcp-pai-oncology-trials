@@ -1,18 +1,85 @@
 ## Prompt v1.1.0
 
-Your goal is to generate a 20 page paper titled “National MCP Servers for Physical AI Oncology Clinical Trial Systems” based on the entire national-mcp-pai-oncology-trials repository with a focus on a) prior oncology trial infrastructure being fragmented, site-specific, and inefficient across interoperability, auditability, privacy, and deployment, b) the national MCP Physical AI oncology trials system containing 5 MCP servers address these gaps through standardized, federated, and safety-governed MCP capabilities, including c) AI and robotics advances intended to improve patient safety and clinical effectiveness. Patient benefit is key in this new mcp system. (Note: the current oncology clinical trial system should be referred to as the old or prior or previous system throughout the paper)
+Your goal is to generate a 20 page paper titled “National MCP Servers for Physical AI Oncology Clinical Trial Systems” based on the entire national-mcp-pai-oncology-trials repository with a focus on a) prior oncology trial infrastructure being fragmented, site-specific, and inefficient across interoperability, auditability, privacy, and deployment, b) the national MCP Physical AI oncology trials system containing 5 MCP servers address these gaps through standardized, federated, and safety-governed MCP capabilities, including c) AI and robotics advances intended to improve patient safety and clinical effectiveness. Patient benefit is key in this new mcp system. 
+(Note: the current oncology clinical trial system should be referred to as the old or prior or previous system throughout the paper)
 
-The paper should be written in LaTeX using 10.5281/zenodo.18916731 where appropriate. Use the kourgeorge/arxiv-style/blob/master/arxiv.sty, except remove the “A Preprint” from the top of the page, and don't add colored box frames around text, links, etc. Include author Kevin Kawchak, the template's iD icon (clickable link: https://orcid.org/0009-0007-5457-8667), Chief Executive Officer, ChemicalQDevice, kevink@chemicalqdevice.com, today's date, and 5 keywords. No em dashes are allowed in the paper. A balance of directory names, version numbers, and file names should be utilized strategically throughout the paper, as well as citing the 3 other repositories that aided in the development of the current repository.
+The paper should be written in LaTeX using 10.5281/zenodo.18916731 (https://doi.org/10.5281/zenodo.18916731) where appropriate. Use the kourgeorge/arxiv-style/blob/master/arxiv.sty - except remove the "A Preprint" from the top of the page, and don't add colored box frames around text, links, etc. (https://github.com/kourgeorge/arxiv-style). Include author Kevin Kawchak, the template’s iD icon (the icon needs to include the clickable link: https://orcid.org/0009-0007-5457-8667), Chief Executive Officer, ChemicalQDevice, kevink@chemicalqdevice.com, today's date, and 5 keywords. No em dashes are allowed in the paper. A balance of directory names, version numbers, and file names should be utilized strategically throughout the paper, as well as citing the 3 other repositories below that aided in the development of the current repository.
 
-Utilize information from sources 1)-4) in the following order of importance:
+Make sure to clone the current repo. Utilize information from sources 1)-4) in the following order of importance. Use prior .tex files for additional context where needed. Include web links to GitHub repositories.
 1) kevinkawchak/national-mcp-pai-oncology-trials (10.5281/zenodo.18894758)(paper doi: 10.5281/zenodo.18916731)
-2) kevinkawchak/mcp-pai-oncology-trials (10.5281/zenodo.18869776)(paper doi: 10.5281/zenodo.18870961)
-3) kevinkawchak/physical-ai-oncology-trials (10.5281/zenodo.18445179)(paper doi: 10.5281/zenodo.18778220)
-4) kevinkawchak/pai-oncology-trial-fl (paper doi: 10.5281/zenodo.18795507)
+2) kevinkawchak/mcp-pai-oncology-trials (10.5281/zenodo.18869776)(paper .tex: mcp-pai-oncology-trials/tree/main/papers, paper doi: 10.5281/zenodo.18870961)
+3) kevinkawchak/physical-ai-oncology-trials  (10.5281/zenodo.18445179)(paper .tex: kevinkawchak/physical-ai-oncology-trials/tree/main/unification/usl/paper)(paper doi: 10.5281/zenodo.18778220)
+4) kevinkawchak/pai-oncology-trial-fl()(paper .tex: pai-oncology-trial-fl/tree/main/paper)(paper doi: 10.5281/zenodo.18795507)
 
-Paper Sections: Abstract, Table of Contents, Introduction, Methods, Results, Discussion, Limitations and Future Work, Conclusion, References, Acknowledgments, Ethical disclosures, Rights and permissions, Cite this article.
+Be sure to implement quantitative data, code snippets, text diagrams (fix where needed, and make sure incorporation is suitable to the paper), etc. where appropriate. It is imperative that all types of information utilized from across the repository be accurate and appropriate to each section of the paper. Make sure every section is properly formatted and is attractive to read (a mix of different paragraph lengths)(a mix of bullet points and numbered lists, and other types of formatting to avoid too many long paragraphs). Avoid large white empty spaces without text. Where large spacing between words exist throughout the paper, tables, and references: modify raggedright to make positioning between words look equally and properly spaced.
 
-Output the finished paper as a .pdf under /main/paper. Output a zip file containing 4 files in /paper titled “Latex Source Code”: .tex, .sty, README, .bib. Update all relevant documentation and readme throughout the repository. Provide release notes in releases.md and an updated changelog (v1.1.0).
+Paper Sections:
+- Abstract: Focus on covering a)-c) from above using information from relevant sections of the repo. State that this is a proposed end-to-end mcp physical ai oncology trial system towards the end.
+- Table of Contents
+- Introduction: Provide a comprehensive overview of what brought oncology clinical trials to need this current system.
+- Methods: Utilize prompts.md, changelog.md, and releases.md for insights regarding how the repository and paper (using this current prompt) was built. Include the author as the prompt creator, and AI manufacturers and models (primarily Anthropic Claude Code Opus 4.6 for generating the repository and this paper; and also OpenAI ChatGPT 5.4 Thinking used for peer review (under /peer-review). Be sure to provide both comprehensive and fine grained dates that are based on releases, such as total number of days (span), total number of days with an AI update, number of days of AI code recommendations, and the number of days of AI fixes (again using version ids throughout)
+- Results: Stress the importance of the 5 mcp servers in the repository in terms of applicable to clinical trials, between other robots, between other clinical trials, etc. 
+- Discussion: Write in detail about the significance of the 5 MCPs system as the oncology clinical trial standard; along with better AI and robot automation.
+- Limitations and Future Work: (Be sure to describe the human, Claude Code, and OpenAI limitations throughout the entire process to date.) Future work for the author and industry includes increasing MCP physical ai trial automation.
+- Conclusion: State that this is a proposed end-to-end mcp physical ai oncology trial system towards the beginning. Discuss why the prior point-to-point system couldn’t scale, and how this system will. Focus on the take home message of a)-c) from above using data from relevant sections of the repo.
+- References (include references for 1)-4) GitHub links, Zenodo DOIs,and paper DOIs)
+- Acknowledgments (see below)
+- Ethical disclosures (see below)
+- Rights and permissions (see below)
+- Cite this article (see below)
+
+Use an assortment of tables and text diagrams according to the paper’s style guide, making sure that some are comprehensive and complete. When doing these tables and diagrams, make sure there is not excessive white spacing in pages (use extra relevant text to make the paper look publication quality). Make sure text doesn’t run off the right side of the page anywhere. Perform the final formatting steps that a senior author would take by having proper white space formatting, removing and/or adding relevant text to make each of the 20 pages look properly formatted and self standing by itself. (Don’t overcrowd any page with text, some white space formatting is ok). Again, extra care is required for each of the 20 pages to make the end-to-end paper publication quality high: all text, tables, and diagrams context and visual formatting must reflect the best quality proof-reading and appearance practices.
+
+Update all relevant documentation and readme throughout the repository text, diagrams, mermaid diagrams (don’t use mermaid diagrams or images in this paper), repository structure, etc. based on this paper (include a prominent Zenodo link in main readme). Provide a copy of this prompt under the related prompts.md. Be sure to fix and address errors that would cause failed checks for the single pull request (such as Python environment issues to avoid the following error during final checks): "3 failing checks
+x Cl / lint-and-format (3.10) (pull...
+x Cl / lint-and-format (3.11) (pull...
+x Cl / lint-and-format (3.12) (pull... " Place the new release notes in releases.md under main using the format below. Update other relevant documentation such as project structures. Update the main Readme diagrams, repository structure, etc. where necessary. Provide an updated changelog (v1.1.0).
+
+Output the finished paper with file name "National MCP Servers for Physical AI Oncology Clinical Trial Systems" as a .pdf under /main/paper. Output a zip file containing 4 files in /paper titled "Latex Source Code" under /paper: .tex,.sty, README, .bib. When you are finished, auto-push the update to GitHub on your own for my review. The user will then review your updates in GitHub prior to finalization.
+
+"FORMAT"
+Release title
+v1.1.0 - [Fill in Title Here]
+
+## Summary
+
+## Features
+
+## Contributors
+@kevinkawchak
+@claude
+
+## Notes
+
+
+Acknowledgments
+The author would like to acknowledge Anthropic for providing access to Claude Code for repository and paper generations; and OpenAI for providing access to ChatGPT for peer-review.
+
+Ethical disclosures
+The author of the article declares no competing interests.
+
+Rights and permissions
+This article is distributed under the terms of the Creative Commons Attribution 4.0 International License (CC BY 4.0), which permits unrestricted use, distribution, and reproduction in any medium, provided the original author(s) and source are properly credited, a link to the Creative Commons license is provided, and any modifications made are indicated. To view a copy of this license, visit https://creativecommons.org/licenses/by/4.0/.
+
+Cite this article
+Kawchak K. National MCP Servers for Physical AI Oncology Clinical Trial Systems. Zenodo. 2026; 10.5281/zenodo.18916731.
+
+---
+
+## Prompt v1.1.0 (2nd)
+
+Fix and update current PR.
+
+---
+
+## Prompt v1.1.0 (3rd)
+
+Update the current branch with another commit that creates a whole new paper and set of pdf and latex files under /paper (create a “prior” directory under /paper for all of the prior paper files)
+1) make each of the page headings “National MCP Servers for Physical AI Oncology Clinical Trial Systems” an appropriately smaller font size to fit on one line, center justified.
+2) the introduction must start after keywords on the first page, then the entire toc starts on page 2 (where it currently is), then the rest of the introduction comes after the end of toc. (Update the toc and other relevant paper information based on this new commit)
+3) current page 6 repository names column entries overlaps with date range entries (same problem with the server column on page 7) (same problem with tool column on page 9) (same problem with schema file column on page 12).
+4) avoid diagrams from being split between pages.
+5) Re-evaluate the entire finished pdf to verify these issues are fixed, then make any other necessary formatting fixes. Make sure all checks will pass.
 
 ---
 
