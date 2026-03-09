@@ -73,7 +73,7 @@ Kawchak K. National MCP Servers for Physical AI Oncology Clinical Trial Systems.
 
 
 
-- **PDF**: [`paper/National_MCP_Servers_for_Physical_AI_Oncology_Clinical_Trial_Systems.pdf`](paper/National_MCP_Servers_for_Physical_AI_Oncology_Clinical_Trial_Systems.pdf)
+- **PDF**: [`paper/National MCP Servers for Physical AI Oncology Clinical Trial Systems.pdf`](paper/National MCP Servers for Physical AI Oncology Clinical Trial Systems.pdf)
 - **LaTeX Source**: [`paper/Latex Source Files.zip`](paper/Latex Source Files.zip)
 - **Template**: [kourgeorge/arxiv-style](https://github.com/kourgeorge/arxiv-style)
 
