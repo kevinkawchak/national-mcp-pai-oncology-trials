@@ -73,7 +73,7 @@ The **National MCP-PAI Oncology Trials Standard** is a proposed reference standa
 Kawchak K. National MCP Servers for Physical AI Oncology Clinical Trial Systems. Zenodo. 2026; [10.5281/zenodo.18916731](https://doi.org/10.5281/zenodo.18916731).
 
 - **PDF**: [`paper/National_MCP_Servers_for_Physical_AI_Oncology_Clinical_Trial_Systems.pdf`](paper/National_MCP_Servers_for_Physical_AI_Oncology_Clinical_Trial_Systems.pdf)
-- **LaTeX Source**: [`paper/Latex Source Code.zip`](paper/Latex%20Source%20Code.zip)
+- **LaTeX Source**: [`paper/latex-source-code.zip`](paper/latex-source-code.zip)
 - **Template**: [kourgeorge/arxiv-style](https://github.com/kourgeorge/arxiv-style)
 
 The 20-page paper covers the five-server MCP architecture, safety modules, conformance levels, federated learning integration, AI-assisted development methodology, and the path from prior fragmented trial infrastructure to the proposed national standard.
@@ -1525,7 +1525,7 @@ national-mcp-pai-oncology-trials/
 │   ├── National_MCP_Servers_for_Physical_AI_Oncology_Clinical_Trial_Systems.tex
 │   ├── arxiv.sty                 # Modified arxiv-style template
 │   ├── references.bib            # BibTeX bibliography
-│   ├── Latex Source Code.zip     # Complete LaTeX source archive
+│   ├── latex-source-code.zip     # Complete LaTeX source archive
 │   └── README                   # Compilation instructions
 ├── peer-review/                  # External peer review responses and prompts
 ├── pyproject.toml                # Python project config (entry points, ruff, pytest)
