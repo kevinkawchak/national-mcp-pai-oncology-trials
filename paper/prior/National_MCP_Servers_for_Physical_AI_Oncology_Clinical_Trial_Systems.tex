@@ -21,9 +21,6 @@
 % Fix fancyhdr headheight warning
 \setlength{\headheight}{16pt}
 
-% Make running header title fit on one line with smaller font
-\renewcommand{\shorttitle}{\scriptsize\scshape National MCP Servers for Physical AI Oncology Clinical Trial Systems}
-
 % Justified text (remove raggedright for proper word spacing)
 \usepackage{ragged2e}
 
@@ -74,10 +71,14 @@
 \maketitle
 
 \begin{abstract}
-Prior oncology clinical trial infrastructure has been fragmented, site-specific, and inefficient across the critical dimensions of interoperability, auditability, privacy, and deployment. Each trial site has historically operated its own isolated systems for electronic health records, imaging archives, and audit logging, resulting in inconsistent data formats, duplicated regulatory effort, and limited cross-site collaboration. This paper presents the National MCP Physical AI Oncology Trials system, a proposed end-to-end architecture comprising five Model Context Protocol (MCP) servers that address these gaps through standardized, federated, and safety-governed capabilities. The five servers (Authorization, FHIR Clinical Data, DICOM Imaging, Audit Ledger, and Provenance) expose 23 tools across five hierarchical conformance levels, validated by 668 test functions. The system integrates AI and robotics advances intended to improve patient safety and clinical effectiveness, including emergency stop coordination, procedure state machines, and multi-party approval checkpoints. Quantitative analysis of the repository (version 1.2.0) demonstrates 381 files across 88 directories, 34 integration adapters, 8 safety modules, 13 JSON schemas, and dual-language SDKs in Python and TypeScript. This proposed end-to-end MCP Physical AI oncology trial system provides the foundation for national-scale standardization of robotic oncology clinical trials.
+Prior oncology clinical trial infrastructure has been fragmented, site-specific, and inefficient across the critical dimensions of interoperability, auditability, privacy, and deployment. Each trial site has historically operated its own isolated systems for electronic health records, imaging archives, and audit logging, resulting in inconsistent data formats, duplicated regulatory effort, and limited cross-site collaboration. This paper presents the National MCP Physical AI Oncology Trials system, a proposed end-to-end architecture comprising five Model Context Protocol (MCP) servers that address these gaps through standardized, federated, and safety-governed capabilities. The five servers (Authorization, FHIR Clinical Data, DICOM Imaging, Audit Ledger, and Provenance) expose 23 tools across five hierarchical conformance levels, validated by 668 test functions. The system integrates AI and robotics advances intended to improve patient safety and clinical effectiveness, including emergency stop coordination, procedure state machines, and multi-party approval checkpoints. Quantitative analysis of the repository (version 1.1.0) demonstrates 381 files across 88 directories, 34 integration adapters, 8 safety modules, 13 JSON schemas, and dual-language SDKs in Python and TypeScript. This proposed end-to-end MCP Physical AI oncology trial system provides the foundation for national-scale standardization of robotic oncology clinical trials.
 \end{abstract}
 
 \keywords{Model Context Protocol \and Physical AI \and Oncology Clinical Trials \and Federated Learning \and Robotic Surgery}
+
+\clearpage
+\tableofcontents
+\clearpage
 
 %% ========================================================================
 \section{Introduction}
@@ -85,10 +86,6 @@ Prior oncology clinical trial infrastructure has been fragmented, site-specific,
 %% ========================================================================
 
 Oncology clinical trials represent one of the most complex operational domains in modern healthcare, requiring coordination among clinical sites, sponsors, contract research organizations (CROs), regulatory agencies, and increasingly, autonomous robotic systems. The prior trial infrastructure evolved organically over decades, producing a patchwork of site-specific implementations that created significant barriers to interoperability, auditability, and scalability.
-
-\clearpage
-\tableofcontents
-\clearpage
 
 \subsection{Fragmentation in Prior Trial Systems}
 
@@ -114,7 +111,7 @@ This protocol architecture presents a natural fit for oncology clinical trials, 
 
 \subsection{Contributions of This Work}
 
-This paper presents the National MCP Physical AI Oncology Trials system (repository version 1.2.0), a proposed end-to-end architecture that addresses the limitations of prior trial infrastructure through five key contributions:
+This paper presents the National MCP Physical AI Oncology Trials system (repository version 1.1.0), a proposed end-to-end architecture that addresses the limitations of prior trial infrastructure through five key contributions:
 
 \begin{enumerate}[leftmargin=*]
 \item A five-server MCP architecture (\texttt{trialmcp-authz}, \texttt{trialmcp-fhir}, \texttt{trialmcp-dicom}, \texttt{trialmcp-ledger}, \texttt{trialmcp-provenance}) exposing 23 standardized tools.
@@ -130,7 +127,6 @@ The system was developed iteratively across four repositories, progressing from 
 
 To understand why the national MCP system is necessary, it is helpful to examine the architecture that the prior trial infrastructure imposed. The following text diagram illustrates the point-to-point integration model that characterized the previous system:
 
-\begin{figure}[H]
 \begin{verbatim}
   PRIOR ONCOLOGY TRIAL ARCHITECTURE
   (Point-to-Point Integrations)
@@ -154,7 +150,6 @@ To understand why the national MCP system is necessary, it is helpful to examine
   Each arrow = custom bilateral integration
   N sites x M systems = O(N*M) integrations
 \end{verbatim}
-\end{figure}
 
 In this model, every clinical site maintained its own EHR, PACS, and audit system with proprietary interfaces. Cross-site communication required custom API development for each pair of systems, creating a combinatorial explosion of integration effort. A trial spanning 50 sites with 3 systems each required up to $50 \times 3 = 150$ unique integration endpoints, each requiring individual maintenance, testing, and regulatory validation.
 
@@ -192,8 +187,8 @@ The system was developed across four repositories in sequence. Table~\ref{tab:re
 \centering
 \caption{Repository development timeline and evolution.}
 \label{tab:repo-timeline}
-\scriptsize
-\begin{tabularx}{\textwidth}{@{}L{4.7cm}L{1.6cm}R{0.7cm}L{5.2cm}@{}}
+\small
+\begin{tabularx}{\textwidth}{@{}L{3.2cm}L{2.5cm}R{1.2cm}L{5.8cm}@{}}
 \toprule
 \textbf{Repository} & \textbf{Date Range} & \textbf{Days} & \textbf{Focus} \\
 \midrule
@@ -220,9 +215,7 @@ The national repository progressed through the following versions, each driven b
 
 \item \textbf{v1.0.1 (March 8, 2026):} Documentation accuracy corrections: badge updates, test count reconciliation, CI pipeline documentation alignment (14 jobs).
 
-\item \textbf{v1.1.0 (March 9, 2026):} Initial paper, updated documentation, and release notes.
-
-\item \textbf{v1.2.0 (March 9, 2026):} Revised paper with formatting corrections: running header sizing, introduction restructuring, table column overlap fixes, and diagram pagination.
+\item \textbf{v1.1.0 (March 9, 2026):} This paper, updated documentation, and release notes.
 \end{itemize}
 
 \subsubsection{Development Metrics}
@@ -231,16 +224,16 @@ Table~\ref{tab:dev-metrics} presents quantitative development metrics derived fr
 
 \begin{table}[H]
 \centering
-\caption{Development metrics for the national repository (v0.5.0 through v1.2.0).}
+\caption{Development metrics for the national repository (v0.5.0 through v1.1.0).}
 \label{tab:dev-metrics}
 \small
 \begin{tabular}{@{}lr@{}}
 \toprule
 \textbf{Metric} & \textbf{Value} \\
 \midrule
-Total span (v0.5.0 to v1.2.0) & 5 days \\
+Total span (v0.5.0 to v1.1.0) & 5 days \\
 Days with an AI update & 5 days \\
-Number of AI code generation sessions & 7 versions \\
+Number of AI code generation sessions & 6 versions \\
 Days of AI code recommendations & 4 days \\
 Days of AI fixes (v0.5.2, v1.0.1) & 2 days \\
 Total span across all 4 repositories & 36 days \\
@@ -287,8 +280,8 @@ The system implements five domain-specific MCP servers, each encapsulating a dis
 \centering
 \caption{Five MCP servers, their tools, and conformance levels.}
 \label{tab:five-servers}
-\footnotesize
-\begin{tabularx}{\textwidth}{@{}L{3.2cm}C{0.8cm}C{1.0cm}L{6.8cm}@{}}
+\small
+\begin{tabularx}{\textwidth}{@{}L{2.4cm}C{0.8cm}C{1.2cm}L{7.5cm}@{}}
 \toprule
 \textbf{Server} & \textbf{Tools} & \textbf{Level} & \textbf{Primary Function} \\
 \midrule
@@ -364,7 +357,6 @@ The DICOM adapter (\texttt{dicom\_adapter.py}) supports integration with industr
 
 The following text diagram shows the complete five-server deployment topology with data flow paths:
 
-\begin{figure}[H]
 \begin{verbatim}
   NATIONAL MCP FIVE-SERVER DEPLOYMENT
   +---------------------------------------------------+
@@ -391,7 +383,6 @@ The following text diagram shows the complete five-server deployment topology wi
   |  23 tools total across 5 servers                   |
   +---------------------------------------------------+
 \end{verbatim}
-\end{figure}
 
 \subsubsection{Complete Tool Inventory}
 
@@ -401,8 +392,8 @@ Table~\ref{tab:tool-inventory} provides the complete inventory of all 23 tools w
 \centering
 \caption{Complete 23-tool inventory across all five MCP servers.}
 \label{tab:tool-inventory}
-\footnotesize
-\begin{tabularx}{\textwidth}{@{}L{4.2cm}L{3.5cm}L{4.1cm}@{}}
+\small
+\begin{tabularx}{\textwidth}{@{}L{3.5cm}L{3.8cm}L{4.5cm}@{}}
 \toprule
 \textbf{Tool} & \textbf{Key Parameters} & \textbf{Response Type} \\
 \midrule
@@ -469,8 +460,8 @@ The system provides eight safety modules in \texttt{safety/} specifically design
 \centering
 \caption{Safety modules for Physical AI systems.}
 \label{tab:safety-modules}
-\footnotesize
-\begin{tabularx}{\textwidth}{@{}L{3.8cm}L{8.2cm}@{}}
+\small
+\begin{tabularx}{\textwidth}{@{}L{3.5cm}L{8.5cm}@{}}
 \toprule
 \textbf{Module} & \textbf{Purpose} \\
 \midrule
@@ -544,11 +535,11 @@ Privacy & 4 & De-identification pipeline, privacy budget, data residency \\
 
 \subsection{Repository Scale}
 
-Table~\ref{tab:repo-scale} summarizes the quantitative scope of the national repository at version 1.2.0:
+Table~\ref{tab:repo-scale} summarizes the quantitative scope of the national repository at version 1.1.0:
 
 \begin{table}[H]
 \centering
-\caption{Repository quantitative summary (v1.2.0).}
+\caption{Repository quantitative summary (v1.1.0).}
 \label{tab:repo-scale}
 \small
 \begin{tabular}{@{}lr|lr@{}}
@@ -608,8 +599,8 @@ The repository defines 13 machine-readable JSON schemas in \texttt{schemas/} usi
 \centering
 \caption{JSON schemas organized by domain category.}
 \label{tab:schemas}
-\scriptsize
-\begin{tabularx}{\textwidth}{@{}L{4.5cm}L{1.5cm}L{5.5cm}@{}}
+\small
+\begin{tabularx}{\textwidth}{@{}L{4cm}L{2cm}L{5.5cm}@{}}
 \toprule
 \textbf{Schema File} & \textbf{Category} & \textbf{Validates} \\
 \midrule
@@ -738,7 +729,6 @@ The federation adapters in \texttt{integrations/federation/} (coordinator, polic
 
 The following text diagram illustrates the complete data flow for a Physical AI robot agent executing a clinical procedure within the national standard. Each numbered step corresponds to a specific MCP tool invocation, producing an audit record in the hash-chained ledger:
 
-\begin{figure}[H]
 \begin{verbatim}
   ROBOT AGENT         MCP SERVERS         CLINICAL SYSTEMS
   -----------         -----------         ----------------
@@ -786,7 +776,6 @@ The following text diagram illustrates the complete data flow for a Physical AI 
   |  DONE  |
   +--------+
 \end{verbatim}
-\end{figure}
 
 This six-step workflow ensures that every robotic action is authorized (step 1), informed by clinical data (steps 2--3), executed under safety governance (step 4), and fully auditable (steps 5--6).
 
@@ -794,7 +783,6 @@ This six-step workflow ensures that every robotic action is authorized (step 1),
 
 The national standard envisions a three-tier deployment topology that scales from individual sites to regional aggregations to a national governance layer:
 
-\begin{figure}[H]
 \begin{verbatim}
   NATIONAL GOVERNANCE LAYER
   +-----------------------------------------------------+
@@ -819,7 +807,6 @@ The national standard envisions a three-tier deployment topology that scales fro
                     | Audit Merge        |
                     +--------------------+
 \end{verbatim}
-\end{figure}
 
 Each site operates its own five-server deployment. The federated layer aggregates model updates using privacy-preserving techniques with differential privacy budgets, while audit chains are verified cross-site without exposing patient data. This architecture enables national-scale oncology trials while preserving patient privacy at each individual institution.
 
@@ -960,13 +947,13 @@ The system integrates AI and robotics advances intended to improve patient safet
 
 Quantitative validation through 668 test functions across eight categories (including 57 adversarial tests and 39 security tests) demonstrates the system's commitment to safety-critical quality assurance. The 34 integration adapters spanning FHIR, DICOM, clinical, federation, identity, and privacy domains provide concrete interoperability with existing healthcare IT infrastructure.
 
-The development process itself demonstrates the potential of AI-assisted software engineering for healthcare infrastructure, with the entire national repository (381 files, approximately 69,800 lines) generated through structured prompts to Anthropic Claude Code Opus 4.6 and peer-reviewed by OpenAI ChatGPT 5.4 Thinking over a span of 5 days (v0.5.0 through v1.2.0) and 36 days across all four repositories.
+The development process itself demonstrates the potential of AI-assisted software engineering for healthcare infrastructure, with the entire national repository (381 files, approximately 69,800 lines) generated through structured prompts to Anthropic Claude Code Opus 4.6 and peer-reviewed by OpenAI ChatGPT 5.4 Thinking over a span of 5 days (v0.5.0 through v1.1.0) and 36 days across all four repositories.
 
 Patient benefit remains the central motivation for this work. By standardizing the infrastructure that governs how autonomous systems interact with clinical data, how audit trails are maintained, and how safety constraints are enforced, the national MCP system provides the foundation for oncology clinical trials that are safer, more transparent, and more effective than those conducted under prior fragmented infrastructure.
 
 The repositories that contributed to this work are publicly available:
 \begin{itemize}[leftmargin=*]
-\item \texttt{national-mcp-pai-oncology-trials} (v1.2.0)~\cite{kawchak2026national}
+\item \texttt{national-mcp-pai-oncology-trials} (v1.1.0)~\cite{kawchak2026national}
 \item \texttt{mcp-pai-oncology-trials}~\cite{kawchak2026trialmcp}
 \item \texttt{physical-ai-oncology-trials}~\cite{kawchak2026physicalai}
 \item \texttt{pai-oncology-trial-fl}~\cite{kawchak2026paifl}

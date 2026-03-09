@@ -1520,13 +1520,15 @@ national-mcp-pai-oncology-trials/
 │   ├── governance/              # Governance artifacts (decision log, roadmap, etc.)
 │   ├── security/                # Security documentation (threat model, SBOM, etc.)
 │   └── walkthroughs/            # Profile walkthroughs (5 end-to-end scenarios)
-├── paper/                         # Research paper (v1.1.0)
+├── paper/                         # Research paper (v1.2.0)
 │   ├── National_MCP_Servers_for_Physical_AI_Oncology_Clinical_Trial_Systems.pdf
 │   ├── National_MCP_Servers_for_Physical_AI_Oncology_Clinical_Trial_Systems.tex
 │   ├── arxiv.sty                 # Modified arxiv-style template
 │   ├── references.bib            # BibTeX bibliography
 │   ├── latex-source-code.zip     # Complete LaTeX source archive
-│   └── README                   # Compilation instructions
+│   ├── orcid_icon.pdf            # ORCID icon for author attribution
+│   ├── orcid_icon.tex            # ORCID icon LaTeX source
+│   └── prior/                    # Prior version paper files (v1.1.0)
 ├── peer-review/                  # External peer review responses and prompts
 ├── pyproject.toml                # Python project config (entry points, ruff, pytest)
 ├── changelog.md                  # Version history
