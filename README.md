@@ -1,10 +1,11 @@
 # National MCP Standard for Physical AI Oncology Clinical Trials
 
-**Version 1.0.1** | **Proposed Reference Standard** | **United States**
+**Version 1.1.0** | **Proposed Reference Standard** | **United States**
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 [![DOI](https://img.shields.io/badge/DOI-10.5281%2Fzenodo.18894758-blue)](https://doi.org/10.5281/zenodo.18894758)
-[![Version](https://img.shields.io/badge/Version-1.0.1-green.svg)](releases.md)
+[![Paper DOI](https://img.shields.io/badge/Paper_DOI-10.5281%2Fzenodo.18916731-blue)](https://doi.org/10.5281/zenodo.18916731)
+[![Version](https://img.shields.io/badge/Version-1.1.0-green.svg)](releases.md)
 [![CI](https://github.com/kevinkawchak/national-mcp-pai-oncology-trials/actions/workflows/ci.yml/badge.svg)](.github/workflows/ci.yml)
 [![JSON Schema](https://img.shields.io/badge/JSON_Schema-Draft_2020--12-orange.svg)](schemas/)
 [![Python](https://img.shields.io/badge/Python-3.10%20|%203.11%20|%203.12-blue.svg)](https://www.python.org/)
@@ -20,7 +21,7 @@
 [![Tools](https://img.shields.io/badge/Tools-23-blue.svg)](spec/tool-contracts.md)
 [![Conformance Tests](https://img.shields.io/badge/Conformance_Tests-331-blue.svg)](conformance/)
 [![Unit Tests](https://img.shields.io/badge/Unit_Tests-337-blue.svg)](tests/)
-[![Updated](https://img.shields.io/badge/Updated-2026--03--08-lightgrey.svg)](changelog.md)
+[![Updated](https://img.shields.io/badge/Updated-2026--03--09-lightgrey.svg)](changelog.md)
 [![Contributors](https://img.shields.io/badge/Contributors-3-blue.svg)](releases.md)
 
 The **National MCP-PAI Oncology Trials Standard** is a proposed reference standard for deploying Model Context Protocol (MCP) servers across federated Physical AI oncology clinical trial systems in the United States. This standard defines protocol contracts, actor models, security baselines, regulatory overlays, machine-readable JSON schemas, and governance processes intended to enable industry-wide interoperability of autonomous robotic systems in regulated clinical environments.
@@ -59,8 +60,23 @@ The **National MCP-PAI Oncology Trials Standard** is a proposed reference standa
 - [Advantages Over Existing Approaches](#advantages-over-existing-approaches)
 - [Repository Structure](#repository-structure)
 - [Getting Started](#getting-started)
+- [Paper](#paper)
 - [Governance](#governance)
 - [References](#references)
+
+---
+
+## Paper
+
+**National MCP Servers for Physical AI Oncology Clinical Trial Systems**
+
+Kawchak K. National MCP Servers for Physical AI Oncology Clinical Trial Systems. Zenodo. 2026; [10.5281/zenodo.18916731](https://doi.org/10.5281/zenodo.18916731).
+
+- **PDF**: [`paper/National_MCP_Servers_for_Physical_AI_Oncology_Clinical_Trial_Systems.pdf`](paper/National_MCP_Servers_for_Physical_AI_Oncology_Clinical_Trial_Systems.pdf)
+- **LaTeX Source**: [`paper/latex-source-code.zip`](paper/latex-source-code.zip)
+- **Template**: [kourgeorge/arxiv-style](https://github.com/kourgeorge/arxiv-style)
+
+The 20-page paper covers the five-server MCP architecture, safety modules, conformance levels, federated learning integration, AI-assisted development methodology, and the path from prior fragmented trial infrastructure to the proposed national standard.
 
 ---
 
@@ -1504,6 +1520,15 @@ national-mcp-pai-oncology-trials/
 │   ├── governance/              # Governance artifacts (decision log, roadmap, etc.)
 │   ├── security/                # Security documentation (threat model, SBOM, etc.)
 │   └── walkthroughs/            # Profile walkthroughs (5 end-to-end scenarios)
+├── paper/                         # Research paper (v1.2.0)
+│   ├── National_MCP_Servers_for_Physical_AI_Oncology_Clinical_Trial_Systems.pdf
+│   ├── National_MCP_Servers_for_Physical_AI_Oncology_Clinical_Trial_Systems.tex
+│   ├── arxiv.sty                 # Modified arxiv-style template
+│   ├── references.bib            # BibTeX bibliography
+│   ├── latex-source-code.zip     # Complete LaTeX source archive
+│   ├── orcid_icon.pdf            # ORCID icon for author attribution
+│   ├── orcid_icon.tex            # ORCID icon LaTeX source
+│   └── prior/                    # Prior version paper files (v1.1.0)
 ├── peer-review/                  # External peer review responses and prompts
 ├── pyproject.toml                # Python project config (entry points, ruff, pytest)
 ├── changelog.md                  # Version history

@@ -1,15 +1,33 @@
+## Prompt v1.1.0
+
+Your goal is to generate a 20 page paper titled “National MCP Servers for Physical AI Oncology Clinical Trial Systems” based on the entire national-mcp-pai-oncology-trials repository with a focus on a) prior oncology trial infrastructure being fragmented, site-specific, and inefficient across interoperability, auditability, privacy, and deployment, b) the national MCP Physical AI oncology trials system containing 5 MCP servers address these gaps through standardized, federated, and safety-governed MCP capabilities, including c) AI and robotics advances intended to improve patient safety and clinical effectiveness. Patient benefit is key in this new mcp system. (Note: the current oncology clinical trial system should be referred to as the old or prior or previous system throughout the paper)
+
+The paper should be written in LaTeX using 10.5281/zenodo.18916731 where appropriate. Use the kourgeorge/arxiv-style/blob/master/arxiv.sty, except remove the “A Preprint” from the top of the page, and don't add colored box frames around text, links, etc. Include author Kevin Kawchak, the template's iD icon (clickable link: https://orcid.org/0009-0007-5457-8667), Chief Executive Officer, ChemicalQDevice, kevink@chemicalqdevice.com, today's date, and 5 keywords. No em dashes are allowed in the paper. A balance of directory names, version numbers, and file names should be utilized strategically throughout the paper, as well as citing the 3 other repositories that aided in the development of the current repository.
+
+Utilize information from sources 1)-4) in the following order of importance:
+1) kevinkawchak/national-mcp-pai-oncology-trials (10.5281/zenodo.18894758)(paper doi: 10.5281/zenodo.18916731)
+2) kevinkawchak/mcp-pai-oncology-trials (10.5281/zenodo.18869776)(paper doi: 10.5281/zenodo.18870961)
+3) kevinkawchak/physical-ai-oncology-trials (10.5281/zenodo.18445179)(paper doi: 10.5281/zenodo.18778220)
+4) kevinkawchak/pai-oncology-trial-fl (paper doi: 10.5281/zenodo.18795507)
+
+Paper Sections: Abstract, Table of Contents, Introduction, Methods, Results, Discussion, Limitations and Future Work, Conclusion, References, Acknowledgments, Ethical disclosures, Rights and permissions, Cite this article.
+
+Output the finished paper as a .pdf under /main/paper. Output a zip file containing 4 files in /paper titled “Latex Source Code”: .tex, .sty, README, .bib. Update all relevant documentation and readme throughout the repository. Provide release notes in releases.md and an updated changelog (v1.1.0).
+
+---
+
 ## Prompt v1.0.1
 
 For national-mcp-pai-oncology-trials: the following two prompts were processed in v1.0.0: but not all tasks were completed fully and accurately. For instance, the stats.md and next-steps.md need to be fully up to date and correct throughout paragraphs, lists, and bullet points (v1.0.1 is to be used, not v0.1.0.) Also the main readme did not update badges, diagrams, documentation, etc. Update all documentation repo wide to be accurate and comprehensive based on the following prompts. The “Original Prompt” and “Follow-up Prompt” below must be fully applied and correct throughout the repo.
 
-Provide a copy of this exact prompt under main prompts.md. Be sure to fix and address errors that would cause failed checks for the single pull request (such as Python environment issues to avoid the following error during final checks): “3 failing checks 
+Provide a copy of this exact prompt under main prompts.md. Be sure to fix and address errors that would cause failed checks for the single pull request (such as Python environment issues to avoid the following error during final checks): “3 failing checks
 x Cl / lint-and-format (3.10) (pull...
 x Cl / lint-and-format (3.11) (pull...
 x Cl / lint-and-format (3.12) (pull... “ Place the new release notes in releases.md under main using the format below (which is the same format of the last published version). Update changelog.md using v1.0.1. When you are finished, auto-push the update to GitHub on your own for my review. The user will then review your updates in GitHub prior to finalization.
 
 “FORMAT”
-Release title 
-v1.0.1 - 
+Release title
+v1.0.1 -
 
 ## Summary
 

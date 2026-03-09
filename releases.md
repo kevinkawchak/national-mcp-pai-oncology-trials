@@ -4,6 +4,36 @@ Release notes for the National MCP-PAI Oncology Trials Standard.
 
 ---
 
+v1.1.0 - National MCP Servers Paper and Documentation Updates
+
+## Summary
+
+Adds the 20-page paper "National MCP Servers for Physical AI Oncology Clinical Trial Systems" (DOI: 10.5281/zenodo.18916731) under `paper/`, authored in LaTeX using the arxiv-style template. The paper covers the five-server MCP architecture, safety modules, conformance levels, federated learning integration, and the AI-assisted development methodology. Includes compiled PDF, LaTeX source code zip, and updated repository documentation reflecting v1.1.0.
+
+## Features
+
+- **Paper** -- 20-page LaTeX paper covering the national MCP Physical AI oncology trial system architecture, methods, results, discussion, limitations, and conclusion
+- **LaTeX source** -- Complete LaTeX source code with arxiv.sty (modified to remove "A Preprint"), references.bib, and README, packaged as "Latex Source Code.zip"
+- **Paper PDF** -- Compiled PDF at `paper/National_MCP_Servers_for_Physical_AI_Oncology_Clinical_Trial_Systems.pdf`
+- **Documentation updates** -- Updated changelog.md, releases.md, prompts.md, README.md, and pyproject.toml for v1.1.0
+- **Prompt archive** -- Full v1.1.0 paper generation prompt archived in prompts.md
+
+## Contributors
+@kevinkawchak
+@claude
+
+## Notes
+
+The paper references all four repositories in the development lineage:
+1. physical-ai-oncology-trials (DOI: 10.5281/zenodo.18445179)
+2. pai-oncology-trial-fl (DOI: 10.5281/zenodo.18840880)
+3. mcp-pai-oncology-trials (DOI: 10.5281/zenodo.18869776)
+4. national-mcp-pai-oncology-trials (DOI: 10.5281/zenodo.18894758)
+
+Paper DOI: 10.5281/zenodo.18916731
+
+---
+
 v1.0.1 - Documentation Accuracy, Badge Corrections, and Comprehensive Updates
 
 ## Summary

@@ -1,0 +1,50 @@
+National MCP Servers for Physical AI Oncology Clinical Trial Systems
+====================================================================
+
+LaTeX Source Code
+-----------------
+
+This directory contains the LaTeX source code for:
+
+  Kawchak K. National MCP Servers for Physical AI Oncology Clinical
+  Trial Systems. Zenodo. 2026; 10.5281/zenodo.18916731.
+
+Files
+-----
+
+  National_MCP_Servers_for_Physical_AI_Oncology_Clinical_Trial_Systems.tex
+      Main LaTeX document (20 pages)
+
+  arxiv.sty
+      Modified arxiv-style template (kourgeorge/arxiv-style)
+      Modifications: removed "A Preprint" header and subtitle
+
+  references.bib
+      BibTeX bibliography file with all references
+
+  README
+      This file
+
+  National_MCP_Servers_for_Physical_AI_Oncology_Clinical_Trial_Systems.pdf
+      Compiled PDF output
+
+Compilation
+-----------
+
+  pdflatex National_MCP_Servers_for_Physical_AI_Oncology_Clinical_Trial_Systems.tex
+  bibtex National_MCP_Servers_for_Physical_AI_Oncology_Clinical_Trial_Systems
+  pdflatex National_MCP_Servers_for_Physical_AI_Oncology_Clinical_Trial_Systems.tex
+  pdflatex National_MCP_Servers_for_Physical_AI_Oncology_Clinical_Trial_Systems.tex
+
+Requirements: texlive-latex-extra, texlive-fonts-recommended
+
+Template
+--------
+
+  Based on: https://github.com/kourgeorge/arxiv-style
+  DOI: 10.5281/zenodo.18916731
+
+License
+-------
+
+  CC BY 4.0 (https://creativecommons.org/licenses/by/4.0/)

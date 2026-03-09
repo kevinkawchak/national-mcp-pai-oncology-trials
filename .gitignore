@@ -5,3 +5,13 @@ __pycache__/
 node_modules/
 package-lock.json
 .ruff_cache/
+# LaTeX auxiliary files
+paper/*.aux
+paper/*.log
+paper/*.out
+paper/*.toc
+paper/*.bbl
+paper/*.blg
+paper/*.fdb_latexmk
+paper/*.fls
+paper/*.synctex.gz

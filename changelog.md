@@ -6,6 +6,27 @@ This project follows [Semantic Versioning](https://semver.org/) as described in 
 
 ---
 
+## [1.1.0] — 2026-03-09
+
+### Added
+- `paper/` — 20-page LaTeX paper "National MCP Servers for Physical AI Oncology Clinical Trial Systems"
+- `paper/National_MCP_Servers_for_Physical_AI_Oncology_Clinical_Trial_Systems.tex` — Main LaTeX document
+- `paper/arxiv.sty` — Modified arxiv-style template (removed "A Preprint" header)
+- `paper/references.bib` — BibTeX bibliography with all references
+- `paper/README` — LaTeX compilation instructions
+- `paper/National_MCP_Servers_for_Physical_AI_Oncology_Clinical_Trial_Systems.pdf` — Compiled 20-page PDF
+- `paper/Latex Source Code.zip` — Zip archive containing .tex, .sty, .bib, and README
+- `paper/orcid_icon.pdf` — ORCID icon for author identification
+
+### Changed
+- `pyproject.toml` — Version 1.1.0, updated description
+- `prompts.md` — Archived v1.1.0 paper generation prompt
+- `releases.md` — Added v1.1.0 release notes
+- `changelog.md` — This entry
+- `README.md` — Added paper section with Zenodo DOI link, updated version badge and repository structure
+
+---
+
 ## [1.0.1] — 2026-03-08
 
 ### Fixed
