@@ -27,7 +27,7 @@ This project follows [Semantic Versioning](https://semver.org/) as described in 
 
 ---
 
-- @kevinkawchak main README organizational changes and ASCII diagram fixes. main/paper directory additions and updates. 2026-03-09
+- @kevinkawchak main README organizational changes and ASCII diagram fixes. main/paper directory additions and updates. main/peer-review re-organization. 2026-03-09
 
 ---
 
