@@ -84,7 +84,7 @@ The 20-page paper covers the five-server MCP architecture, safety modules, confo
 
 ---
 
-## GitHub Pages
+## GitHub Page
 
 **Demonstration: National MCP Servers for Physical AI Oncology Clinical Trial Systems**
 
@@ -94,25 +94,13 @@ The 20-page paper covers the five-server MCP architecture, safety modules, confo
 - **PDF**: [Demonstration National MCP Servers for Physical AI Oncology Clinical Trial Systems.pdf](https://github.com/kevinkawchak/national-mcp-pai-oncology-trials/blob/main/docs/Demonstration%20National%20MCP%20Servers%20for%20Physical%20AI%20Oncology%20Clinical%20Trial%20Systems.pdf)
 - **Source**: [docs/index.html](docs/index.html)
 
-The interactive demonstration features seven process diagrams, a national deployment topology simulator, conformance level explorer, safety module visualizations, and a repository scale dashboard. To enable GitHub Pages: Settings > Pages > Source > Deploy from branch > `main` > `/docs`.
-
----
-
-## GitHub Pages Demonstration
-
-**Demonstration: National MCP Servers for Physical AI Oncology Clinical Trial Systems**
-
-The `docs/` directory contains an interactive GitHub Pages demonstration of the proposed national standard alongside the project documentation, featuring:
+The interactive demonstration features seven process diagrams, a national deployment topology simulator, conformance level explorer, safety module visualizations, and a repository scale dashboard. 
 
 - **Seven interactive diagram sections** from `docs/mcp-process/` (robot procedure lifecycle, cross-site communication, clinical system integration, safety gate evaluation, federated learning coordination, audit provenance chain, privacy de-identification)
 - **National deployment topology simulator** with deterministic simulations of 750+ site deployments
 - **Conformance level explorer** with interactive 5-level hierarchy
 - **Safety module visualization** with e-stop lifecycle animation
 - **Repository scale dashboard** with quantitative statistics
-
-To enable GitHub Pages, configure the repository to serve from the `docs/` directory on the `main` branch (Settings > Pages > Source > Deploy from branch > `main` > `/docs`).
-
-> **Note**: This is a reference architecture demonstration and interactive simulation, not a deployed clinical system.
 
 ---
 
