@@ -21,6 +21,7 @@ Adds a complete GitHub Pages demonstration site in `docs/` titled "Demonstration
 - **PDF export** of the complete GitHub Pages site under `docs/`
 - **Classification and disclaimers** section clearly stating what the demonstration IS and IS NOT, simulation conditions, and what is needed for actual trial use
 - **Updated documentation** including README.md (v1.2.0 badges, docs/ GitHub Pages structure, GitHub Pages section), changelog.md, releases.md, prompts.md, and pyproject.toml
+- @kevinkawchak made additional aestetics changes to the site, and update main README, as well as docs/.
 
 ## Contributors
 @kevinkawchak
