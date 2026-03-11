@@ -29,6 +29,7 @@ This project follows [Semantic Versioning](https://semver.org/) as described in 
 - `changelog.md` - This entry
 - `releases.md` - Added v1.2.0 release notes
 - `prompts.md` - Archived v1.2.0 GitHub Pages generation prompt
+- @kevinkawchak made additional aestetics changes to the site, and update main README, as well as docs/ 2026-03-11.
 
 ---
 
