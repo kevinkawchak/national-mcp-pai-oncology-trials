@@ -1,0 +1,201 @@
+{
+  "version": "1.2.0",
+  "servers": [
+    {
+      "id": "trialmcp-authz",
+      "name": "Authorization Server",
+      "directory": "servers/trialmcp_authz/",
+      "conformanceLevel": 1,
+      "toolCount": 5,
+      "tools": [
+        {
+          "name": "authz_evaluate",
+          "parameters": ["role", "tool"],
+          "response": "ALLOW/DENY decision",
+          "description": "Evaluates whether a given role is permitted to invoke a specific tool"
+        },
+        {
+          "name": "authz_issue_token",
+          "parameters": ["role", "expires_in"],
+          "response": "Token with SHA-256 hash",
+          "description": "Issues a scoped, time-limited token with SHA-256 hashing"
+        },
+        {
+          "name": "authz_validate_token",
+          "parameters": ["token_hash"],
+          "response": "Valid/invalid status",
+          "description": "Validates a token's authenticity and expiration"
+        },
+        {
+          "name": "authz_revoke_token",
+          "parameters": ["token_hash"],
+          "response": "Revocation confirmation",
+          "description": "Revokes a previously issued token"
+        },
+        {
+          "name": "authz_list_policies",
+          "parameters": ["role", "server"],
+          "response": "Policy list",
+          "description": "Lists active policies for a given role or server"
+        }
+      ],
+      "keyFiles": ["server.py", "policy_engine.py", "token_store.py"],
+      "primaryFunction": "Deny-by-default RBAC, SHA-256 token lifecycle, policy evaluation"
+    },
+    {
+      "id": "trialmcp-fhir",
+      "name": "FHIR Clinical Data Server",
+      "directory": "servers/trialmcp_fhir/",
+      "conformanceLevel": 2,
+      "toolCount": 4,
+      "tools": [
+        {
+          "name": "fhir_read",
+          "parameters": ["resource_type", "id"],
+          "response": "De-identified FHIR resource",
+          "description": "Read a single FHIR R4 resource by type and ID"
+        },
+        {
+          "name": "fhir_search",
+          "parameters": ["resource_type", "params"],
+          "response": "De-identified bundle",
+          "description": "Search FHIR resources with parameter filtering"
+        },
+        {
+          "name": "fhir_patient_lookup",
+          "parameters": ["pseudonym"],
+          "response": "De-identified patient",
+          "description": "Look up a patient by pseudonymized identifier"
+        },
+        {
+          "name": "fhir_study_status",
+          "parameters": ["study_id"],
+          "response": "Study status object",
+          "description": "Retrieve the status of a clinical study"
+        }
+      ],
+      "keyFiles": ["server.py", "deid_pipeline.py", "fhir_adapter.py"],
+      "primaryFunction": "FHIR R4 clinical data with HIPAA Safe Harbor de-identification"
+    },
+    {
+      "id": "trialmcp-dicom",
+      "name": "DICOM Imaging Server",
+      "directory": "servers/trialmcp_dicom/",
+      "conformanceLevel": 3,
+      "toolCount": 4,
+      "tools": [
+        {
+          "name": "dicom_query",
+          "parameters": ["patient_id", "modality"],
+          "response": "Study result list",
+          "description": "Search imaging studies by patient or accession number"
+        },
+        {
+          "name": "dicom_retrieve_pointer",
+          "parameters": ["study_uid"],
+          "response": "Secure image pointer",
+          "description": "Obtain secure references without transferring pixel data"
+        },
+        {
+          "name": "dicom_study_metadata",
+          "parameters": ["study_uid"],
+          "response": "DICOM metadata",
+          "description": "Retrieve study-level DICOM metadata"
+        },
+        {
+          "name": "dicom_recist_measurements",
+          "parameters": ["study_uid"],
+          "response": "RECIST measurements",
+          "description": "Query tumor measurement data for treatment response"
+        }
+      ],
+      "keyFiles": ["server.py", "dicom_adapter.py"],
+      "primaryFunction": "DICOM imaging queries, RECIST 1.1 measurements"
+    },
+    {
+      "id": "trialmcp-ledger",
+      "name": "Audit Ledger Server",
+      "directory": "servers/trialmcp_ledger/",
+      "conformanceLevel": 1,
+      "toolCount": 5,
+      "tools": [
+        {
+          "name": "ledger_append",
+          "parameters": ["server", "tool", "caller"],
+          "response": "Audit record with hash",
+          "description": "Append a new record to the hash-chained audit trail"
+        },
+        {
+          "name": "ledger_verify",
+          "parameters": [],
+          "response": "Chain validity status",
+          "description": "Verify the integrity of the entire audit chain"
+        },
+        {
+          "name": "ledger_query",
+          "parameters": ["server", "tool", "caller"],
+          "response": "Filtered audit records",
+          "description": "Query audit records with filters"
+        },
+        {
+          "name": "ledger_replay",
+          "parameters": ["start_index", "count"],
+          "response": "Record sequence",
+          "description": "Replay a sequence of audit records"
+        },
+        {
+          "name": "ledger_export",
+          "parameters": ["format"],
+          "response": "Full chain export",
+          "description": "Export the full audit chain in specified format"
+        }
+      ],
+      "keyFiles": ["server.py", "chain.py", "storage.py"],
+      "primaryFunction": "Hash-chained 21 CFR Part 11 audit trail"
+    },
+    {
+      "id": "trialmcp-provenance",
+      "name": "Provenance Server",
+      "directory": "servers/trialmcp_provenance/",
+      "conformanceLevel": 4,
+      "toolCount": 5,
+      "tools": [
+        {
+          "name": "provenance_record",
+          "parameters": ["source_id", "action", "actor"],
+          "response": "Provenance record",
+          "description": "Record a provenance entry in the DAG"
+        },
+        {
+          "name": "provenance_query_forward",
+          "parameters": ["record_id", "depth"],
+          "response": "Downstream lineage",
+          "description": "Query downstream data lineage"
+        },
+        {
+          "name": "provenance_query_backward",
+          "parameters": ["record_id", "depth"],
+          "response": "Upstream lineage",
+          "description": "Query upstream data lineage"
+        },
+        {
+          "name": "provenance_fingerprint",
+          "parameters": ["data"],
+          "response": "SHA-256 fingerprint",
+          "description": "Compute a SHA-256 fingerprint for data"
+        },
+        {
+          "name": "provenance_lineage",
+          "parameters": ["source_id"],
+          "response": "Full lineage graph",
+          "description": "Retrieve the full lineage graph for a source"
+        }
+      ],
+      "keyFiles": ["server.py", "dag.py", "storage.py"],
+      "primaryFunction": "DAG-based data lineage, SHA-256 fingerprinting"
+    }
+  ],
+  "totalTools": 23,
+  "schemas": 13,
+  "simulationNote": "Server metadata is derived from the repository specification. No live MCP server instances are running."
+}

@@ -1,0 +1,104 @@
+{
+  "version": "1.2.0",
+  "modules": [
+    {
+      "id": "estop",
+      "name": "Emergency Stop Controller",
+      "file": "safety/estop.py",
+      "states": ["IDLE", "TRIGGERED", "ACKNOWLEDGED", "RECOVERING"],
+      "purpose": "Emergency stop signal propagation, abort workflow, post-abort evidence capture, recovery with re-authorization",
+      "properties": [
+        "Only one e-stop can be active at a time",
+        "All registered servers receive the stop signal",
+        "Procedure state is preserved for post-incident analysis",
+        "Recovery requires explicit re-authorization"
+      ]
+    },
+    {
+      "id": "procedure_state",
+      "name": "Procedure State Machine",
+      "file": "safety/procedure_state.py",
+      "states": ["IDLE", "PREPARING", "ACTIVE", "PAUSED", "COMPLETING", "ABORTED"],
+      "purpose": "Procedure state machine enforcement with valid transition validation",
+      "properties": [
+        "Invalid transitions are rejected",
+        "State history is maintained for audit",
+        "IDLE to ACTIVE requires passing through PREPARING"
+      ]
+    },
+    {
+      "id": "robot_registry",
+      "name": "Robot Registry",
+      "file": "safety/robot_registry.py",
+      "states": [],
+      "purpose": "Robot registration, capability validation, firmware version tracking",
+      "properties": [
+        "Capability declaration required before procedure",
+        "Firmware version must match approved list"
+      ]
+    },
+    {
+      "id": "task_validator",
+      "name": "Task Validator",
+      "file": "safety/task_validator.py",
+      "states": [],
+      "purpose": "Task order validation against safety constraints and robot capabilities",
+      "properties": [
+        "Validates task parameters against schema",
+        "Checks robot capability match"
+      ]
+    },
+    {
+      "id": "gate_service",
+      "name": "Safety Gate Service",
+      "file": "safety/gate_service.py",
+      "states": ["PENDING", "PASSED", "FAILED", "TIMEOUT"],
+      "purpose": "Safety gate evaluation before procedure transitions",
+      "properties": [
+        "5 mandatory gates: Patient Consent, Site Capability, Robot Capability, Protocol Compliance, Human Approval",
+        "Sequential evaluation with fail-fast",
+        "300-second timeout per gate"
+      ]
+    },
+    {
+      "id": "approval_checkpoint",
+      "name": "Approval Checkpoint",
+      "file": "safety/approval_checkpoint.py",
+      "states": ["PENDING", "APPROVED", "REJECTED", "EXPIRED"],
+      "purpose": "Multi-party approval checkpoints (clinician + system + regulatory)",
+      "properties": [
+        "Concurrent approval from multiple parties required",
+        "No single actor can authorize high-risk actions unilaterally"
+      ]
+    },
+    {
+      "id": "site_verifier",
+      "name": "Site Verifier",
+      "file": "safety/site_verifier.py",
+      "states": [],
+      "purpose": "Site capability verification against conformance requirements",
+      "properties": [
+        "Validates site meets required conformance level",
+        "Checks infrastructure readiness"
+      ]
+    },
+    {
+      "id": "boundary_enforcer",
+      "name": "Boundary Enforcer",
+      "file": "safety/boundary_enforcer.py",
+      "states": [],
+      "purpose": "Execution boundary enforcement for robotic systems",
+      "properties": [
+        "Spatial boundary validation",
+        "Force limit enforcement",
+        "Temporal constraint checking"
+      ]
+    }
+  ],
+  "totalModules": 8,
+  "testCoverage": {
+    "unitTests": 88,
+    "testFile": "tests/test_safety.py"
+  },
+  "simulationNote": "Safety module definitions are derived from the repository specification. No live safety systems are operating."
+}

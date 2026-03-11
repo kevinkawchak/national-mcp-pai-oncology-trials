@@ -1,0 +1,301 @@
+/* ============================================================
+   Diagram-specific Styles and Animations
+   Version 1.2.0 | Light-mode only
+   ============================================================ */
+
+/* ---------- State Machine Diagram ---------- */
+.state-machine-diagram {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+  margin-bottom: 1rem;
+}
+
+.state-node {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.5rem 0.9rem;
+  border-radius: 6px;
+  font-family: var(--font-mono);
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: #fff;
+  background: var(--color-primary);
+  cursor: default;
+  transition: all 0.3s ease;
+  position: relative;
+}
+
+.state-node:hover {
+  transform: scale(1.05);
+  box-shadow: 0 3px 10px rgba(0,0,0,0.15);
+}
+
+.state-node.active-state {
+  animation: statePulse 1.5s ease-in-out infinite;
+}
+
+@keyframes statePulse {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(39, 174, 96, 0.4); }
+  50% { box-shadow: 0 0 0 8px rgba(39, 174, 96, 0); }
+}
+
+.state-arrow {
+  color: var(--color-text-light);
+  font-size: 1.2rem;
+  padding: 0 0.15rem;
+  user-select: none;
+}
+
+/* State colors */
+.state-node.state-idle       { background: #7f8c8d; }
+.state-node.state-scheduled  { background: #2980b9; }
+.state-node.state-precheck   { background: #3498db; }
+.state-node.state-gates      { background: #8e44ad; }
+.state-node.state-approval   { background: #e67e22; }
+.state-node.state-preparing  { background: #f39c12; }
+.state-node.state-active     { background: #27ae60; }
+.state-node.state-inprogress { background: #27ae60; }
+.state-node.state-paused     { background: #e67e22; }
+.state-node.state-completing { background: #16a085; }
+.state-node.state-completed  { background: #27ae60; }
+.state-node.state-aborted    { background: #c0392b; }
+.state-node.state-triggered  { background: #e74c3c; }
+.state-node.state-acknowledged { background: #e67e22; }
+.state-node.state-recovering { background: #f39c12; }
+
+/* ---------- Gate Visualization ---------- */
+.gate-pipeline {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  margin: 1rem 0;
+}
+
+.gate-item {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.65rem 1rem;
+  background: var(--color-bg);
+  border: 1px solid var(--color-border-light);
+  border-radius: 6px;
+  transition: all 0.3s ease;
+}
+
+.gate-item:hover {
+  border-color: var(--color-primary);
+  box-shadow: var(--shadow);
+}
+
+.gate-num {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: var(--color-primary);
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.75rem;
+  font-weight: 700;
+  flex-shrink: 0;
+}
+
+.gate-status {
+  margin-left: auto;
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  padding: 0.15rem 0.5rem;
+  border-radius: 4px;
+}
+
+.gate-status.pass { background: #d5f5e3; color: #1e8449; }
+.gate-status.fail { background: #fadbd8; color: #922b21; }
+.gate-status.pending { background: #fdebd0; color: #b7950b; }
+.gate-status.timeout { background: #e8e8e8; color: #666; }
+
+/* ---------- Network Topology Lines ---------- */
+.network-visual {
+  position: relative;
+  padding: 1.5rem;
+  background: var(--color-bg-alt);
+  border-radius: var(--radius);
+  margin: 1rem 0;
+  overflow: hidden;
+}
+
+.network-node {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.4rem 0.8rem;
+  border-radius: 6px;
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: #fff;
+  background: var(--color-primary);
+  margin: 0.25rem;
+}
+
+/* ---------- Hash Chain Visual ---------- */
+.hash-chain {
+  display: flex;
+  gap: 0;
+  overflow-x: auto;
+  padding: 1rem 0;
+  align-items: center;
+}
+
+.hash-block {
+  flex-shrink: 0;
+  width: 120px;
+  padding: 0.6rem;
+  background: var(--color-bg);
+  border: 2px solid var(--color-primary);
+  border-radius: 6px;
+  text-align: center;
+  font-size: 0.72rem;
+  font-family: var(--font-mono);
+  position: relative;
+}
+
+.hash-block .block-index {
+  font-weight: 700;
+  color: var(--color-primary);
+  font-size: 0.85rem;
+  margin-bottom: 0.2rem;
+}
+
+.hash-block .block-hash {
+  color: var(--color-text-light);
+  word-break: break-all;
+  font-size: 0.65rem;
+  line-height: 1.3;
+}
+
+.hash-link {
+  flex-shrink: 0;
+  width: 30px;
+  text-align: center;
+  color: var(--color-primary);
+  font-size: 1.2rem;
+}
+
+/* ---------- Privacy Pipeline ---------- */
+.privacy-stage {
+  display: flex;
+  align-items: stretch;
+  gap: 1rem;
+  margin: 1rem 0;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.stage-card {
+  flex: 1;
+  min-width: 200px;
+  max-width: 300px;
+  padding: 1rem;
+  background: var(--color-bg);
+  border: 1px solid var(--color-border-light);
+  border-radius: var(--radius);
+  text-align: center;
+  position: relative;
+}
+
+.stage-card h4 {
+  font-size: 0.88rem;
+  color: var(--color-primary);
+  margin-bottom: 0.4rem;
+}
+
+.stage-card .stage-num {
+  display: inline-flex;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background: var(--color-primary);
+  color: #fff;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.7rem;
+  font-weight: 700;
+  margin-bottom: 0.3rem;
+}
+
+.stage-card ul {
+  text-align: left;
+  margin: 0.4rem 0 0 1rem;
+  font-size: 0.8rem;
+}
+
+.stage-card li {
+  margin-bottom: 0.15rem;
+}
+
+.stage-connector {
+  display: flex;
+  align-items: center;
+  font-size: 1.5rem;
+  color: var(--color-primary);
+}
+
+/* ---------- Federated Learning Visual ---------- */
+.fed-round {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  padding: 1rem;
+  background: var(--color-bg-alt);
+  border-radius: var(--radius);
+  margin: 1rem 0;
+}
+
+.fed-step {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.5rem 0.75rem;
+  background: var(--color-bg);
+  border-radius: 6px;
+  border-left: 3px solid var(--color-primary);
+  font-size: 0.85rem;
+}
+
+.fed-step .step-num {
+  font-weight: 700;
+  color: var(--color-primary);
+  min-width: 1.5rem;
+}
+
+/* ---------- Interactive animations ---------- */
+@keyframes flowRight {
+  0% { opacity: 0; transform: translateX(-10px); }
+  50% { opacity: 1; }
+  100% { opacity: 0; transform: translateX(10px); }
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.animate-in {
+  animation: fadeIn 0.5s ease forwards;
+}
+
+/* ---------- Responsive ---------- */
+@media (max-width: 768px) {
+  .state-machine-diagram { gap: 0.3rem; }
+  .state-node { padding: 0.35rem 0.6rem; font-size: 0.7rem; }
+  .hash-chain { flex-wrap: nowrap; }
+  .hash-block { width: 100px; }
+  .privacy-stage { flex-direction: column; align-items: center; }
+  .stage-connector { transform: rotate(90deg); }
+}

@@ -4,6 +4,43 @@ Release notes for the National MCP-PAI Oncology Trials Standard.
 
 ---
 
+v1.2.0 - GitHub Pages Demonstration and Interactive Simulation
+
+## Summary
+
+Adds a complete GitHub Pages demonstration site under `site/` titled "Demonstration: National MCP Servers for Physical AI Oncology Clinical Trial Systems." The site provides an interactive reference architecture visualization and simulation of the proposed national standard, featuring seven interactive diagram sections from `docs/mcp-process/`, a national deployment topology simulator, conformance level explorer, safety module visualizations, and a repository scale dashboard. All data is synthetic and deterministic. The site serves as an educational and stakeholder communication tool. Includes a PDF version at `site/Demonstration National MCP Servers for Physical AI Oncology Clinical Trial Systems.pdf`.
+
+## Features
+
+- **GitHub Pages site** (`site/index.html`) with 11 sections: Hero, Abstract, Architecture Overview, Seven Process Diagrams, National Deployment Topology, Conformance Levels, Safety Modules, Repository Scale, Adoption Roadmap, Classification and Status, Citation and Links
+- **Interactive diagrams** converting all 7 `docs/mcp-process/` files into animated web components (state machines, gate evaluation, hash chains, privacy pipeline, federated learning rounds)
+- **Deployment simulator** (`site/js/simulator.js`) with deterministic simulations of national deployment (750+ sites), robot procedure workflows, and audit chain verification
+- **Conformance explorer** (`site/js/conformance.js`) with expandable 5-level hierarchy showing required servers, tools, and requirements per level
+- **Clinical design system** (`site/css/style.css`, `site/css/diagrams.css`) with light-mode only medical styling, responsive layout, and accessible color palette
+- **Data files** (`site/data/`) with topology (3 regions, 763 sites), server metadata (5 servers, 23 tools), and safety module definitions (8 modules)
+- **PDF export** of the complete GitHub Pages site under `site/`
+- **Classification and disclaimers** section clearly stating what the demonstration IS and IS NOT, simulation conditions, and what is needed for actual trial use
+- **Updated documentation** including README.md (v1.2.0 badges, site/ in repository structure, GitHub Pages section), changelog.md, releases.md, prompts.md, and pyproject.toml
+
+## Contributors
+@kevinkawchak
+@claude
+@openai
+
+## Notes
+
+- The GitHub Pages site is a reference architecture demonstration and interactive simulation, NOT a deployed clinical system
+- All data shown is synthetic; network latencies, site counts, and response times are modeled approximations
+- To enable GitHub Pages: Settings > Pages > Source > Deploy from branch > `main` > `/site`
+- The site is light-mode only with no dark-mode images or diagrams
+- No em dashes are used anywhere on the page
+- The prior oncology clinical trial system is referred to as the "prior" or "previous" system throughout
+- Contributors: Anthropic Claude Code Opus 4.6 (site generation), OpenAI ChatGPT 5.4 Thinking (peer review)
+- Paper DOI: 10.5281/zenodo.18916731
+- Repository DOI: 10.5281/zenodo.18894758
+
+---
+
 v1.1.0 - National MCP Servers Paper and Documentation Updates
 
 ## Summary
