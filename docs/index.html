@@ -120,20 +120,20 @@
   |    | (5 tools) |  | (4 tools) |  | (4 tools) |    |
   |    | RBAC,     |  | FHIR R4,  |  | DICOMweb, |    |
   |    | Tokens    |  | HIPAA     |  | RECIST    |    |
-  |    +-----+-----+  +-----+-----+  +-----+-----+   |
-  |          |              |              |           |
-  |          +------+-------+------+-------+           |
-  |                 |              |                    |
-  |          +------v------+ +-----v-------+           |
-  |          | trialmcp    | | trialmcp    |           |
-  |          | ledger      | | provenance  |           |
-  |          | (5 tools)   | | (5 tools)   |           |
-  |          | SHA-256     | | DAG, W3C    |           |
-  |          | 21 CFR 11   | | PROV        |           |
-  |          +-------------+ +-------------+           |
-  |                                                    |
-  |  23 tools total across 5 servers                   |
-  +----------------------------------------------------+</pre>
+  |    +-----+-----+  +-----+-----+  +-----+-----+    |
+  |          |              |              |          |
+  |          +------+-------+------+-------+          |
+  |                 |              |                  |
+  |          +------v------+ +-----v-------+          |
+  |          | trialmcp    | | trialmcp    |          |
+  |          | ledger      | | provenance  |          |
+  |          | (5 tools)   | | (5 tools)   |          |
+  |          | SHA-256     | | DAG, W3C    |          |
+  |          | 21 CFR 11   | | PROV        |          |
+  |          +-------------+ +-------------+          |
+  |                                                   |
+  |  23 tools total across 5 servers                  |
+  +---------------------------------------------------+</pre>
       <div class="diagram-caption">Figure 1: Five-server deployment topology at each participating clinical site</div>
     </div>
 
@@ -277,16 +277,16 @@ def compute_audit_hash(record, prev_hash: str) -&gt; str:
 
   +------------------+     +------------------+     +------------------+
   |   SITE ALPHA     |     |   SITE BETA      |     |   SITE GAMMA     |
-  |  (Hospital)      |     |  (Cancer Center)  |     |  (Hospital)      |
+  |  (Hospital)      |     |  (Cancer Center) |     |  (Hospital)      |
   | +------+ +-----+ |     | +------+ +-----+ |     | +------+ +-----+ |
   | |authz | |fhir | |     | |authz | |fhir | |     | |authz | |fhir | |
   | +------+ +-----+ |     | +------+ +-----+ |     | +------+ +-----+ |
   | +------+ +-----+ |     | +------+ +-----+ |     | +------+ +-----+ |
-  | |dicom | |ledger| |     | |dicom | |ledger| |     | |dicom | |ledger| |
+  | |dicom | |ledger||     | |dicom | |ledger||     | |dicom | |ledger||
   | +------+ +-----+ |     | +------+ +-----+ |     | +------+ +-----+ |
-  | +----------+      |     | +----------+      |     | +----------+      |
-  | |provenance|      |     | |provenance|      |     | |provenance|      |
-  | +----------+      |     | +----------+      |     | +----------+      |
+  | +----------+     |     | +----------+     |     | +----------+     |
+  | |provenance|     |     | |provenance|     |     | |provenance|     |
+  | +----------+     |     | +----------+     |     | +----------+     |
   +--------+---------+     +--------+---------+     +--------+---------+
            |                        |                        |
            +----------+-------------+-------------+----------+
@@ -563,9 +563,9 @@ def compute_audit_hash(record, prev_hash: str) -&gt; str:
     <div class="text-diagram" style="margin-top:1.5rem">
 <pre>  NATIONAL GOVERNANCE LAYER
   +-----------------------------------------------------+
-  | Standards Body   | Conformance Registry              |
-  | Extension Mgmt   | Version Compatibility Policy      |
-  | Schema Registry  | Validation Services               |
+  | Standards Body   | Conformance Registry             |
+  | Extension Mgmt   | Version Compatibility Policy     |
+  | Schema Registry  | Validation Services              |
   +--------+---------+---------+--------+--------+------+
            |                   |                 |
   +--------v------+  +---------v-----+  +--------v-----+
@@ -856,7 +856,8 @@ class EStopController:
 
     <h3 class="mt-2">Robot Procedure Data Flow</h3>
     <div class="text-diagram">
-<pre>  ROBOT AGENT         MCP SERVERS         CLINICAL SYSTEMS
+<pre>  
+  ROBOT AGENT         MCP SERVERS         CLINICAL SYSTEMS
   -----------         -----------         ----------------
   +--------+
   | START  |
@@ -864,20 +865,20 @@ class EStopController:
       |  1. Request Token
       v
   +--------+        +--------------+
-  | AuthZ  |-------&gt;| trialmcp-    |       Issue scoped token
-  | Phase  |&lt;-------| authz        |       (role + expiry)
+  | AuthZ  |--------| trialmcp-    |       Issue scoped token
+  | Phase  |--------| authz        |       (role + expiry)
   +---+----+        +--------------+
       |  2. Query Patient Data
       v
   +--------+        +--------------+       +-----------+
-  | FHIR   |-------&gt;| trialmcp-    |------&gt;| EHR       |
-  | Phase  |&lt;-------| fhir         |&lt;------| (FHIR R4) |
+  | FHIR   |--------| trialmcp-    |-------| EHR       |
+  | Phase  |--------| fhir         |-------| (FHIR R4) |
   +---+----+        +--------------+       +-----------+
       |  3. Retrieve Imaging
       v
   +--------+        +--------------+       +-----------+
-  | DICOM  |-------&gt;| trialmcp-    |------&gt;| PACS      |
-  | Phase  |&lt;-------| dicom        |&lt;------| (DICOM)   |
+  | DICOM  |--------| trialmcp-    |-------| PACS      |
+  | Phase  |--------| dicom        |-------| (DICOM)   |
   +---+----+        +--------------+       +-----------+
       |  4. Execute Procedure
       v
@@ -888,14 +889,14 @@ class EStopController:
       |  5. Record Audit
       v
   +--------+        +--------------+
-  | Audit  |-------&gt;| trialmcp-    |       Hash-chained record
-  | Phase  |&lt;-------| ledger       |       (21 CFR Part 11)
+  | Audit  |--------| trialmcp-    |       Hash-chained record
+  | Phase  |--------| ledger       |       (21 CFR Part 11)
   +---+----+        +--------------+
       |  6. Record Provenance
       v
   +--------+        +--------------+
-  | Prov.  |-------&gt;| trialmcp-    |       DAG lineage entry
-  | Phase  |&lt;-------| provenance   |       (SHA-256)
+  | Prov.  |--------| trialmcp-    |       DAG lineage entry
+  | Phase  |--------| provenance   |       (SHA-256)
   +---+----+        +--------------+
       v
   +--------+
