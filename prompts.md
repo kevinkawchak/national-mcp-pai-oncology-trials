@@ -18,14 +18,14 @@ x Cl / lint-and-format (3.10) (pull...
 x Cl / lint-and-format (3.11) (pull...
 x Cl / lint-and-format (3.12) (pull... “ Place the new release notes in releases.md under main using the format below. Update other relevant documentation such as project structures. Update the main Readme diagrams, repository structure, etc. where necessary. Provide an updated changelog (v1.2.0).
 
-Also output the GitHub page as a formatted pdf with file name “Demonstration: National MCP Servers for Physical AI Oncology Clinical Trial Systems” as a .pdf under main/site. When you are finished, auto-push the update to GitHub on your own for my review. The user will then review your updates in GitHub prior to finalization.
+Also output the GitHub page as a formatted pdf with file name “Demonstration: National MCP Servers for Physical AI Oncology Clinical Trial Systems” as a .pdf under main/docs. When you are finished, auto-push the update to GitHub on your own for my review. The user will then review your updates in GitHub prior to finalization.
 
 START MAIN PROMPT:
 
 Prompt Content Summary
-Create a complete GitHub Pages site called “Demonstration: National MCP Servers for Physical AI Oncology Clinical Trial Systems” in a new site/ directory at the repository root (keeping docs/ untouched for its existing role as internal documentation).
+Create a complete GitHub Pages site called “Demonstration: National MCP Servers for Physical AI Oncology Clinical Trial Systems” in the docs/ directory at the repository root (alongside existing documentation).
 1. File Manifest (what Claude Code must create)
-site/index.html, site/css/style.css, site/css/diagrams.css, site/js/app.js, site/js/diagrams.js, site/js/simulator.js, site/js/conformance.js, site/data/topology.json, site/data/servers.json, site/data/safety.json, site/.nojekyll
+docs/index.html, docs/css/style.css, docs/css/diagrams.css, docs/js/app.js, docs/js/diagrams.js, docs/js/simulator.js, docs/js/conformance.js, docs/data/topology.json, docs/data/servers.json, docs/data/safety.json, docs/.nojekyll
 2. Seven Interactive Diagram Sections (from docs/mcp-process): 01 through 07
 3. Classification and Disclaimers (explicitly stated)
 4. Landing Page Sections (11 sections)

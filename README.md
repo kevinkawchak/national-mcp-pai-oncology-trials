@@ -7,7 +7,7 @@
 [![Paper DOI](https://img.shields.io/badge/Paper_DOI-10.5281%2Fzenodo.18916731-blue)](https://doi.org/10.5281/zenodo.18916731)
 [![Version](https://img.shields.io/badge/Version-1.2.0-green.svg)](releases.md)
 [![CI](https://github.com/kevinkawchak/national-mcp-pai-oncology-trials/actions/workflows/ci.yml/badge.svg)](.github/workflows/ci.yml)
-[![GitHub Pages](https://img.shields.io/badge/GitHub_Pages-Demonstration-brightgreen.svg)](site/index.html)
+[![GitHub Pages](https://img.shields.io/badge/GitHub_Pages-Demonstration-brightgreen.svg)](docs/index.html)
 [![JSON Schema](https://img.shields.io/badge/JSON_Schema-Draft_2020--12-orange.svg)](schemas/)
 [![Python](https://img.shields.io/badge/Python-3.10%20|%203.11%20|%203.12-blue.svg)](https://www.python.org/)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.3-blue.svg)](reference/typescript/)
@@ -60,6 +60,7 @@ The **National MCP-PAI Oncology Trials Standard** is a proposed reference standa
 - [Repository Structure](#repository-structure)
 - [Getting Started](#getting-started)
 - [Paper](#paper)
+- [GitHub Pages](#github-pages)
 - [GitHub Pages Demonstration](#github-pages-demonstration)
 - [Governance](#governance)
 - [References](#references)
@@ -83,11 +84,25 @@ The 20-page paper covers the five-server MCP architecture, safety modules, confo
 
 ---
 
+## GitHub Pages
+
+**Demonstration: National MCP Servers for Physical AI Oncology Clinical Trial Systems**
+
+
+
+- **Live Site**: [https://kevinkawchak.github.io/national-mcp-pai-oncology-trials/](https://kevinkawchak.github.io/national-mcp-pai-oncology-trials/)
+- **PDF**: [Demonstration National MCP Servers for Physical AI Oncology Clinical Trial Systems.pdf](https://github.com/kevinkawchak/national-mcp-pai-oncology-trials/blob/main/docs/Demonstration%20National%20MCP%20Servers%20for%20Physical%20AI%20Oncology%20Clinical%20Trial%20Systems.pdf)
+- **Source**: [docs/index.html](docs/index.html)
+
+The interactive demonstration features seven process diagrams, a national deployment topology simulator, conformance level explorer, safety module visualizations, and a repository scale dashboard. To enable GitHub Pages: Settings > Pages > Source > Deploy from branch > `main` > `/docs`.
+
+---
+
 ## GitHub Pages Demonstration
 
 **Demonstration: National MCP Servers for Physical AI Oncology Clinical Trial Systems**
 
-The `site/` directory contains an interactive GitHub Pages demonstration of the proposed national standard, featuring:
+The `docs/` directory contains an interactive GitHub Pages demonstration of the proposed national standard alongside the project documentation, featuring:
 
 - **Seven interactive diagram sections** from `docs/mcp-process/` (robot procedure lifecycle, cross-site communication, clinical system integration, safety gate evaluation, federated learning coordination, audit provenance chain, privacy de-identification)
 - **National deployment topology simulator** with deterministic simulations of 750+ site deployments
@@ -95,7 +110,7 @@ The `site/` directory contains an interactive GitHub Pages demonstration of the 
 - **Safety module visualization** with e-stop lifecycle animation
 - **Repository scale dashboard** with quantitative statistics
 
-To enable GitHub Pages, configure the repository to serve from the `site/` directory on the `main` branch (Settings > Pages > Source > Deploy from branch > `main` > `/site`).
+To enable GitHub Pages, configure the repository to serve from the `docs/` directory on the `main` branch (Settings > Pages > Source > Deploy from branch > `main` > `/docs`).
 
 > **Note**: This is a reference architecture demonstration and interactive simulation, not a deployed clinical system.
 
@@ -1580,15 +1595,6 @@ national-mcp-pai-oncology-trials/
 ├── sdk/                          # Client SDKs (v1.0.0)
 │   ├── python/                  # Python SDK (trialmcp_client)
 │   └── typescript/              # TypeScript SDK
-├── docs/                         # Extended documentation
-│   ├── mcp-process/             # 7 detailed MCP process diagrams
-│   ├── guides/                  # Stakeholder implementation guides (5 guides)
-│   ├── operations/              # Operational docs (runbook, incident response, etc.)
-│   ├── deployment/              # Deployment guides (local, hospital, multi-site)
-│   ├── adr/                     # Architecture Decision Records (7 ADRs)
-│   ├── governance/              # Governance artifacts (decision log, roadmap, etc.)
-│   ├── security/                # Security documentation (threat model, SBOM, etc.)
-│   └── walkthroughs/            # Profile walkthroughs (5 end-to-end scenarios)
 ├── paper/                         # Research paper (v1.2.0)
 │   ├── National_MCP_Servers_for_Physical_AI_Oncology_Clinical_Trial_Systems.pdf
 │   ├── National_MCP_Servers_for_Physical_AI_Oncology_Clinical_Trial_Systems.tex
@@ -1598,8 +1604,8 @@ national-mcp-pai-oncology-trials/
 │   ├── orcid_icon.pdf            # ORCID icon for author attribution
 │   ├── orcid_icon.tex            # ORCID icon LaTeX source
 │   └── prior/                    # Prior version paper files (v1.1.0)
-├── site/                          # GitHub Pages demonstration (v1.2.0)
-│   ├── index.html                 # Main landing page (single-page application)
+├── docs/                          # Documentation and GitHub Pages demonstration (v1.2.0)
+│   ├── index.html                 # GitHub Pages landing page (single-page application)
 │   ├── css/style.css              # Core styles (medical/clinical design system)
 │   ├── css/diagrams.css           # Diagram-specific styles and animations
 │   ├── js/app.js                  # Navigation, scroll behavior, tabs
@@ -1609,7 +1615,16 @@ national-mcp-pai-oncology-trials/
 │   ├── data/topology.json         # National 3-tier deployment topology data
 │   ├── data/servers.json          # 5 MCP server metadata, 23 tools
 │   ├── data/safety.json           # 8 safety module definitions
-│   └── .nojekyll                  # Bypass Jekyll processing
+│   ├── .nojekyll                  # Bypass Jekyll processing
+│   ├── architecture.md            # Normative architecture document
+│   ├── adoption-roadmap.md        # Four-phase adoption roadmap
+│   ├── glossary.md                # Terminology glossary
+│   ├── adr/                       # Architecture Decision Records
+│   ├── governance/                # Governance documentation
+│   ├── guides/                    # Stakeholder guides
+│   ├── mcp-process/               # MCP process diagrams
+│   ├── operations/                # Operations documentation
+│   └── walkthroughs/              # Profile walkthroughs
 ├── peer-review/                  # External peer review responses and prompts
 ├── pyproject.toml                # Python project config (entry points, ruff, pytest)
 ├── changelog.md                  # Version history
