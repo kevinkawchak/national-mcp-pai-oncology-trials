@@ -11,25 +11,86 @@ Utilize information primarily from the following. Include web links to GitHub re
 
 Be sure to implement quantitative data, code snippets, text diagrams (fix where needed, and make sure incorporation is suitable to the page). Make sure every section is properly formatted and is attractive to read (a mix of different paragraph lengths)(a mix of bullet points and numbered lists, and other types of formatting to avoid a large number of long paragraphs). Avoid large white empty spaces without text. Where large spacing between words exist throughout the paper, tables, and references: modify spacing to make positioning between words look equally and properly spaced.
 
-Make sure text doesn't run off the right side of the page anywhere. Perform the final formatting steps that a senior author would take by correcting white space formatting, removing and/or adding relevant text to make each section look properly formatted and self standing by itself. (Don't overcrowd the page with text, some white space formatting is ok).
+Make sure text doesn’t run off the right side of the page anywhere. Perform the final formatting steps that a senior author would take by correcting white space formatting, removing and/or adding relevant text to make each section look properly formatted and self standing by itself. (Don’t overcrowd the page with text, some white space formatting is ok).
 
-Provide a copy of this v1.2.0 prompt under the related prompts.md. Be sure to fix and address errors that would cause failed checks for the single pull request (such as for docs-lint and Python environment issues to avoid the following error during final checks): “3 failing checks
+Provide a copy of this v1.2.0 prompt under the related prompts.md. Be sure to fix and address errors that would cause failed checks for the single pull request (such as for docs-lint and Python environment issues to avoid the following error during final checks): "3 failing checks
 x Cl / lint-and-format (3.10) (pull...
 x Cl / lint-and-format (3.11) (pull...
-x Cl / lint-and-format (3.12) (pull... “ Place the new release notes in releases.md under main using the format below. Update other relevant documentation such as project structures. Update the main Readme diagrams, repository structure, etc. where necessary. Provide an updated changelog (v1.2.0).
+x Cl / lint-and-format (3.12) (pull... " Place the new release notes in releases.md under main using the format below. Update other relevant documentation such as project structures. Update the main Readme diagrams, repository structure, etc. where necessary. Provide an updated changelog (v1.2.0).
 
-Also output the GitHub page as a formatted pdf with file name “Demonstration: National MCP Servers for Physical AI Oncology Clinical Trial Systems” as a .pdf under main/docs. When you are finished, auto-push the update to GitHub on your own for my review. The user will then review your updates in GitHub prior to finalization.
+Also output the GitHub page as a formatted pdf with file name "Demonstration: National MCP Servers for Physical AI Oncology Clinical Trial Systems" as a .pdf under main/site. When you are finished, auto-push the update to GitHub on your own for my review. The user will then review your updates in GitHub prior to finalization.
 
-START MAIN PROMPT:
+"FORMAT"
+Release title
+v1.2.0 - [Fill in Title Here]
 
+## Summary
+
+## Features
+
+## Contributors
+@kevinkawchak
+@claude
+@openai
+
+## Notes
+
+
+
+
+
+
+“START MAIN PROMPT”
 Prompt Content Summary
-Create a complete GitHub Pages site called “Demonstration: National MCP Servers for Physical AI Oncology Clinical Trial Systems” in the docs/ directory at the repository root (alongside existing documentation).
+Create a complete GitHub Pages site called “Demonstration: National MCP Servers for Physical AI Oncology Clinical Trial Systems" in a new site/ directory at the repository root (keeping docs/ untouched for its existing role as internal documentation).
 1. File Manifest (what Claude Code must create)
-docs/index.html, docs/css/style.css, docs/css/diagrams.css, docs/js/app.js, docs/js/diagrams.js, docs/js/simulator.js, docs/js/conformance.js, docs/data/topology.json, docs/data/servers.json, docs/data/safety.json, docs/.nojekyll
-2. Seven Interactive Diagram Sections (from docs/mcp-process): 01 through 07
-3. Classification and Disclaimers (explicitly stated)
-4. Landing Page Sections (11 sections)
-5. Commit, push, and confirm GitHub Pages deployment
+* site/index.html - Main landing page (single-page application)
+* site/css/style.css - Core styles (medical/clinical design system)
+* site/css/diagrams.css - Diagram-specific styles and animations
+* site/js/app.js - Main application logic, navigation, scroll behavior
+* site/js/diagrams.js - Interactive SVG diagram rendering engine that converts the 7 process diagrams into animated/interactive web visuals
+* site/js/simulator.js - National deployment topology simulator (deterministic simulation, not live system)
+* site/js/conformance.js - Conformance level explorer with interactive 5-level hierarchy
+* site/data/topology.json - National 3-tier deployment topology data (750+ sites across East/Central/West regions)
+* site/data/servers.json - 5 MCP server metadata, 23 tools, schemas
+* site/data/safety.json - 8 safety module definitions and state machines
+* site/CNAME (optional, if custom domain)
+* site/.nojekyll - Bypass Jekyll processing
+* Root-level update: GitHub Pages configuration note in README.md
+2. Seven Interactive Diagram Sections (from docs/mcp-process)
+Each diagram file is explicitly referenced and converted to an interactive web component:
+Source File	Web Section	Visualization Type
+01-robot-procedure-lifecycle.md	Robot Procedure Lifecycle	Animated state machine with clickable states (SCHEDULED -> PRE_CHECK -> GATES_EVAL -> HUMAN_APPROVAL -> IN_PROGRESS -> COMPLETED/ABORTED), showing MCP server interactions per state transition
+02-cross-site-mcp-communication.md	Cross-Site Communication	Animated network topology showing 5 MCP servers per site with cross-site audit chain sync and token exchange flows
+03-clinical-system-integration.md	Clinical System Integration	Layered adapter diagram showing FHIR/DICOM/Identity integration pathways with EHR (Epic, Cerner, MEDITECH) and PACS connections
+04-safety-gate-evaluation.md	Safety Gate Evaluation	Sequential gate visualization (5 gates: Patient Consent, Site Capability, Robot Capability, Protocol Compliance, Human Approval) with pass/fail/timeout states
+05-federated-learning-coordination.md	Federated Learning	Multi-site federated round animation showing FedAvg/FedProx/SCAFFOLD aggregation with differential privacy budget tracking
+06-audit-provenance-chain.md	Audit & Provenance Chain	Hash-chain visualization with SHA-256 block linking and DAG provenance graph with forward/backward lineage queries
+07-privacy-deidentification.md	Privacy & De-identification	HIPAA Safe Harbor 18-identifier pipeline visualization with 3-stage flow (Direct IDs, Quasi-IDs, Technical IDs) and HMAC-SHA256 pseudonymization
+3. Classification & Disclaimers (explicitly stated)
+* What this IS: A reference architecture demonstration and interactive simulation of the proposed National MCP-PAI Oncology Trials Standard. It is an educational and stakeholder communication tool that visualizes the system described in the paper using deterministic simulations with pre-configured data.
+* What this is NOT: This is NOT a deployed clinical system, NOT approved for use in actual oncology trials, NOT connected to real patient data, EHR systems, PACS, or robotic systems, and NOT a medical device or software as a medical device (SaMD).
+* Simulation conditions/approximations: All data shown is synthetic. Network latencies, site counts, and response times are modeled approximations based on the paper's architecture. Federated learning rounds use illustrative aggregation, not real model weights. Hash chains demonstrate the algorithm with sample data.
+* What is needed for actual trial use: (a) FDA review and recognition as a consensus standard, (b) Clinical pilot deployment at NCI-designated cancer centers, (c) Real EHR/PACS adapter validation with vendor systems (Epic, Cerner, Orthanc, dcm4chee), (d) Robot vendor certification program, (e) IRB approval at each participating site, (f) 21 CFR Part 11 compliance audit of deployed instances, (g) HIPAA security risk assessment.
+* Current status: This is a proposed reference standard with a complete reference implementation (381 files, ~69,800 lines) that has not yet been deployed in clinical settings.
+4. Landing Page Sections
+1. Hero - Title, paper citation, Zenodo DOI badge, repository link
+2. Abstract - Paper abstract with key metrics (5 servers, 23 tools, 668 tests, 381 files)
+3. Architecture Overview - Interactive 5-server diagram with tool counts per server
+4. Seven Process Diagrams - Interactive sections for each of the 7 docs/mcp-process files
+5. National Deployment Topology - 3-tier map (National Governance -> 3 Regional Layers -> 750+ Sites) with animated data flow
+6. Conformance Levels - Interactive 5-level hierarchy explorer (Core -> Clinical Read -> Imaging -> Federated Site -> Robot Procedure)
+7. Safety Modules - 8 safety module visualization with E-Stop lifecycle animation
+8. Repository Scale - Statistics dashboard (files, tests, adapters, schemas, etc.)
+9. Adoption Roadmap - Stakeholder-specific pathways (Sponsors, CROs, Hospital IT, Regulators, Robot Vendors)
+10. Classification & Status - Prominent disclaimer section as described above
+11. Citation & Links - BibTeX, DOI, repository links, paper PDF
+5. Perform 
+* Create all files listed in the manifest above
+* Commit with message referencing v1.2.0 GitHub Pages deployment
+* Push to the repository
+* Report back the full file tree of site/ and confirm GitHub Pages can be enabled by pointing to the site/ directory (or docs/ if reconfigured)
+
 
 ---
 
