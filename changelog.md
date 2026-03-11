@@ -9,22 +9,22 @@ This project follows [Semantic Versioning](https://semver.org/) as described in 
 ## [1.2.0] - 2026-03-11
 
 ### Added
-- `site/` - GitHub Pages demonstration: "Demonstration: National MCP Servers for Physical AI Oncology Clinical Trial Systems"
-- `site/index.html` - Main landing page (single-page application) with 11 sections
-- `site/css/style.css` - Core styles (medical/clinical design system, light-mode only)
-- `site/css/diagrams.css` - Diagram-specific styles and animations
-- `site/js/app.js` - Main application logic, navigation, scroll behavior
-- `site/js/diagrams.js` - Interactive diagram rendering engine (7 process diagrams)
-- `site/js/simulator.js` - National deployment topology simulator (deterministic)
-- `site/js/conformance.js` - Conformance level explorer with interactive 5-level hierarchy
-- `site/data/topology.json` - National 3-tier deployment topology data (750+ sites)
-- `site/data/servers.json` - 5 MCP server metadata, 23 tools, schemas
-- `site/data/safety.json` - 8 safety module definitions and state machines
-- `site/.nojekyll` - Bypass Jekyll processing
-- `site/Demonstration National MCP Servers for Physical AI Oncology Clinical Trial Systems.pdf` - PDF version of the GitHub page
+- GitHub Pages demonstration files in `docs/`: "Demonstration: National MCP Servers for Physical AI Oncology Clinical Trial Systems"
+- `docs/index.html` - Main landing page (single-page application) with 11 sections
+- `docs/css/style.css` - Core styles (medical/clinical design system, light-mode only)
+- `docs/css/diagrams.css` - Diagram-specific styles and animations
+- `docs/js/app.js` - Main application logic, navigation, scroll behavior
+- `docs/js/diagrams.js` - Interactive diagram rendering engine (7 process diagrams)
+- `docs/js/simulator.js` - National deployment topology simulator (deterministic)
+- `docs/js/conformance.js` - Conformance level explorer with interactive 5-level hierarchy
+- `docs/data/topology.json` - National 3-tier deployment topology data (750+ sites)
+- `docs/data/servers.json` - 5 MCP server metadata, 23 tools, schemas
+- `docs/data/safety.json` - 8 safety module definitions and state machines
+- `docs/.nojekyll` - Bypass Jekyll processing
+- `docs/Demonstration National MCP Servers for Physical AI Oncology Clinical Trial Systems.pdf` - PDF version of the GitHub page
 
 ### Changed
-- `README.md` - Added GitHub Pages Demonstration section, updated badges to v1.2.0, added site/ to repository structure
+- `README.md` - Added GitHub Pages Demonstration section, updated badges to v1.2.0, GitHub Pages files moved to docs/ for GitHub Pages compatibility
 - `pyproject.toml` - Version 1.2.0, updated description
 - `changelog.md` - This entry
 - `releases.md` - Added v1.2.0 release notes
