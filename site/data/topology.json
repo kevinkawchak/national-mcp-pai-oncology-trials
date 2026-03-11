@@ -1,0 +1,81 @@
+{
+  "version": "1.2.0",
+  "description": "National 3-tier deployment topology for MCP-PAI Oncology Trials",
+  "tiers": {
+    "national": {
+      "name": "National Governance Layer",
+      "components": [
+        "Standards Body",
+        "Conformance Registry",
+        "Extension Management",
+        "Version Compatibility Policy",
+        "Schema Registry",
+        "Validation Services"
+      ]
+    },
+    "regional": [
+      {
+        "id": "east",
+        "name": "Region 1 (East)",
+        "sites": 210,
+        "serversPerSite": 5,
+        "totalServers": 1050,
+        "states": ["NY", "MA", "PA", "FL", "NC", "VA", "MD", "CT", "NJ", "GA"],
+        "nciCenters": [
+          "Memorial Sloan Kettering Cancer Center",
+          "Dana-Farber Cancer Institute",
+          "Johns Hopkins Sidney Kimmel Cancer Center",
+          "MD Anderson Cancer Center at Cooper",
+          "Moffitt Cancer Center"
+        ]
+      },
+      {
+        "id": "central",
+        "name": "Region 2 (Central)",
+        "sites": 305,
+        "serversPerSite": 5,
+        "totalServers": 1525,
+        "states": ["TX", "IL", "OH", "MI", "MN", "MO", "IN", "WI", "IA", "TN"],
+        "nciCenters": [
+          "MD Anderson Cancer Center",
+          "Mayo Clinic Cancer Center",
+          "Robert H. Lurie Cancer Center",
+          "University of Michigan Rogel Cancer Center",
+          "Ohio State University Comprehensive Cancer Center"
+        ]
+      },
+      {
+        "id": "west",
+        "name": "Region 3 (West)",
+        "sites": 248,
+        "serversPerSite": 5,
+        "totalServers": 1240,
+        "states": ["CA", "WA", "OR", "CO", "AZ", "UT", "NV", "HI"],
+        "nciCenters": [
+          "Stanford Cancer Institute",
+          "UCSF Helen Diller Family Cancer Center",
+          "Fred Hutchinson Cancer Center",
+          "City of Hope National Medical Center",
+          "UCLA Jonsson Cancer Center"
+        ]
+      }
+    ],
+    "federated": {
+      "name": "Federated Layer",
+      "capabilities": [
+        "Privacy-Preserving Aggregation",
+        "Differential Privacy Budget Tracking",
+        "Cross-Site Audit Chain Merge",
+        "FedAvg / FedProx / SCAFFOLD"
+      ]
+    }
+  },
+  "totals": {
+    "regions": 3,
+    "totalSites": 763,
+    "serversPerSite": 5,
+    "totalServers": 3815,
+    "toolsPerServer": "4-5 (23 total)"
+  },
+  "simulationNote": "All site counts and configurations are modeled approximations for demonstration purposes. They do not represent actual deployments."
+}

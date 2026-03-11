@@ -1,12 +1,13 @@
 # National MCP Standard for Physical AI Oncology Clinical Trials
 
-**Version 1.1.0** | **Proposed Reference Standard** | **United States**
+**Version 1.2.0** | **Proposed Reference Standard** | **United States**
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 [![DOI](https://img.shields.io/badge/DOI-10.5281%2Fzenodo.18894758-blue)](https://doi.org/10.5281/zenodo.18894758)
 [![Paper DOI](https://img.shields.io/badge/Paper_DOI-10.5281%2Fzenodo.18916731-blue)](https://doi.org/10.5281/zenodo.18916731)
-[![Version](https://img.shields.io/badge/Version-1.1.0-green.svg)](releases.md)
+[![Version](https://img.shields.io/badge/Version-1.2.0-green.svg)](releases.md)
 [![CI](https://github.com/kevinkawchak/national-mcp-pai-oncology-trials/actions/workflows/ci.yml/badge.svg)](.github/workflows/ci.yml)
+[![GitHub Pages](https://img.shields.io/badge/GitHub_Pages-Demonstration-brightgreen.svg)](site/index.html)
 [![JSON Schema](https://img.shields.io/badge/JSON_Schema-Draft_2020--12-orange.svg)](schemas/)
 [![Python](https://img.shields.io/badge/Python-3.10%20|%203.11%20|%203.12-blue.svg)](https://www.python.org/)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.3-blue.svg)](reference/typescript/)
@@ -21,7 +22,7 @@
 [![Tools](https://img.shields.io/badge/Tools-23-blue.svg)](spec/tool-contracts.md)
 [![Conformance Tests](https://img.shields.io/badge/Conformance_Tests-331-blue.svg)](conformance/)
 [![Unit Tests](https://img.shields.io/badge/Unit_Tests-337-blue.svg)](tests/)
-[![Updated](https://img.shields.io/badge/Updated-2026--03--09-lightgrey.svg)](changelog.md)
+[![Updated](https://img.shields.io/badge/Updated-2026--03--11-lightgrey.svg)](changelog.md)
 [![Contributors](https://img.shields.io/badge/Contributors-3-blue.svg)](releases.md)
 
 The **National MCP-PAI Oncology Trials Standard** is a proposed reference standard for deploying Model Context Protocol (MCP) servers across federated Physical AI oncology clinical trial systems in the United States. This standard defines protocol contracts, actor models, security baselines, regulatory overlays, machine-readable JSON schemas, and governance processes intended to enable industry-wide interoperability of autonomous robotic systems in regulated clinical environments.
@@ -59,6 +60,7 @@ The **National MCP-PAI Oncology Trials Standard** is a proposed reference standa
 - [Repository Structure](#repository-structure)
 - [Getting Started](#getting-started)
 - [Paper](#paper)
+- [GitHub Pages Demonstration](#github-pages-demonstration)
 - [Governance](#governance)
 - [References](#references)
 
@@ -78,6 +80,24 @@ Kawchak K. National MCP Servers for Physical AI Oncology Clinical Trial Systems.
 - **Template**: [kourgeorge/arxiv-style](https://github.com/kourgeorge/arxiv-style)
 
 The 20-page paper covers the five-server MCP architecture, safety modules, conformance levels, federated learning integration, AI-assisted development methodology, and the path from prior fragmented trial infrastructure to the proposed national standard.
+
+---
+
+## GitHub Pages Demonstration
+
+**Demonstration: National MCP Servers for Physical AI Oncology Clinical Trial Systems**
+
+The `site/` directory contains an interactive GitHub Pages demonstration of the proposed national standard, featuring:
+
+- **Seven interactive diagram sections** from `docs/mcp-process/` (robot procedure lifecycle, cross-site communication, clinical system integration, safety gate evaluation, federated learning coordination, audit provenance chain, privacy de-identification)
+- **National deployment topology simulator** with deterministic simulations of 750+ site deployments
+- **Conformance level explorer** with interactive 5-level hierarchy
+- **Safety module visualization** with e-stop lifecycle animation
+- **Repository scale dashboard** with quantitative statistics
+
+To enable GitHub Pages, configure the repository to serve from the `site/` directory on the `main` branch (Settings > Pages > Source > Deploy from branch > `main` > `/site`).
+
+> **Note**: This is a reference architecture demonstration and interactive simulation, not a deployed clinical system.
 
 ---
 
@@ -1578,6 +1598,18 @@ national-mcp-pai-oncology-trials/
 │   ├── orcid_icon.pdf            # ORCID icon for author attribution
 │   ├── orcid_icon.tex            # ORCID icon LaTeX source
 │   └── prior/                    # Prior version paper files (v1.1.0)
+├── site/                          # GitHub Pages demonstration (v1.2.0)
+│   ├── index.html                 # Main landing page (single-page application)
+│   ├── css/style.css              # Core styles (medical/clinical design system)
+│   ├── css/diagrams.css           # Diagram-specific styles and animations
+│   ├── js/app.js                  # Navigation, scroll behavior, tabs
+│   ├── js/diagrams.js             # Interactive diagram rendering engine
+│   ├── js/simulator.js            # National deployment topology simulator
+│   ├── js/conformance.js          # Conformance level explorer
+│   ├── data/topology.json         # National 3-tier deployment topology data
+│   ├── data/servers.json          # 5 MCP server metadata, 23 tools
+│   ├── data/safety.json           # 8 safety module definitions
+│   └── .nojekyll                  # Bypass Jekyll processing
 ├── peer-review/                  # External peer review responses and prompts
 ├── pyproject.toml                # Python project config (entry points, ruff, pytest)
 ├── changelog.md                  # Version history

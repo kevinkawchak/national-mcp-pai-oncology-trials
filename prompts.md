@@ -1,6 +1,41 @@
-## Prompt v1.1.0
+## Prompt v1.2.0
 
-Your goal is to generate a 20 page paper titled “National MCP Servers for Physical AI Oncology Clinical Trial Systems” based on the entire national-mcp-pai-oncology-trials repository with a focus on a) prior oncology trial infrastructure being fragmented, site-specific, and inefficient across interoperability, auditability, privacy, and deployment, b) the national MCP Physical AI oncology trials system containing 5 MCP servers address these gaps through standardized, federated, and safety-governed MCP capabilities, including c) AI and robotics advances intended to improve patient safety and clinical effectiveness. Patient benefit is key in this new mcp system. 
+Based on the national-mcp-pai-oncology-trials repository, create a GitHub page titled “Demonstration: National MCP Servers for Physical AI Oncology Clinical Trial Systems” that serves as a reference architecture demonstration and interactive simulation. Make sure to clone the current repo. Include author Kevin Kawchak, the iD icon (with clickable link: https://orcid.org/0009-0007-5457-8667), Chief Executive Officer, ChemicalQDevice, kevink@chemicalqdevice.com, today's date (retrieve other specifics such as badges or references from the repository and the related paper). Mention Claude Code Opus 4.6 and ChatGPT 5.4 Thinking as contributors. No em dashes are allowed anywhere on the page. A balance of directory names, version numbers, and file names should be utilized strategically throughout the page. No dark mode images or dark mode diagrams are allowed.
+
+Update all repository documentation, readmes, repository structures, text diagrams and mermaid diagrams, tocs (with correct urls and make sure it is in the right order.) Make sure the repository is fully up to date regarding badges, content, and context prior to the last release and new human commits. (Note: the current oncology clinical trial system should be referred to as the old OR prior OR previous system throughout the page). Make sure the GitHub page shows as a deployment in main.
+
+Utilize information primarily from the following. Include web links to GitHub repositories where relevant.
+1) kevinkawchak/national-mcp-pai-oncology-trials (10.5281/zenodo.18894758)
+2) national-mcp-pai-oncology-trials/blob/main/paper/National_MCP_Servers_for_Physical_AI_Oncology_Clinical_Trial_Systems.tex
+(paper doi: 10.5281/zenodo.18916731)
+
+Be sure to implement quantitative data, code snippets, text diagrams (fix where needed, and make sure incorporation is suitable to the page). Make sure every section is properly formatted and is attractive to read (a mix of different paragraph lengths)(a mix of bullet points and numbered lists, and other types of formatting to avoid a large number of long paragraphs). Avoid large white empty spaces without text. Where large spacing between words exist throughout the paper, tables, and references: modify spacing to make positioning between words look equally and properly spaced.
+
+Make sure text doesn't run off the right side of the page anywhere. Perform the final formatting steps that a senior author would take by correcting white space formatting, removing and/or adding relevant text to make each section look properly formatted and self standing by itself. (Don't overcrowd the page with text, some white space formatting is ok).
+
+Provide a copy of this v1.2.0 prompt under the related prompts.md. Be sure to fix and address errors that would cause failed checks for the single pull request (such as for docs-lint and Python environment issues to avoid the following error during final checks): “3 failing checks
+x Cl / lint-and-format (3.10) (pull...
+x Cl / lint-and-format (3.11) (pull...
+x Cl / lint-and-format (3.12) (pull... “ Place the new release notes in releases.md under main using the format below. Update other relevant documentation such as project structures. Update the main Readme diagrams, repository structure, etc. where necessary. Provide an updated changelog (v1.2.0).
+
+Also output the GitHub page as a formatted pdf with file name “Demonstration: National MCP Servers for Physical AI Oncology Clinical Trial Systems” as a .pdf under main/site. When you are finished, auto-push the update to GitHub on your own for my review. The user will then review your updates in GitHub prior to finalization.
+
+START MAIN PROMPT:
+
+Prompt Content Summary
+Create a complete GitHub Pages site called “Demonstration: National MCP Servers for Physical AI Oncology Clinical Trial Systems” in a new site/ directory at the repository root (keeping docs/ untouched for its existing role as internal documentation).
+1. File Manifest (what Claude Code must create)
+site/index.html, site/css/style.css, site/css/diagrams.css, site/js/app.js, site/js/diagrams.js, site/js/simulator.js, site/js/conformance.js, site/data/topology.json, site/data/servers.json, site/data/safety.json, site/.nojekyll
+2. Seven Interactive Diagram Sections (from docs/mcp-process): 01 through 07
+3. Classification and Disclaimers (explicitly stated)
+4. Landing Page Sections (11 sections)
+5. Commit, push, and confirm GitHub Pages deployment
+
+---
+
+## Prompt v1.1.0 (Primary)
+
+Your goal is to generate a 20 page paper titled “National MCP Servers for Physical AI Oncology Clinical Trial Systems” based on the entire national-mcp-pai-oncology-trials repository with a focus on a) prior oncology trial infrastructure being fragmented, site-specific, and inefficient across interoperability, auditability, privacy, and deployment, b) the national MCP Physical AI oncology trials system containing 5 MCP servers address these gaps through standardized, federated, and safety-governed MCP capabilities, including c) AI and robotics advances intended to improve patient safety and clinical effectiveness. Patient benefit is key in this new mcp system.
 (Note: the current oncology clinical trial system should be referred to as the old or prior or previous system throughout the paper)
 
 The paper should be written in LaTeX using 10.5281/zenodo.18916731 (https://doi.org/10.5281/zenodo.18916731) where appropriate. Use the kourgeorge/arxiv-style/blob/master/arxiv.sty - except remove the "A Preprint" from the top of the page, and don't add colored box frames around text, links, etc. (https://github.com/kourgeorge/arxiv-style). Include author Kevin Kawchak, the template’s iD icon (the icon needs to include the clickable link: https://orcid.org/0009-0007-5457-8667), Chief Executive Officer, ChemicalQDevice, kevink@chemicalqdevice.com, today's date, and 5 keywords. No em dashes are allowed in the paper. A balance of directory names, version numbers, and file names should be utilized strategically throughout the paper, as well as citing the 3 other repositories below that aided in the development of the current repository.

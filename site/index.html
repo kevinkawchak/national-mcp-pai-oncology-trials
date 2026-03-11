@@ -1,0 +1,1054 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Demonstration: National MCP Servers for Physical AI Oncology Clinical Trial Systems</title>
+  <meta name="description" content="Reference architecture demonstration and interactive simulation of the proposed National MCP-PAI Oncology Trials Standard (v1.2.0).">
+  <meta name="author" content="Kevin Kawchak">
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/diagrams.css">
+</head>
+<body>
+
+<!-- ============================================================
+     NAVIGATION
+     ============================================================ -->
+<nav class="site-nav" role="navigation">
+  <div class="container">
+    <a href="#hero" class="nav-brand">MCP-PAI Oncology Trials v1.2.0</a>
+    <div class="nav-links">
+      <a href="#abstract">Abstract</a>
+      <a href="#architecture">Architecture</a>
+      <a href="#diagrams">Diagrams</a>
+      <a href="#topology">Topology</a>
+      <a href="#conformance">Conformance</a>
+      <a href="#safety">Safety</a>
+      <a href="#stats">Scale</a>
+      <a href="#roadmap">Roadmap</a>
+      <a href="#classification">Status</a>
+      <a href="#citation">Citation</a>
+    </div>
+  </div>
+</nav>
+
+<!-- ============================================================
+     HERO SECTION
+     ============================================================ -->
+<header class="hero" id="hero">
+  <div class="container">
+    <h1>Demonstration: National MCP Servers for<br>Physical AI Oncology Clinical Trial Systems</h1>
+    <p class="subtitle">Reference Architecture Demonstration and Interactive Simulation</p>
+
+    <div class="author-info">
+      Kevin Kawchak
+      <a href="https://orcid.org/0009-0007-5457-8667" target="_blank" rel="noopener">
+        <svg class="orcid-icon" viewBox="0 0 256 256" xmlns="http://www.w3.org/2000/svg">
+          <circle cx="128" cy="128" r="128" fill="#A6CE39"/>
+          <path d="M86.3 186.2H70.9V79.1h15.4v107.1zM108.9 79.1h41.6c39.6 0 57.6 30.1 57.6 53.9 0 27.4-21.7 53.2-56.7 53.2h-42.5V79.1zm15.4 93.3h24.5c34.9 0 42.9-26.5 42.9-39.7C191.7 111.2 178 92 152 92h-27.7v80.4zM88.7 56.8c0 5.5-4.5 10.1-10.1 10.1-5.6 0-10.1-4.6-10.1-10.1 0-5.6 4.5-10.1 10.1-10.1 5.6 0 10.1 4.6 10.1 10.1z" fill="#fff"/>
+        </svg>
+      </a><br>
+      Chief Executive Officer, ChemicalQDevice<br>
+      <a href="mailto:kevink@chemicalqdevice.com">kevink@chemicalqdevice.com</a>
+    </div>
+
+    <div class="badges">
+      <a href="https://doi.org/10.5281/zenodo.18894758" target="_blank" rel="noopener"><img src="https://img.shields.io/badge/DOI-10.5281%2Fzenodo.18894758-blue" alt="Repository DOI"></a>
+      <a href="https://doi.org/10.5281/zenodo.18916731" target="_blank" rel="noopener"><img src="https://img.shields.io/badge/Paper_DOI-10.5281%2Fzenodo.18916731-blue" alt="Paper DOI"></a>
+      <img src="https://img.shields.io/badge/Version-1.2.0-green" alt="Version 1.2.0">
+      <img src="https://img.shields.io/badge/License-MIT-blue" alt="MIT License">
+      <img src="https://img.shields.io/badge/MCP_Servers-5-blue" alt="5 MCP Servers">
+      <img src="https://img.shields.io/badge/Tools-23-blue" alt="23 Tools">
+      <img src="https://img.shields.io/badge/Tests-668-blue" alt="668 Tests">
+      <img src="https://img.shields.io/badge/Python-3.10%20%7C%203.11%20%7C%203.12-blue" alt="Python versions">
+    </div>
+
+    <p class="date-line">March 11, 2026</p>
+  </div>
+</header>
+
+<!-- ============================================================
+     ABSTRACT
+     ============================================================ -->
+<section class="section" id="abstract">
+  <div class="container">
+    <div class="section-header">
+      <h2>Abstract</h2>
+    </div>
+
+    <p>Prior oncology clinical trial infrastructure has been fragmented, site-specific, and inefficient across the critical dimensions of interoperability, auditability, privacy, and deployment. Each trial site has historically operated its own isolated systems for electronic health records, imaging archives, and audit logging, resulting in inconsistent data formats, duplicated regulatory effort, and limited cross-site collaboration.</p>
+
+    <p>This page presents a demonstration of the National MCP Physical AI Oncology Trials system, a proposed end-to-end architecture comprising five Model Context Protocol (MCP) servers that address these gaps through standardized, federated, and safety-governed capabilities. The five servers (Authorization, FHIR Clinical Data, DICOM Imaging, Audit Ledger, and Provenance) expose 23 tools across five hierarchical conformance levels, validated by 668 test functions.</p>
+
+    <div class="stats-grid" style="margin-top:1.5rem">
+      <div class="stat-card"><span class="stat-value">5</span><span class="stat-label">MCP Servers</span></div>
+      <div class="stat-card"><span class="stat-value">23</span><span class="stat-label">Tools</span></div>
+      <div class="stat-card"><span class="stat-value">668</span><span class="stat-label">Test Functions</span></div>
+      <div class="stat-card"><span class="stat-value">381</span><span class="stat-label">Files</span></div>
+      <div class="stat-card"><span class="stat-value">34</span><span class="stat-label">Integration Adapters</span></div>
+      <div class="stat-card"><span class="stat-value">8</span><span class="stat-label">Safety Modules</span></div>
+      <div class="stat-card"><span class="stat-value">13</span><span class="stat-label">JSON Schemas</span></div>
+      <div class="stat-card"><span class="stat-value">6</span><span class="stat-label">Deployment Modes</span></div>
+    </div>
+
+    <p class="text-muted text-center mt-2" style="font-size:0.85rem">
+      Paper: <a href="https://doi.org/10.5281/zenodo.18916731" target="_blank" rel="noopener">10.5281/zenodo.18916731</a> |
+      Repository: <a href="https://github.com/kevinkawchak/national-mcp-pai-oncology-trials" target="_blank" rel="noopener">kevinkawchak/national-mcp-pai-oncology-trials</a> (DOI: <a href="https://doi.org/10.5281/zenodo.18894758" target="_blank" rel="noopener">10.5281/zenodo.18894758</a>)
+    </p>
+  </div>
+</section>
+
+<!-- ============================================================
+     ARCHITECTURE OVERVIEW
+     ============================================================ -->
+<section class="section" id="architecture">
+  <div class="container">
+    <div class="section-header">
+      <h2>Architecture Overview</h2>
+      <p>Five domain-specific MCP servers form the protocol surface for Physical AI oncology trials</p>
+    </div>
+
+    <!-- Five-server text diagram -->
+    <div class="text-diagram">
+<pre>  NATIONAL MCP FIVE-SERVER DEPLOYMENT
+  +---------------------------------------------------+
+  |                  SITE DEPLOYMENT                  |
+  |                                                   |
+  |    +-----------+  +-----------+  +-----------+    |
+  |    | trialmcp  |  | trialmcp  |  | trialmcp  |    |
+  |    | authz     |  | fhir      |  | dicom     |    |
+  |    | (5 tools) |  | (4 tools) |  | (4 tools) |    |
+  |    | RBAC,     |  | FHIR R4,  |  | DICOMweb, |    |
+  |    | Tokens    |  | HIPAA     |  | RECIST    |    |
+  |    +-----+-----+  +-----+-----+  +-----+-----+   |
+  |          |              |              |           |
+  |          +------+-------+------+-------+           |
+  |                 |              |                    |
+  |          +------v------+ +-----v-------+           |
+  |          | trialmcp    | | trialmcp    |           |
+  |          | ledger      | | provenance  |           |
+  |          | (5 tools)   | | (5 tools)   |           |
+  |          | SHA-256     | | DAG, W3C    |           |
+  |          | 21 CFR 11   | | PROV        |           |
+  |          +-------------+ +-------------+           |
+  |                                                    |
+  |  23 tools total across 5 servers                   |
+  +----------------------------------------------------+</pre>
+      <div class="diagram-caption">Figure 1: Five-server deployment topology at each participating clinical site</div>
+    </div>
+
+    <!-- Server cards -->
+    <div class="server-card" data-server="authz">
+      <div class="server-name">Authorization Server <span class="tool-count">5 tools</span> <span class="level-badge">Level 1</span></div>
+      <div class="server-id">servers/trialmcp_authz/ | server.py, policy_engine.py, token_store.py</div>
+      <p style="margin:0.5rem 0 0.25rem;font-size:0.9rem">Deny-by-default RBAC, SHA-256 token lifecycle, policy evaluation</p>
+      <ul>
+        <li><code>authz_evaluate</code> | <code>authz_issue_token</code> | <code>authz_validate_token</code></li>
+        <li><code>authz_revoke_token</code> | <code>authz_list_policies</code></li>
+      </ul>
+    </div>
+
+    <div class="server-card" data-server="fhir">
+      <div class="server-name">FHIR Clinical Data Server <span class="tool-count">4 tools</span> <span class="level-badge">Level 2</span></div>
+      <div class="server-id">servers/trialmcp_fhir/ | server.py, deid_pipeline.py, fhir_adapter.py</div>
+      <p style="margin:0.5rem 0 0.25rem;font-size:0.9rem">FHIR R4 clinical data with HIPAA Safe Harbor de-identification</p>
+      <ul>
+        <li><code>fhir_read</code> | <code>fhir_search</code> | <code>fhir_patient_lookup</code> | <code>fhir_study_status</code></li>
+      </ul>
+    </div>
+
+    <div class="server-card" data-server="dicom">
+      <div class="server-name">DICOM Imaging Server <span class="tool-count">4 tools</span> <span class="level-badge">Level 3</span></div>
+      <div class="server-id">servers/trialmcp_dicom/ | server.py, dicom_adapter.py</div>
+      <p style="margin:0.5rem 0 0.25rem;font-size:0.9rem">DICOM imaging queries, RECIST 1.1 measurements</p>
+      <ul>
+        <li><code>dicom_query</code> | <code>dicom_retrieve_pointer</code> | <code>dicom_study_metadata</code> | <code>dicom_recist_measurements</code></li>
+      </ul>
+    </div>
+
+    <div class="server-card" data-server="ledger">
+      <div class="server-name">Audit Ledger Server <span class="tool-count">5 tools</span> <span class="level-badge">Level 1</span></div>
+      <div class="server-id">servers/trialmcp_ledger/ | server.py, chain.py, storage.py</div>
+      <p style="margin:0.5rem 0 0.25rem;font-size:0.9rem">Hash-chained 21 CFR Part 11 audit trail</p>
+      <ul>
+        <li><code>ledger_append</code> | <code>ledger_verify</code> | <code>ledger_query</code></li>
+        <li><code>ledger_replay</code> | <code>ledger_export</code></li>
+      </ul>
+    </div>
+
+    <div class="server-card" data-server="provenance">
+      <div class="server-name">Provenance Server <span class="tool-count">5 tools</span> <span class="level-badge">Level 4</span></div>
+      <div class="server-id">servers/trialmcp_provenance/ | server.py, dag.py, storage.py</div>
+      <p style="margin:0.5rem 0 0.25rem;font-size:0.9rem">DAG-based data lineage, SHA-256 fingerprinting</p>
+      <ul>
+        <li><code>provenance_record</code> | <code>provenance_query_forward</code> | <code>provenance_query_backward</code></li>
+        <li><code>provenance_fingerprint</code> | <code>provenance_lineage</code></li>
+      </ul>
+    </div>
+
+    <!-- Hash chain code snippet -->
+    <h3 class="mt-2">Hash-Chained Audit Record (from <code>servers/trialmcp_ledger/chain.py</code>)</h3>
+<pre><code>GENESIS_HASH = "0" * 64
+
+def canonical_json(record: dict[str, Any]) -&gt; str:
+    filtered = {k: v for k, v in sorted(record.items())
+                if k != "hash"}
+    return json.dumps(filtered, sort_keys=True,
+                      ensure_ascii=True)
+
+def compute_audit_hash(record, prev_hash: str) -&gt; str:
+    canonical = canonical_json(record)
+    payload = prev_hash + canonical
+    return hashlib.sha256(
+        payload.encode("utf-8")).hexdigest()</code></pre>
+  </div>
+</section>
+
+<!-- ============================================================
+     SEVEN PROCESS DIAGRAMS
+     ============================================================ -->
+<section class="section" id="diagrams">
+  <div class="container">
+    <div class="section-header">
+      <h2>Seven Interactive Diagram Sections</h2>
+      <p>Each section corresponds to a process diagram from <code>docs/mcp-process/</code></p>
+    </div>
+
+    <!-- Diagram 1: Robot Procedure Lifecycle -->
+    <div class="process-section">
+      <h3><span class="process-num">1</span> Robot Procedure Lifecycle</h3>
+      <div class="process-source">Source: <code>docs/mcp-process/01-robot-procedure-lifecycle.md</code></div>
+
+      <p>The robot procedure lifecycle defines the complete state machine for robot-assisted clinical procedures. Each state transition requires specific MCP server interactions and safety validations, with timing constraints enforcing clinical safety protocols.</p>
+
+      <div id="robot-lifecycle-states" class="state-machine-diagram">
+        <div class="state-node state-scheduled">SCHEDULED</div>
+        <span class="state-arrow">&rarr;</span>
+        <div class="state-node state-precheck">PRE_CHECK</div>
+        <span class="state-arrow">&rarr;</span>
+        <div class="state-node state-gates">GATES_EVAL</div>
+        <span class="state-arrow">&rarr;</span>
+        <div class="state-node state-approval">HUMAN_APPROVAL</div>
+        <span class="state-arrow">&rarr;</span>
+        <div class="state-node state-inprogress">IN_PROGRESS</div>
+        <span class="state-arrow">&rarr;</span>
+        <div class="state-node state-completed">COMPLETED</div>
+      </div>
+
+      <div class="text-diagram">
+<pre>  State Transitions and MCP Server Interactions:
+
+  SCHEDULED --(pre-check triggers)--> PRE_CHECK
+    Servers: trialmcp-authz (token validation)
+             trialmcp-fhir  (patient eligibility)
+             trialmcp-dicom (imaging availability)
+
+  PRE_CHECK --(all checks pass)--> GATES_EVAL
+    Servers: safety/gate_service (5 gates evaluated)
+
+  GATES_EVAL --(all gates pass)--> HUMAN_APPROVAL
+    Servers: safety/approval_checkpoint (clinician review)
+    Timeout: 300 seconds
+
+  HUMAN_APPROVAL --(approved)--> IN_PROGRESS
+    Servers: trialmcp-ledger (audit record)
+             safety/procedure_state (state transition)
+
+  IN_PROGRESS --(procedure complete)--> COMPLETED
+    Servers: trialmcp-provenance (lineage record)
+             trialmcp-ledger (final audit)
+
+  Any State --(e-stop triggered)--> ABORTED
+    Servers: safety/estop (signal propagation)
+             trialmcp-ledger (abort audit record)</pre>
+        <div class="diagram-caption">Figure 2: Robot procedure state machine with MCP server interactions per transition</div>
+      </div>
+    </div>
+
+    <!-- Diagram 2: Cross-Site MCP Communication -->
+    <div class="process-section">
+      <h3><span class="process-num">2</span> Cross-Site MCP Communication</h3>
+      <div class="process-source">Source: <code>docs/mcp-process/02-cross-site-mcp-communication.md</code></div>
+
+      <p>The cross-site communication model connects hospital sites, cancer centers, sponsors, and CROs through a federated coordination layer. Each site operates its own five-server deployment while participating in cross-site audit chain synchronization and token exchange protocols.</p>
+
+      <div class="text-diagram">
+<pre>  MULTI-SITE MCP TOPOLOGY
+
+  +------------------+     +------------------+     +------------------+
+  |   SITE ALPHA     |     |   SITE BETA      |     |   SITE GAMMA     |
+  |  (Hospital)      |     |  (Cancer Center)  |     |  (Hospital)      |
+  | +------+ +-----+ |     | +------+ +-----+ |     | +------+ +-----+ |
+  | |authz | |fhir | |     | |authz | |fhir | |     | |authz | |fhir | |
+  | +------+ +-----+ |     | +------+ +-----+ |     | +------+ +-----+ |
+  | +------+ +-----+ |     | +------+ +-----+ |     | +------+ +-----+ |
+  | |dicom | |ledger| |     | |dicom | |ledger| |     | |dicom | |ledger| |
+  | +------+ +-----+ |     | +------+ +-----+ |     | +------+ +-----+ |
+  | +----------+      |     | +----------+      |     | +----------+      |
+  | |provenance|      |     | |provenance|      |     | |provenance|      |
+  | +----------+      |     | +----------+      |     | +----------+      |
+  +--------+---------+     +--------+---------+     +--------+---------+
+           |                        |                        |
+           +----------+-------------+-------------+----------+
+                      |                           |
+               +------v--------+           +------v--------+
+               |   SPONSOR     |           |     CRO       |
+               |  MCP Client   |           |  MCP Client   |
+               +---------------+           +---------------+</pre>
+        <div class="diagram-caption">Figure 3: Multi-site MCP topology with cross-site coordination</div>
+      </div>
+
+      <p>Cross-site token exchange enables authorized actors to access resources across sites without requiring site-specific credentials. The token exchange protocol uses scoped, time-limited tokens issued by each site's authorization server, with cross-site audit chain synchronization ensuring a unified compliance record.</p>
+    </div>
+
+    <!-- Diagram 3: Clinical System Integration -->
+    <div class="process-section">
+      <h3><span class="process-num">3</span> Clinical System Integration</h3>
+      <div class="process-source">Source: <code>docs/mcp-process/03-clinical-system-integration.md</code></div>
+
+      <p>The integration adapter architecture connects MCP servers to real hospital infrastructure through 34 adapters organized across six categories in the <code>integrations/</code> directory.</p>
+
+      <div class="two-col">
+        <div>
+          <h4>EHR Integration (FHIR R4)</h4>
+          <ul class="content-list">
+            <li><strong>Epic</strong> via SMART on FHIR adapter (<code>integrations/fhir/smart_on_fhir.py</code>)</li>
+            <li><strong>Cerner</strong> via HAPI FHIR adapter (<code>integrations/fhir/hapi_fhir.py</code>)</li>
+            <li><strong>MEDITECH</strong> via terminology mapping</li>
+            <li>De-identification pipeline: <code>integrations/fhir/deid_adapter.py</code></li>
+          </ul>
+
+          <h4>Terminology Standards</h4>
+          <ul class="content-list">
+            <li>ICD-10, SNOMED CT, LOINC, RxNorm</li>
+            <li>Mapping adapter: <code>integrations/fhir/terminology_adapter.py</code></li>
+          </ul>
+        </div>
+        <div>
+          <h4>PACS Integration (DICOM)</h4>
+          <ul class="content-list">
+            <li><strong>dcm4chee</strong>: <code>integrations/dicom/dcm4chee_adapter.py</code></li>
+            <li><strong>Orthanc</strong>: <code>integrations/dicom/orthanc_adapter.py</code></li>
+            <li><strong>DICOMweb</strong>: <code>integrations/dicom/dicomweb_adapter.py</code></li>
+            <li>Modality filter, RECIST adapter, metadata-only retrieval</li>
+          </ul>
+
+          <h4>Identity Providers</h4>
+          <ul class="content-list">
+            <li>OIDC adapter: <code>integrations/identity/oidc_adapter.py</code></li>
+            <li>mTLS adapter: <code>integrations/identity/mtls_adapter.py</code></li>
+            <li>KMS adapter: <code>integrations/identity/kms_adapter.py</code></li>
+          </ul>
+        </div>
+      </div>
+
+      <table style="margin-top:1rem">
+        <thead><tr><th>Category</th><th>Count</th><th>Key Adapters</th></tr></thead>
+        <tbody>
+          <tr><td>FHIR</td><td>9</td><td>HAPI FHIR, SMART on FHIR, de-identification, terminology</td></tr>
+          <tr><td>DICOM</td><td>9</td><td>dcm4chee, Orthanc, DICOMweb, RECIST, modality filter</td></tr>
+          <tr><td>Clinical</td><td>3</td><td>Scheduling, e-consent, provenance export</td></tr>
+          <tr><td>Federation</td><td>4</td><td>Coordinator, policy enforcement, secure aggregation</td></tr>
+          <tr><td>Identity</td><td>5</td><td>OIDC, mTLS, KMS, policy engine</td></tr>
+          <tr><td>Privacy</td><td>4</td><td>De-identification pipeline, privacy budget, data residency</td></tr>
+          <tr><td><strong>Total</strong></td><td><strong>34</strong></td><td></td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Diagram 4: Safety Gate Evaluation -->
+    <div class="process-section">
+      <h3><span class="process-num">4</span> Safety Gate Evaluation</h3>
+      <div class="process-source">Source: <code>docs/mcp-process/04-safety-gate-evaluation.md</code></div>
+
+      <p>Five mandatory pre-procedure safety gates must pass sequentially before any robotic procedure can proceed. Each gate has a 300-second timeout. If any gate fails, the procedure transitions to ABORTED and a full audit record is created.</p>
+
+      <div id="gate-evaluation-demo" class="gate-pipeline">
+        <div class="gate-item">
+          <div class="gate-num">1</div>
+          <div><strong>Patient Consent</strong><br><span class="text-muted" style="font-size:0.82rem">Verify active, informed consent for the specific procedure</span></div>
+          <span class="gate-status pending">PENDING</span>
+        </div>
+        <div class="gate-item">
+          <div class="gate-num">2</div>
+          <div><strong>Site Capability</strong><br><span class="text-muted" style="font-size:0.82rem">Validate site meets required conformance level</span></div>
+          <span class="gate-status pending">PENDING</span>
+        </div>
+        <div class="gate-item">
+          <div class="gate-num">3</div>
+          <div><strong>Robot Capability</strong><br><span class="text-muted" style="font-size:0.82rem">Confirm robot firmware and capability profile match task requirements</span></div>
+          <span class="gate-status pending">PENDING</span>
+        </div>
+        <div class="gate-item">
+          <div class="gate-num">4</div>
+          <div><strong>Protocol Compliance</strong><br><span class="text-muted" style="font-size:0.82rem">Verify procedure parameters satisfy trial protocol constraints</span></div>
+          <span class="gate-status pending">PENDING</span>
+        </div>
+        <div class="gate-item">
+          <div class="gate-num">5</div>
+          <div><strong>Human Approval</strong><br><span class="text-muted" style="font-size:0.82rem">Require explicit clinician authorization (300s timeout)</span></div>
+          <span class="gate-status pending">PENDING</span>
+        </div>
+      </div>
+
+      <p class="text-muted" style="font-size:0.82rem">The gate evaluation animation above demonstrates the sequential pass/fail workflow. In production, the gate service (<code>safety/gate_service.py</code>) integrates with all five MCP servers to validate each condition.</p>
+    </div>
+
+    <!-- Diagram 5: Federated Learning Coordination -->
+    <div class="process-section">
+      <h3><span class="process-num">5</span> Federated Learning Coordination</h3>
+      <div class="process-source">Source: <code>docs/mcp-process/05-federated-learning-coordination.md</code></div>
+
+      <p>Multi-site federated learning enables collaborative model training without centralizing patient data. The system supports three aggregation strategies with differential privacy budget tracking per site.</p>
+
+      <div class="two-col">
+        <div>
+          <h4>Aggregation Strategies</h4>
+          <ol class="content-list">
+            <li><strong>FedAvg</strong>: Weighted averaging proportional to local dataset size</li>
+            <li><strong>FedProx</strong>: Proximal term regularization for heterogeneous data</li>
+            <li><strong>SCAFFOLD</strong>: Variance reduction through control variates</li>
+          </ol>
+
+          <h4>Privacy Controls</h4>
+          <ul class="content-list">
+            <li>Differential privacy budget (epsilon) tracking per site per round</li>
+            <li>Secure aggregation with mask generation</li>
+            <li>Privacy adapter: <code>integrations/privacy/privacy_budget.py</code></li>
+          </ul>
+        </div>
+        <div>
+          <div class="fed-round">
+            <div class="fed-step"><span class="step-num">1</span> Coordinator distributes global model to sites</div>
+            <div class="fed-step"><span class="step-num">2</span> Each site trains locally on private data</div>
+            <div class="fed-step"><span class="step-num">3</span> Sites generate masks for secure aggregation</div>
+            <div class="fed-step"><span class="step-num">4</span> Masked model updates submitted to coordinator</div>
+            <div class="fed-step"><span class="step-num">5</span> Aggregation (masks cancel), global model updated</div>
+            <div class="fed-step"><span class="step-num">6</span> Updated model distributed, privacy budgets decremented</div>
+          </div>
+        </div>
+      </div>
+
+      <p>Federation adapters are implemented in <code>integrations/federation/</code>, including the coordinator (<code>coordinator.py</code>), policy enforcement (<code>policy_enforcer.py</code>), secure aggregation (<code>secure_aggregation.py</code>), and site harmonization (<code>site_harmonization.py</code>) modules.</p>
+    </div>
+
+    <!-- Diagram 6: Audit & Provenance Chain -->
+    <div class="process-section">
+      <h3><span class="process-num">6</span> Audit and Provenance Chain</h3>
+      <div class="process-source">Source: <code>docs/mcp-process/06-audit-provenance-chain.md</code></div>
+
+      <p>The audit ledger maintains a hash-chained sequence of records using SHA-256 with canonical JSON serialization. Every MCP tool invocation produces an audit record linked to the prior record, creating a tamper-evident chain satisfying 21 CFR Part 11 requirements.</p>
+
+      <div id="hash-chain-demo">
+        <!-- Rendered by diagrams.js -->
+      </div>
+
+      <div class="text-diagram">
+<pre>  PROVENANCE DAG (Directed Acyclic Graph)
+
+  [FHIR Read: Patient/P-001]
+       |
+       v
+  [DICOM Query: CT Studies]---->[RECIST Measurement]
+       |                              |
+       v                              v
+  [Robot Procedure]------------>[Audit Record]
+       |                              |
+       v                              v
+  [Provenance Node]            [Chain Block #N]
+       |
+       v
+  [Forward Lineage Query]
+
+  Source types: fhir, dicom, computed, external, federated
+  Action types: read, transform, aggregate, transfer, derive</pre>
+        <div class="diagram-caption">Figure 4: DAG-based provenance graph with forward/backward lineage queries</div>
+      </div>
+    </div>
+
+    <!-- Diagram 7: Privacy & De-identification -->
+    <div class="process-section">
+      <h3><span class="process-num">7</span> Privacy and De-identification</h3>
+      <div class="process-source">Source: <code>docs/mcp-process/07-privacy-deidentification.md</code></div>
+
+      <p>The HIPAA Safe Harbor 18-identifier pipeline removes protected health information (PHI) across three stages before clinical data leaves the server boundary. HMAC-SHA256 pseudonymization preserves referential integrity across de-identified records.</p>
+
+      <div class="privacy-stage">
+        <div class="stage-card">
+          <div class="stage-num">1</div>
+          <h4>Direct Identifiers</h4>
+          <ul>
+            <li>Patient name</li>
+            <li>Social Security number</li>
+            <li>Medical record number</li>
+            <li>Phone, fax, email</li>
+            <li>Geographic data (below state)</li>
+          </ul>
+        </div>
+        <div class="stage-connector">&rarr;</div>
+        <div class="stage-card">
+          <div class="stage-num">2</div>
+          <h4>Quasi-Identifiers</h4>
+          <ul>
+            <li>Dates (birth, admission, discharge)</li>
+            <li>Age (if over 89)</li>
+            <li>ZIP code (3-digit generalization)</li>
+            <li>Device identifiers</li>
+          </ul>
+        </div>
+        <div class="stage-connector">&rarr;</div>
+        <div class="stage-card">
+          <div class="stage-num">3</div>
+          <h4>Technical Identifiers</h4>
+          <ul>
+            <li>IP addresses</li>
+            <li>URLs</li>
+            <li>Biometric identifiers</li>
+            <li>Full-face photographs</li>
+          </ul>
+        </div>
+      </div>
+
+      <p>Data residency enforcement ensures compliance with federal, California (CCPA/CMIA), and New York state privacy regulations through the data residency adapter (<code>integrations/privacy/data_residency.py</code>). Access control combines RBAC and ABAC checks across four data classification levels.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================
+     NATIONAL DEPLOYMENT TOPOLOGY
+     ============================================================ -->
+<section class="section" id="topology">
+  <div class="container">
+    <div class="section-header">
+      <h2>National Deployment Topology</h2>
+      <p>Three-tier architecture: National Governance, Regional Layers, 750+ Sites</p>
+    </div>
+
+    <div class="topology-visual">
+      <div class="topology-tier">
+        <div class="tier-label">National Governance Layer</div>
+        <div style="font-size:0.85rem;color:var(--color-text-light)">Standards Body | Conformance Registry | Schema Registry | Validation Services</div>
+      </div>
+
+      <div class="topology-tier">
+        <div class="tier-label">Regional Layers</div>
+        <div class="region-cards">
+          <div class="region-card">
+            <h4>Region 1 (East)</h4>
+            <div class="region-stat"><strong>210</strong> sites</div>
+            <div class="region-stat"><strong>1,050</strong> servers</div>
+            <div class="region-stat" style="font-size:0.78rem;margin-top:0.25rem">NY, MA, PA, FL, NC, VA, MD, CT, NJ, GA</div>
+          </div>
+          <div class="region-card">
+            <h4>Region 2 (Central)</h4>
+            <div class="region-stat"><strong>305</strong> sites</div>
+            <div class="region-stat"><strong>1,525</strong> servers</div>
+            <div class="region-stat" style="font-size:0.78rem;margin-top:0.25rem">TX, IL, OH, MI, MN, MO, IN, WI, IA, TN</div>
+          </div>
+          <div class="region-card">
+            <h4>Region 3 (West)</h4>
+            <div class="region-stat"><strong>248</strong> sites</div>
+            <div class="region-stat"><strong>1,240</strong> servers</div>
+            <div class="region-stat" style="font-size:0.78rem;margin-top:0.25rem">CA, WA, OR, CO, AZ, UT, NV, HI</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="topology-tier">
+        <div class="tier-label">Federated Layer</div>
+        <div style="font-size:0.85rem;color:var(--color-text-light)">Privacy-Preserving Aggregation | Differential Privacy | Audit Chain Merge | FedAvg / FedProx / SCAFFOLD</div>
+      </div>
+    </div>
+
+    <div class="text-diagram" style="margin-top:1.5rem">
+<pre>  NATIONAL GOVERNANCE LAYER
+  +-----------------------------------------------------+
+  | Standards Body   | Conformance Registry              |
+  | Extension Mgmt   | Version Compatibility Policy      |
+  | Schema Registry  | Validation Services               |
+  +--------+---------+---------+--------+--------+------+
+           |                   |                 |
+  +--------v------+  +---------v-----+  +--------v-----+
+  | REGION 1      |  | REGION 2      |  | REGION N     |
+  | (East)        |  | (Central)     |  | (West)       |
+  | 200+ Sites    |  | 300+ Sites    |  | 250+ Sites   |
+  | 5 Svrs/Site   |  | 5 Svrs/Site   |  | 5 Svrs/Site  |
+  +-------+-------+  +-------+-------+  +-------+------+
+          |                  |                  |
+          +------------------+------------------+
+                             |
+                    +--------v-----------+
+                    | FEDERATED LAYER    |
+                    | Aggregation        |
+                    | Differential Priv. |
+                    | Audit Merge        |
+                    +--------------------+</pre>
+      <div class="diagram-caption">Figure 5: National 3-tier deployment topology from the paper (Section 4.6)</div>
+    </div>
+
+    <!-- Simulator -->
+    <h3 class="mt-2">Deployment Simulator</h3>
+    <p style="font-size:0.9rem">Run deterministic simulations of national deployment, robot procedure workflows, and audit chain verification. All data is synthetic and modeled.</p>
+
+    <div class="sim-controls">
+      <button class="sim-btn" onclick="Simulator.deployment()">Deploy National</button>
+      <button class="sim-btn" onclick="Simulator.workflow()">Robot Workflow</button>
+      <button class="sim-btn" onclick="Simulator.auditChain()">Verify Audit Chain</button>
+      <button class="sim-btn outline" onclick="Simulator.stop()">Stop</button>
+    </div>
+    <div id="sim-output" class="sim-output">Click a simulation button above to begin.</div>
+  </div>
+</section>
+
+<!-- ============================================================
+     CONFORMANCE LEVELS
+     ============================================================ -->
+<section class="section" id="conformance">
+  <div class="container">
+    <div class="section-header">
+      <h2>Conformance Levels</h2>
+      <p>Five hierarchical levels enabling incremental adoption (click to expand)</p>
+    </div>
+
+    <div id="conformance-levels-container">
+      <!-- Rendered by conformance.js -->
+    </div>
+
+    <p class="text-muted mt-2" style="font-size:0.85rem">Eight conformance profiles are defined in <code>profiles/</code>, including five hierarchical profiles and three regulatory overlays (<code>country-us-fda.md</code>, <code>state-us-ca.md</code>, <code>state-us-ny.md</code>).</p>
+  </div>
+</section>
+
+<!-- ============================================================
+     SAFETY MODULES
+     ============================================================ -->
+<section class="section" id="safety">
+  <div class="container">
+    <div class="section-header">
+      <h2>Safety Modules</h2>
+      <p>Eight safety modules designed for Physical AI systems in clinical environments</p>
+    </div>
+
+    <div class="card-grid">
+      <div class="safety-card">
+        <h4>Emergency Stop Controller</h4>
+        <div class="safety-file">safety/estop.py</div>
+        <p style="font-size:0.88rem">E-stop signal propagation, abort workflow, post-abort evidence capture, recovery with re-authorization.</p>
+        <div id="estop-lifecycle-states" class="state-machine-diagram" style="justify-content:flex-start;padding:0.5rem 0">
+          <div class="state-node state-idle">IDLE</div>
+          <span class="state-arrow">&rarr;</span>
+          <div class="state-node state-triggered">TRIGGERED</div>
+          <span class="state-arrow">&rarr;</span>
+          <div class="state-node state-acknowledged">ACKNOWLEDGED</div>
+          <span class="state-arrow">&rarr;</span>
+          <div class="state-node state-recovering">RECOVERING</div>
+        </div>
+      </div>
+
+      <div class="safety-card">
+        <h4>Procedure State Machine</h4>
+        <div class="safety-file">safety/procedure_state.py</div>
+        <p style="font-size:0.88rem">State machine enforcement with valid transition validation across 6 states.</p>
+        <div class="state-machine-diagram" style="justify-content:flex-start;padding:0.5rem 0">
+          <div class="state-node state-idle" style="font-size:0.7rem;padding:0.3rem 0.5rem">IDLE</div>
+          <span class="state-arrow">&rarr;</span>
+          <div class="state-node state-preparing" style="font-size:0.7rem;padding:0.3rem 0.5rem">PREPARING</div>
+          <span class="state-arrow">&rarr;</span>
+          <div class="state-node state-active" style="font-size:0.7rem;padding:0.3rem 0.5rem">ACTIVE</div>
+          <span class="state-arrow">&rarr;</span>
+          <div class="state-node state-completing" style="font-size:0.7rem;padding:0.3rem 0.5rem">COMPLETING</div>
+        </div>
+      </div>
+
+      <div class="safety-card">
+        <h4>Robot Registry</h4>
+        <div class="safety-file">safety/robot_registry.py</div>
+        <p style="font-size:0.88rem">Robot registration, capability validation, firmware version tracking. Capability declaration is required before any procedure.</p>
+      </div>
+
+      <div class="safety-card">
+        <h4>Task Validator</h4>
+        <div class="safety-file">safety/task_validator.py</div>
+        <p style="font-size:0.88rem">Task order validation against safety constraints and robot capabilities using <code>schemas/task-order.schema.json</code>.</p>
+      </div>
+
+      <div class="safety-card">
+        <h4>Safety Gate Service</h4>
+        <div class="safety-file">safety/gate_service.py</div>
+        <p style="font-size:0.88rem">5 mandatory gates with sequential evaluation: Patient Consent, Site Capability, Robot Capability, Protocol Compliance, Human Approval. 300-second timeout per gate.</p>
+      </div>
+
+      <div class="safety-card">
+        <h4>Approval Checkpoint</h4>
+        <div class="safety-file">safety/approval_checkpoint.py</div>
+        <p style="font-size:0.88rem">Multi-party approval requiring concurrent authorization from clinician, system, and regulatory parties before critical procedure transitions.</p>
+      </div>
+
+      <div class="safety-card">
+        <h4>Site Verifier</h4>
+        <div class="safety-file">safety/site_verifier.py</div>
+        <p style="font-size:0.88rem">Site capability verification against conformance requirements and infrastructure readiness checks.</p>
+      </div>
+
+      <div class="safety-card">
+        <h4>Boundary Enforcer</h4>
+        <div class="safety-file">safety/boundary_enforcer.py</div>
+        <p style="font-size:0.88rem">Execution boundary enforcement: spatial boundary validation, force limit enforcement, temporal constraint checking.</p>
+      </div>
+    </div>
+
+    <h3 class="mt-2">Emergency Stop Code (from <code>safety/estop.py</code>)</h3>
+<pre><code>class EStopStatus(Enum):
+    IDLE = "IDLE"
+    TRIGGERED = "TRIGGERED"
+    ACKNOWLEDGED = "ACKNOWLEDGED"
+    RECOVERING = "RECOVERING"
+
+class EStopController:
+    def trigger_estop(self, procedure_id, reason,
+                      triggered_by, current_state=None):
+        if self._status == EStopStatus.TRIGGERED:
+            raise RuntimeError("E-stop already active")
+        signal = EStopSignal(
+            signal_id=str(uuid.uuid4()),
+            procedure_id=procedure_id,
+            reason=reason,
+            triggered_by=triggered_by,
+            affected_servers=list(self._active_servers),
+            preserved_state=current_state or {})
+        self._active_signal = signal
+        self._status = EStopStatus.TRIGGERED
+        return signal</code></pre>
+  </div>
+</section>
+
+<!-- ============================================================
+     REPOSITORY SCALE
+     ============================================================ -->
+<section class="section" id="stats">
+  <div class="container">
+    <div class="section-header">
+      <h2>Repository Scale</h2>
+      <p>Quantitative summary of the national repository at v1.2.0</p>
+    </div>
+
+    <div class="two-col">
+      <div>
+        <table>
+          <thead><tr><th>Category</th><th>Count</th></tr></thead>
+          <tbody>
+            <tr><td>MCP servers</td><td>5</td></tr>
+            <tr><td>Tools (total)</td><td>23</td></tr>
+            <tr><td>JSON schemas</td><td>13</td></tr>
+            <tr><td>Conformance profiles</td><td>8</td></tr>
+            <tr><td>Test functions</td><td>668</td></tr>
+            <tr><td>Integration adapters</td><td>34</td></tr>
+            <tr><td>Specification docs</td><td>9</td></tr>
+            <tr><td>ADRs</td><td>7</td></tr>
+            <tr><td>Total files</td><td>381+</td></tr>
+            <tr><td>Lines of code (approx.)</td><td>69,800+</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div>
+        <table>
+          <thead><tr><th>Category</th><th>Count</th></tr></thead>
+          <tbody>
+            <tr><td>Safety modules</td><td>8</td></tr>
+            <tr><td>Benchmark modules</td><td>5</td></tr>
+            <tr><td>Certification tools</td><td>4</td></tr>
+            <tr><td>Deployment modes</td><td>6</td></tr>
+            <tr><td>Interop scenarios</td><td>8</td></tr>
+            <tr><td>Actor personas</td><td>6</td></tr>
+            <tr><td>Stakeholder guides</td><td>5</td></tr>
+            <tr><td>Operational docs</td><td>5</td></tr>
+            <tr><td>Total directories</td><td>88</td></tr>
+            <tr><td>Regulatory overlays</td><td>7</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <h3 class="mt-2">Test Coverage Breakdown</h3>
+    <table>
+      <thead><tr><th>Category</th><th>Tests</th><th>Validates</th></tr></thead>
+      <tbody>
+        <tr><td>Unit (integrations)</td><td>205</td><td>All 34 integration adapters</td></tr>
+        <tr><td>Unit (safety)</td><td>88</td><td>All 8 safety modules</td></tr>
+        <tr><td>Unit (core server)</td><td>32</td><td>5 MCP server implementations</td></tr>
+        <tr><td>Unit (infrastructure)</td><td>12</td><td>Conformance harness, schema validator</td></tr>
+        <tr><td>Positive conformance</td><td>69</td><td>Correct behavior at Levels 1-3</td></tr>
+        <tr><td>Adversarial</td><td>57</td><td>AuthZ bypass, chain tampering, PHI leakage</td></tr>
+        <tr><td>Blackbox</td><td>63</td><td>Per-server external conformance</td></tr>
+        <tr><td>Security</td><td>39</td><td>SSRF prevention, token lifecycle, chain integrity</td></tr>
+        <tr><td>Interoperability</td><td>32</td><td>Cross-server trace, schema validation</td></tr>
+        <tr><td>Negative</td><td>26</td><td>Invalid input rejection, unauthorized access</td></tr>
+        <tr><td>Integration</td><td>13</td><td>Multi-server integration scenarios</td></tr>
+        <tr><td><strong>Total</strong></td><td><strong>668</strong></td><td></td></tr>
+      </tbody>
+    </table>
+
+    <h3 class="mt-2">CI/CD Pipeline (14 Jobs)</h3>
+    <p>The repository maintains quality through a GitHub Actions CI pipeline defined in <code>.github/workflows/ci.yml</code>:</p>
+    <ol class="content-list">
+      <li><code>lint-and-format</code>: Ruff linting and formatting (Python 3.10, 3.11, 3.12)</li>
+      <li><code>integration-tests</code>: Multi-server integration validation</li>
+      <li><code>adversarial-tests</code>: Security attack resistance</li>
+      <li><code>schema-validation</code>: JSON Schema Draft 2020-12 validation</li>
+      <li><code>schema-compatibility</code>: Schema metadata and field consistency</li>
+      <li><code>contract-consistency</code>: Generated model alignment with schemas</li>
+      <li><code>benchmark-smoke</code>: Performance benchmark verification</li>
+      <li><code>sdk-python</code>: Python SDK import verification</li>
+      <li><code>sdk-typescript</code>: TypeScript SDK compilation</li>
+      <li><code>cli-smoke</code>: CLI command validation</li>
+      <li><code>codegen-consistency</code>: Code generation pipeline verification</li>
+      <li><code>security-scan</code>: Dependency audit and secret detection</li>
+      <li><code>typescript-build</code>: Reference TypeScript compilation</li>
+      <li><code>docs-lint</code>: Documentation completeness and link integrity</li>
+    </ol>
+  </div>
+</section>
+
+<!-- ============================================================
+     ADOPTION ROADMAP
+     ============================================================ -->
+<section class="section" id="roadmap">
+  <div class="container">
+    <div class="section-header">
+      <h2>Adoption Roadmap</h2>
+      <p>Stakeholder-specific pathways for implementing the national standard</p>
+    </div>
+
+    <div class="roadmap-item">
+      <div class="roadmap-icon">S</div>
+      <div>
+        <h4>Sponsors and CROs</h4>
+        <p>Begin with Level 1 (Core) deployment for centralized audit trail access. Progress to Level 2 for de-identified clinical data queries. Guide: <code>docs/guides/sponsor-cro.md</code></p>
+      </div>
+    </div>
+    <div class="roadmap-item">
+      <div class="roadmap-icon">H</div>
+      <div>
+        <h4>Hospital IT</h4>
+        <p>Deploy five-server stack using Docker Compose (<code>deploy/docker-compose.yml</code>). Integrate with existing EHR via FHIR adapters and PACS via DICOM adapters. Guide: <code>docs/guides/hospital-it.md</code></p>
+      </div>
+    </div>
+    <div class="roadmap-item">
+      <div class="roadmap-icon">R</div>
+      <div>
+        <h4>Regulators and IRBs</h4>
+        <p>Review conformance profiles and regulatory overlays (<code>profiles/</code>). Evaluate audit chain integrity using <code>ledger_verify</code>. Guide: <code>docs/guides/regulator-irb.md</code></p>
+      </div>
+    </div>
+    <div class="roadmap-item">
+      <div class="roadmap-icon">V</div>
+      <div>
+        <h4>Robot Vendors</h4>
+        <p>Implement MCP client interface against the 23-tool contract. Register robots via <code>safety/robot_registry.py</code>. Run conformance tests at Level 5. Guide: <code>docs/guides/robot-vendor.md</code></p>
+      </div>
+    </div>
+    <div class="roadmap-item">
+      <div class="roadmap-icon">C</div>
+      <div>
+        <h4>Standards Community</h4>
+        <p>Review the 9 normative specifications in <code>spec/</code>, 7 ADRs in <code>docs/adr/</code>, and governance framework. Guide: <code>docs/guides/standards-community.md</code></p>
+      </div>
+    </div>
+
+    <h3 class="mt-2">Robot Procedure Data Flow</h3>
+    <div class="text-diagram">
+<pre>  ROBOT AGENT         MCP SERVERS         CLINICAL SYSTEMS
+  -----------         -----------         ----------------
+  +--------+
+  | START  |
+  +---+----+
+      |  1. Request Token
+      v
+  +--------+        +--------------+
+  | AuthZ  |-------&gt;| trialmcp-    |       Issue scoped token
+  | Phase  |&lt;-------| authz        |       (role + expiry)
+  +---+----+        +--------------+
+      |  2. Query Patient Data
+      v
+  +--------+        +--------------+       +-----------+
+  | FHIR   |-------&gt;| trialmcp-    |------&gt;| EHR       |
+  | Phase  |&lt;-------| fhir         |&lt;------| (FHIR R4) |
+  +---+----+        +--------------+       +-----------+
+      |  3. Retrieve Imaging
+      v
+  +--------+        +--------------+       +-----------+
+  | DICOM  |-------&gt;| trialmcp-    |------&gt;| PACS      |
+  | Phase  |&lt;-------| dicom        |&lt;------| (DICOM)   |
+  +---+----+        +--------------+       +-----------+
+      |  4. Execute Procedure
+      v
+  +--------+
+  | ROBOT  |                               Physical AI task
+  | ACTION |                               under safety rules
+  +---+----+
+      |  5. Record Audit
+      v
+  +--------+        +--------------+
+  | Audit  |-------&gt;| trialmcp-    |       Hash-chained record
+  | Phase  |&lt;-------| ledger       |       (21 CFR Part 11)
+  +---+----+        +--------------+
+      |  6. Record Provenance
+      v
+  +--------+        +--------------+
+  | Prov.  |-------&gt;| trialmcp-    |       DAG lineage entry
+  | Phase  |&lt;-------| provenance   |       (SHA-256)
+  +---+----+        +--------------+
+      v
+  +--------+
+  |  DONE  |
+  +--------+</pre>
+      <div class="diagram-caption">Figure 6: Complete data flow for a Physical AI robot agent executing a clinical procedure</div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================
+     CLASSIFICATION & STATUS
+     ============================================================ -->
+<section class="section" id="classification">
+  <div class="container">
+    <div class="section-header">
+      <h2>Classification and Status</h2>
+    </div>
+
+    <div class="disclaimer-box">
+      <h3>What This IS</h3>
+      <p>A <strong>reference architecture demonstration and interactive simulation</strong> of the proposed National MCP-PAI Oncology Trials Standard. It serves as an educational and stakeholder communication tool that visualizes the system described in the paper using deterministic simulations with pre-configured data.</p>
+    </div>
+
+    <div class="not-box">
+      <h3>What This Is NOT</h3>
+      <ul>
+        <li>NOT a deployed clinical system</li>
+        <li>NOT approved for use in actual oncology trials</li>
+        <li>NOT connected to real patient data, EHR systems, PACS, or robotic systems</li>
+        <li>NOT a medical device or software as a medical device (SaMD)</li>
+      </ul>
+    </div>
+
+    <div class="disclaimer-box">
+      <h3>Simulation Conditions and Approximations</h3>
+      <ul>
+        <li>All data shown is synthetic</li>
+        <li>Network latencies, site counts, and response times are modeled approximations based on the paper's architecture</li>
+        <li>Federated learning rounds use illustrative aggregation, not real model weights</li>
+        <li>Hash chains demonstrate the algorithm with sample data</li>
+      </ul>
+    </div>
+
+    <div class="needed-box">
+      <h3>What Is Needed for Actual Trial Use</h3>
+      <ol class="content-list">
+        <li>FDA review and recognition as a consensus standard</li>
+        <li>Clinical pilot deployment at NCI-designated cancer centers</li>
+        <li>Real EHR/PACS adapter validation with vendor systems (Epic, Cerner, Orthanc, dcm4chee)</li>
+        <li>Robot vendor certification program</li>
+        <li>IRB approval at each participating site</li>
+        <li>21 CFR Part 11 compliance audit of deployed instances</li>
+        <li>HIPAA security risk assessment</li>
+      </ol>
+    </div>
+
+    <div class="card">
+      <h3>Current Status</h3>
+      <p>This is a <strong>proposed reference standard</strong> with a complete reference implementation (381 files, approximately 69,800 lines) that has not yet been deployed in clinical settings. The repository (v1.2.0) includes the complete specification, reference implementations in Python and TypeScript, a 668-function test suite, and a 20-page peer-reviewed paper.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================
+     CITATION & LINKS
+     ============================================================ -->
+<section class="section" id="citation">
+  <div class="container">
+    <div class="section-header">
+      <h2>Citation and Links</h2>
+    </div>
+
+    <h3>Cite This Work</h3>
+    <p>Kawchak K. National MCP Servers for Physical AI Oncology Clinical Trial Systems. Zenodo. 2026; <a href="https://doi.org/10.5281/zenodo.18916731" target="_blank" rel="noopener">10.5281/zenodo.18916731</a>.</p>
+
+    <h3 class="mt-2">BibTeX</h3>
+    <div class="citation-block">@article{kawchak2026national,
+  title     = {National MCP Servers for Physical AI
+               Oncology Clinical Trial Systems},
+  author    = {Kawchak, Kevin},
+  year      = {2026},
+  publisher = {Zenodo},
+  doi       = {10.5281/zenodo.18916731},
+  url       = {https://doi.org/10.5281/zenodo.18916731}
+}</div>
+
+    <h3 class="mt-2">Repository Links</h3>
+    <table>
+      <thead><tr><th>Repository</th><th>DOI</th><th>Focus</th></tr></thead>
+      <tbody>
+        <tr>
+          <td><a href="https://github.com/kevinkawchak/national-mcp-pai-oncology-trials" target="_blank" rel="noopener">national-mcp-pai-oncology-trials</a></td>
+          <td><a href="https://doi.org/10.5281/zenodo.18894758" target="_blank" rel="noopener">10.5281/zenodo.18894758</a></td>
+          <td>National standard, SDKs, governance (current)</td>
+        </tr>
+        <tr>
+          <td><a href="https://github.com/kevinkawchak/mcp-pai-oncology-trials" target="_blank" rel="noopener">mcp-pai-oncology-trials</a></td>
+          <td><a href="https://doi.org/10.5281/zenodo.18869776" target="_blank" rel="noopener">10.5281/zenodo.18869776</a></td>
+          <td>MCP server proof of concept, 5-server architecture</td>
+        </tr>
+        <tr>
+          <td><a href="https://github.com/kevinkawchak/pai-oncology-trial-fl" target="_blank" rel="noopener">pai-oncology-trial-fl</a></td>
+          <td><a href="https://doi.org/10.5281/zenodo.18840880" target="_blank" rel="noopener">10.5281/zenodo.18840880</a></td>
+          <td>Federated learning, privacy modules</td>
+        </tr>
+        <tr>
+          <td><a href="https://github.com/kevinkawchak/physical-ai-oncology-trials" target="_blank" rel="noopener">physical-ai-oncology-trials</a></td>
+          <td><a href="https://doi.org/10.5281/zenodo.18445179" target="_blank" rel="noopener">10.5281/zenodo.18445179</a></td>
+          <td>USL scoring, single-site Physical AI framework</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <h3 class="mt-2">Paper</h3>
+    <ul class="content-list">
+      <li><strong>PDF</strong>: <a href="https://github.com/kevinkawchak/national-mcp-pai-oncology-trials/blob/main/paper/National%20MCP%20Servers%20for%20Physical%20AI%20Oncology%20Clinical%20Trial%20Systems.pdf" target="_blank" rel="noopener">National MCP Servers for Physical AI Oncology Clinical Trial Systems</a></li>
+      <li><strong>LaTeX Source</strong>: <a href="https://github.com/kevinkawchak/national-mcp-pai-oncology-trials/blob/main/paper/Latex%20Source%20Files.zip" target="_blank" rel="noopener">Latex Source Files.zip</a></li>
+      <li><strong>Template</strong>: <a href="https://github.com/kourgeorge/arxiv-style" target="_blank" rel="noopener">kourgeorge/arxiv-style</a></li>
+    </ul>
+
+    <h3 class="mt-2">Contributors</h3>
+    <p>This demonstration was generated by <strong>Anthropic Claude Code Opus 4.6</strong> and <strong>OpenAI ChatGPT 5.4 Thinking</strong> under the direction of Kevin Kawchak.</p>
+
+    <h3 class="mt-2">License</h3>
+    <p>This project is distributed under the <a href="https://github.com/kevinkawchak/national-mcp-pai-oncology-trials/blob/main/LICENSE" target="_blank" rel="noopener">MIT License</a>. The paper is distributed under <a href="https://creativecommons.org/licenses/by/4.0/" target="_blank" rel="noopener">CC BY 4.0</a>.</p>
+  </div>
+</section>
+
+<!-- ============================================================
+     FOOTER
+     ============================================================ -->
+<footer class="site-footer">
+  <div class="container">
+    <div class="footer-links">
+      <a href="https://github.com/kevinkawchak/national-mcp-pai-oncology-trials" target="_blank" rel="noopener">GitHub</a>
+      <a href="https://doi.org/10.5281/zenodo.18894758" target="_blank" rel="noopener">Zenodo</a>
+      <a href="https://doi.org/10.5281/zenodo.18916731" target="_blank" rel="noopener">Paper DOI</a>
+      <a href="mailto:kevink@chemicalqdevice.com">Contact</a>
+    </div>
+    <p>National MCP-PAI Oncology Trials Standard v1.2.0 | MIT License | Proposed Reference Standard</p>
+    <p style="font-size:0.78rem;margin-top:0.5rem;opacity:0.7">This is a demonstration and interactive simulation, not a deployed clinical system.</p>
+  </div>
+</footer>
+
+<!-- Back to top button -->
+<button class="back-to-top" aria-label="Back to top">&uarr;</button>
+
+<!-- Scripts -->
+<script src="js/app.js"></script>
+<script src="js/diagrams.js"></script>
+<script src="js/simulator.js"></script>
+<script src="js/conformance.js"></script>
+
+</body>
+</html>
